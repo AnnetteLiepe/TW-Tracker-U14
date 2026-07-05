@@ -269,8 +269,8 @@ function renderEingabe(){
 
   <div class="field"><label class="lbl">Torwarte</label>
     <div class="tw-toggle">
-      <div class="tw-toggle-btn ${!form.zweiTW?'active':''}" onclick="sf('zweiTW',false);render()">🧤 Ein Torwart</div>
-      <div class="tw-toggle-btn ${form.zweiTW?'active':''}" onclick="sf('zweiTW',true);render()">🧤🧤 Zwei Torwarte</div>
+      <div class="tw-toggle-btn ${!form.zweiTW?'active':''}" onclick="setZweiTW(false)">🧤 Ein Torwart</div>
+      <div class="tw-toggle-btn ${form.zweiTW?'active':''}" onclick="setZweiTW(true)">🧤🧤 Zwei Torwarte</div>
     </div>
   </div>
 
@@ -373,6 +373,7 @@ function renderSaison(){
 }
 
 window.sf=function(k,v){form[k]=v;}
+window.setZweiTW=function(val){form.zweiTW=val;render();}
 window.setFilter=function(f){filterTyp=f;render();}
 
 function validate(){
