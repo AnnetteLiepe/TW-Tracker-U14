@@ -420,7 +420,7 @@ function renderSpiele() {
         var c1 = gc(hz1 ? hz1.torwart : '');
         var c2 = gc(hz2 ? hz2.torwart : '');
         var sc = h ? ('Hertha <span class="hertha">' + s.toreHeim + ':' + s.toreGast + '</span> ' + s.gegner) :
-                     (s.gegner + ' ' + s.toreGast + ':' + s.toreHeim + ' <span class="hertha">Hertha</span>');
+                     (s.gegner + ' ' + s.toreHeim + ':' + s.toreGast + ' <span class="hertha">Hertha</span>');
         var pills = '';
         if (hz1) pills += '<div class="hz-pill" style="background:' + c1.bg + ';color:' + c1.ac + ';border-color:' + c1.ac + '40"><b>TW ' + hz1.torwart + '</b> 1.HZ ' + hz1.hzH + ':' + hz1.hzG + ' \u00b7 ' + hz1.kassiert + 'GT</div>';
         if (hz2) pills += '<div class="hz-pill" style="background:' + c2.bg + ';color:' + c2.ac + ';border-color:' + c2.ac + '40"><b>TW ' + hz2.torwart + '</b> 2.HZ ' + hz2.hzH + ':' + hz2.hzG + ' \u00b7 ' + hz2.kassiert + 'GT</div>';
@@ -437,7 +437,7 @@ function renderSpiele() {
 
       var c = gc(s.torwart);
       var sc2 = h ? ('Hertha <span class="hertha">' + s.toreHeim + ':' + s.toreGast + '</span> ' + s.gegner) :
-                    (s.gegner + ' ' + s.toreGast + ':' + s.toreHeim + ' <span class="hertha">Hertha</span>');
+                    (s.gegner + ' ' + s.toreHeim + ':' + s.toreGast + ' <span class="hertha">Hertha</span>');
       return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
         '<div class="spiel-inner"><div style="flex:1">' +
         '<div class="spiel-score">' + sc2 + '</div>' +
