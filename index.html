@@ -43,12 +43,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .search-wrap{position:relative;margin-bottom:12px}
 .search-wrap input{padding-left:36px}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b7280;font-size:15px;pointer-events:none}
-.toggle-wrap{display:flex;align-items:center;gap:10px;padding:12px 14px;background:#0f1117;border-radius:10px;border:1.5px solid #2a2f45;cursor:pointer;margin-bottom:11px;-webkit-user-select:none;user-select:none}
-.toggle-wrap.on{border-color:#4a9eff}
-.toggle-wrap input[type=checkbox]{width:20px;height:20px;accent-color:#4a9eff;cursor:pointer;flex-shrink:0}
-.toggle-main{font-size:13px;font-weight:600;color:#9ca3af}
-.toggle-wrap.on .toggle-main{color:#4a9eff}
-.toggle-hint{font-size:11px;color:#4b5563;margin-top:1px}
+.tw-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.tw-toggle-btn{padding:12px;border-radius:10px;border:1.5px solid #2a2f45;background:#0f1117;color:#9ca3af;font-weight:600;font-size:13px;cursor:pointer;text-align:center;transition:all .15s}
+.tw-toggle-btn.active{border-color:#4a9eff;color:#4a9eff;background:#1a2a3a}
 .hz-box{background:#0f1117;border-radius:12px;padding:14px;border:1px solid #2a2f45;margin-bottom:10px}
 .hz-title{font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.5px}
 .c-hz1{color:#4a9eff}.c-hz2{color:#4adf7f}
@@ -78,7 +75,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .badge{font-size:11px;padding:2px 8px;border-radius:8px;font-weight:700;border:1px solid transparent}
 .hz-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .hz-pill{border-radius:8px;padding:5px 9px;font-size:11px;border:1px solid transparent;line-height:1.3}
-.spiel-notiz{font-size:11px;color:#6b7280;margin-top:6px;font-style:italic;line-height:1.4}
+.spiel-notiz{font-size:11px;color:#6b7280;margin-top:6px;font-style:italic}
 .spiel-actions{display:flex;gap:5px;margin-left:10px;flex-shrink:0}
 .btn-icon{border:none;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:13px;background:#2a2f45}
 .btn-del{background:#3a1f1f}
@@ -104,7 +101,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 #modal-bg.show{display:flex}
 #modal{background:#1a1f35;border-radius:20px;padding:24px;max-width:320px;width:90%;border:1px solid #2a2f45}
 #modal h3{font-size:16px;color:#fff;margin-bottom:10px}
-#modal p{font-size:13px;color:#9ca3af;line-height:1.5;margin-bottom:16px;white-space:pre-wrap}
+#modal p{font-size:13px;color:#9ca3af;line-height:1.5;margin-bottom:16px}
 .modal-btns{display:flex;gap:8px}
 .modal-btns button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:700;font-size:14px;cursor:pointer}
 .modal-ok{background:#ef4444;color:#fff}.modal-cancel{background:#2a2f45;color:#9ca3af}
@@ -115,26 +112,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 </style>
 </head>
 <body>
-
 <div id="loading"><div class="spin"></div><p>Verbinde mit Datenbank…</p></div>
 <div id="toast"></div>
-<div id="modal-bg">
-  <div id="modal">
-    <h3 id="modal-title"></h3><p id="modal-msg"></p>
-    <div class="modal-btns">
-      <button class="modal-cancel" onclick="closeModal()">Abbrechen</button>
-      <button class="modal-ok" id="modal-ok-btn">OK</button>
-    </div>
-  </div>
-</div>
-
+<div id="modal-bg"><div id="modal"><h3 id="modal-title"></h3><p id="modal-msg"></p><div class="modal-btns"><button class="modal-cancel" onclick="closeModal()">Abbrechen</button><button class="modal-ok" id="modal-ok-btn">OK</button></div></div></div>
 <div id="header">
   <div class="hdr-top">
-    <div class="hdr-left">
-      <span class="hdr-icon">🧤</span>
-      <div><div class="hdr-title">Torwart-Tracker</div>
-      <div class="hdr-sub" id="hdr-sub"></div></div>
-    </div>
+    <div class="hdr-left"><span class="hdr-icon">🧤</span><div><div class="hdr-title">Torwart-Tracker</div><div class="hdr-sub" id="hdr-sub"></div></div></div>
     <div class="hdr-sync" id="hdr-sync">● Live</div>
   </div>
   <div id="nav">
@@ -147,9 +130,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, onValue, push, set, remove, off } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getDatabase, ref, onValue, push, set, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-// ═══ FIREBASE CONFIG ═══
 const firebaseConfig = {
   apiKey: "AIzaSyB0uCjqcDmgnHTaVjYekLLQEzpUUEKyfBg",
   authDomain: "tw-tracking-u14.firebaseapp.com",
@@ -164,151 +146,99 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const spieleRef = ref(db, 'spiele');
 
-// ═══ CONSTANTS ═══
-const TW_COLORS = {'1':{bg:'#1a3a5c',accent:'#4a9eff'},'12':{bg:'#1a4a2e',accent:'#4adf7f'},'22':{bg:'#4a1a1a',accent:'#ff6b4a'}};
-const RC = {Sieg:'#22c55e',Niederlage:'#ef4444',Unentschieden:'#f59e0b'};
+const TW_COLORS={'1':{bg:'#1a3a5c',accent:'#4a9eff'},'12':{bg:'#1a4a2e',accent:'#4adf7f'},'22':{bg:'#4a1a1a',accent:'#ff6b4a'}};
+const RC={Sieg:'#22c55e',Niederlage:'#ef4444',Unentschieden:'#f59e0b'};
 
-// ═══ STATE ═══
-let spiele = [];
-let view = 'eingabe';
-let filterTyp = 'Alle';
-let sortDesc = true;
-let searchQ = '';
-let editId = null;
-let prevView = 'spiele';
-let modalCb = null;
-let toastTimer = null;
+let spiele=[];
+let view='eingabe',filterTyp='Alle',sortDesc=true,searchQ='',editId=null,prevView='spiele',modalCb=null,toastTimer=null;
 
 function defForm(){
-  return{datum:'',gegner:'',spieltag:'',toreHeim:'',toreGast:'',
-    torwart:'',torwart2:'',typ:'Pflichtspiel',heimwaerts:'Heim',bemerkung:'',
-    geteilt:false,toreHz1:'',toreGeg1:'',toreHz2:'',toreGeg2:''};
+  return{datum:'',gegner:'',spieltag:'',typ:'Pflichtspiel',heimwaerts:'Heim',bemerkung:'',
+    zweiTW:false,
+    torwart:'',toreHeim:'',toreGast:'',
+    torwart1:'',torwart2:'',
+    toreHz1H:'',toreHz1G:'',
+    toreHz2H:'',toreHz2G:''};
 }
-let form = defForm();
-let formErrors = {};
+let form=defForm(),formErrors={};
 
-// ═══ INIT ═══
-function getSaison(){
-  const y=new Date().getFullYear(),m=new Date().getMonth();
-  return m>=6?`${y}/${String(y+1).slice(-2)}`:`${y-1}/${String(y).slice(-2)}`;
-}
+function getSaison(){const y=new Date().getFullYear(),m=new Date().getMonth();return m>=6?`${y}/${String(y+1).slice(-2)}`:`${y-1}/${String(y).slice(-2)}`;}
 document.getElementById('hdr-sub').textContent=`Hertha BSC U14 · ${getSaison()}`;
 
-// Firebase listener
-onValue(spieleRef, (snapshot) => {
-  const data = snapshot.val();
-  spiele = data ? Object.entries(data).map(([id, val]) => ({...val, _fbId: id})) : [];
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('hdr-sync').textContent = '● Live';
-  document.getElementById('hdr-sync').className = 'hdr-sync';
+onValue(spieleRef,(snapshot)=>{
+  const data=snapshot.val();
+  spiele=data?Object.entries(data).map(([id,val])=>({...val,_fbId:id})):[];
+  document.getElementById('loading').style.display='none';
+  document.getElementById('hdr-sync').textContent='● Live';
+  document.getElementById('hdr-sync').className='hdr-sync';
   render();
-}, (error) => {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('hdr-sync').textContent = '● Offline';
-  document.getElementById('hdr-sync').className = 'hdr-sync offline';
-  toast('Verbindungsfehler — bitte Internet prüfen', 'err', 4000);
+},(error)=>{
+  document.getElementById('loading').style.display='none';
+  document.getElementById('hdr-sync').textContent='● Offline';
+  document.getElementById('hdr-sync').className='hdr-sync offline';
+  toast('Verbindungsfehler — bitte Internet prüfen','err',4000);
 });
 
-// ═══ UTILS ═══
 function gc(tw){return TW_COLORS[tw]||{bg:'#2a2a3a',accent:'#aaa'};}
 function fmtDate(d){if(!d)return'';const p=d.split('-');return p.length===3?`${p[2]}.${p[1]}.${p[0]}`:d;}
 function erg(h,g){return h>g?'Sieg':h<g?'Niederlage':'Unentschieden';}
 
-let toastTimerHandle;
 function toast(msg,type='ok',dur=2500){
-  const el=document.getElementById('toast');
-  el.innerHTML=msg;el.className=type+' show';
-  clearTimeout(toastTimerHandle);
-  toastTimerHandle=setTimeout(()=>el.classList.remove('show'),dur);
+  const el=document.getElementById('toast');el.innerHTML=msg;el.className=type+' show';
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),dur);
 }
-
 function showModal(title,msg,okLabel,cb){
   document.getElementById('modal-title').textContent=title;
   document.getElementById('modal-msg').textContent=msg;
-  const btn=document.getElementById('modal-ok-btn');
-  btn.textContent=okLabel;btn.style.background='#ef4444';
+  const btn=document.getElementById('modal-ok-btn');btn.textContent=okLabel;btn.style.background='#ef4444';
   modalCb=cb;document.getElementById('modal-bg').classList.add('show');
 }
 window.closeModal=function(){document.getElementById('modal-bg').classList.remove('show');modalCb=null;}
-window.confirmModal=function(){closeModal();if(modalCb)modalCb();}
-document.getElementById('modal-ok-btn').onclick=window.confirmModal;
+document.getElementById('modal-ok-btn').onclick=function(){closeModal();if(modalCb)modalCb();}
 
-// ═══ STATS ═══
 function getStats(tw,liste){
-  const s=liste.filter(x=>x.torwart===tw);
-  if(!s.length)return null;
+  const s=liste.filter(x=>x.torwart===tw);if(!s.length)return null;
   const siege=s.filter(x=>x.ergebnis==='Sieg').length;
   const nied=s.filter(x=>x.ergebnis==='Niederlage').length;
   const unt=s.filter(x=>x.ergebnis==='Unentschieden').length;
   const kass=s.reduce((a,x)=>a+x.kassiert,0);
   const gesch=s.reduce((a,x)=>a+x.geschossen,0);
-  const hatWechsel=s.some(x=>x.halbzeit);
-  return{tw,spiele:s.length,siege,niederlagen:nied,unentschieden:unt,
-    kassiert:kass,geschossen:gesch,schnitt:(kass/s.length).toFixed(2),liste:s,hatWechsel};
+  return{tw,spiele:s.length,siege,niederlagen:nied,unentschieden:unt,kassiert:kass,geschossen:gesch,schnitt:(kass/s.length).toFixed(2),liste:s,hatWechsel:s.some(x=>x.halbzeit)};
 }
-
 function getFiltered(){
   let res=filterTyp==='Alle'?spiele:spiele.filter(x=>x.typ===filterTyp);
   if(searchQ){const q=searchQ.toLowerCase();res=res.filter(x=>x.gegner?.toLowerCase().includes(q)||x.spieltag?.toLowerCase().includes(q)||x.bemerkung?.toLowerCase().includes(q));}
   return res;
 }
-
 function groupSpiele(liste){
   const seen=new Set(),res=[];
   const sorted=[...liste].sort((a,b)=>sortDesc?b.datum.localeCompare(a.datum):a.datum.localeCompare(b.datum));
   for(const s of sorted){
-    if(s.geteilt&&s.gid){
-      if(!seen.has(s.gid)){seen.add(s.gid);res.push({...s,_gruppe:liste.filter(x=>x.gid===s.gid),_isG:true});}
-    }else res.push(s);
+    if(s.geteilt&&s.gid){if(!seen.has(s.gid)){seen.add(s.gid);res.push({...s,_gruppe:liste.filter(x=>x.gid===s.gid),_isG:true});}}
+    else res.push(s);
   }
   return res;
 }
 
-// ═══ NAV ═══
 window.sw=function(v){
   if(v!=='eingabe'&&view==='eingabe')prevView=v;
-  view=v;if(v!=='eingabe'){editId=null;}
+  view=v;if(v!=='eingabe')editId=null;
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
   render();window.scrollTo(0,0);
 }
+function render(){document.getElementById('main').innerHTML=view==='eingabe'?renderEingabe():view==='spiele'?renderSpiele():renderSaison();}
 
-// ═══ RENDER ═══
-function render(){
-  document.getElementById('main').innerHTML=view==='eingabe'?renderEingabe():view==='spiele'?renderSpiele():renderSaison();
+function liveInfo(tw,hz,heimTore,gastTore){
+  if(!tw||heimTore===''||gastTore==='')return'';
+  const h=parseInt(heimTore),g=parseInt(gastTore);if(isNaN(h)||isNaN(g))return'';
+  const kass=form.heimwaerts==='Heim'?g:h;const gesch=form.heimwaerts==='Heim'?h:g;
+  const e2=erg(gesch,kass);const fc=RC[e2];
+  return`<div class="live-info">TW ${tw} · ${hz}: <span class="hi">${gesch} Tore geschossen</span> · <span class="gt">${kass} Gegentore</span> · <span style="color:${fc};font-weight:700">${e2}</span></div>`;
 }
 
-// ═══ EINGABE ═══
 function renderEingabe(){
-  const geteilt=form.geteilt&&form.typ==='Testspiel';
-  const hasTW2=form.typ==='Pflichtspiel'&&form.torwart2;
   const e=formErrors;
-
-  function liveInfo(tw,hz,hH,hG){
-    if(!tw||hH===''||hH===null||hG===''||hG===null)return'';
-    const h=parseInt(hH),g=parseInt(hG);if(isNaN(h)||isNaN(g))return'';
-    const kass=form.heimwaerts==='Heim'?g:h;
-    const gesch=form.heimwaerts==='Heim'?h:g;
-    const e2=erg(gesch,kass);const fc=RC[e2];
-    return`<div class="live-info">TW ${tw} · ${hz}: <span class="hi">${gesch} Tore geschossen</span> · <span class="gt">${kass} Gegentore</span> · <span style="color:${fc};font-weight:700">${e2}</span></div>`;
-  }
-
-  let preview='';
-  const hz1ok=form.toreHz1!==''&&form.toreGeg1!=='';
-  const hz2ok=form.toreHz2!==''&&form.toreGeg2!=='';
-  if((geteilt||hasTW2)&&hz1ok&&hz2ok){
-    const h=parseInt(form.toreHz1||0)+parseInt(form.toreHz2||0);
-    const g=parseInt(form.toreGeg1||0)+parseInt(form.toreGeg2||0);
-    const hG=form.heimwaerts==='Heim'?h:g,gG=form.heimwaerts==='Heim'?g:h;
-    const e2=erg(hG,gG);const fc=RC[e2];
-    preview=`<div class="preview"><div class="preview-lbl">Gesamtergebnis</div><div class="preview-score">${form.heimwaerts==='Heim'?`Hertha ${h}:${g} ${form.gegner||'Gegner'}`:`${form.gegner||'Gegner'} ${g}:${h} Hertha`} · <span style="color:${fc}">${e2}</span></div></div>`;
-  }
-
-  let normalLive='';
-  if(!geteilt&&!hasTW2&&form.torwart&&form.toreHeim!==''&&form.toreGast!==''){
-    normalLive=liveInfo(form.torwart,'Vollzeit',form.toreHeim,form.toreGast);
-  }
-
-  const twOpts=(sel)=>['','1','12','22'].map(t=>`<option value="${t}" ${sel===t?'selected':''}>${t?`TW ${t}`:'— auswählen —'}</option>`).join('');
+  const twOpts=(sel,excl='')=>['','1','12','22'].filter(t=>t!==excl).map(t=>`<option value="${t}" ${sel===t?'selected':''}>${t?`TW ${t}`:'— auswählen —'}</option>`).join('');
 
   const quickCards=['1','12','22'].map(tw=>{
     const s=getStats(tw,spiele),c=gc(tw);
@@ -316,8 +246,16 @@ function renderEingabe(){
     return`<div class="quick-card" style="background:${c.bg};border-color:${c.accent}30"><div class="quick-tw" style="color:${c.accent}">TW ${tw}</div><div class="quick-num">${s.spiele}</div><div class="quick-lbl">Einsätze</div><div class="quick-rec">${s.siege}S · ${s.unentschieden}U · ${s.niederlagen}N</div></div>`;
   }).join('');
 
-  return`
-<div class="card">
+  let preview='';
+  if(form.zweiTW&&form.toreHz1H!==''&&form.toreHz1G!==''&&form.toreHz2H!==''&&form.toreHz2G!==''){
+    const h=parseInt(form.toreHz1H||0)+parseInt(form.toreHz2H||0);
+    const g=parseInt(form.toreHz1G||0)+parseInt(form.toreHz2G||0);
+    const hG=form.heimwaerts==='Heim'?h:g,gG=form.heimwaerts==='Heim'?g:h;
+    const e2=erg(hG,gG);const fc=RC[e2];
+    preview=`<div class="preview"><div class="preview-lbl">Gesamtergebnis</div><div class="preview-score">${form.heimwaerts==='Heim'?`Hertha ${h}:${g} ${form.gegner||'Gegner'}`:`${form.gegner||'Gegner'} ${g}:${h} Hertha`} · <span style="color:${fc}">${e2}</span></div></div>`;
+  }
+
+  return`<div class="card">
   <div class="card-title">${editId?'✏️ Spiel bearbeiten':'➕ Neues Spiel eintragen'}</div>
   <div class="field-row">
     <div class="field"><label class="lbl">Datum *</label><input type="date" class="${e.datum?'ferr':''}" value="${form.datum}" oninput="sf('datum',this.value)"/></div>
@@ -328,35 +266,43 @@ function renderEingabe(){
     <div class="field"><label class="lbl">Spieltyp</label><select onchange="sf('typ',this.value);render()"><option ${form.typ==='Pflichtspiel'?'selected':''}>Pflichtspiel</option><option ${form.typ==='Testspiel'?'selected':''}>Testspiel</option></select></div>
     <div class="field"><label class="lbl">Heim / Auswärts</label><select onchange="sf('heimwaerts',this.value);render()"><option ${form.heimwaerts==='Heim'?'selected':''}>Heim</option><option ${form.heimwaerts==='Auswärts'?'selected':''}>Auswärts</option></select></div>
   </div>
-  ${form.typ==='Testspiel'?`<div class="toggle-wrap ${geteilt?'on':''}" onclick="toggleGeteilt()"><input type="checkbox" ${geteilt?'checked':''} onclick="event.stopPropagation();toggleGeteilt()"/><div><div class="toggle-main">Zwei Torwarte (je eine Halbzeit)</div><div class="toggle-hint">Tore werden pro Halbzeit eingetragen</div></div></div>`:''}
-  ${!geteilt?`
+
+  <div class="field"><label class="lbl">Torwarte</label>
+    <div class="tw-toggle">
+      <button class="tw-toggle-btn ${!form.zweiTW?'active':''}" onclick="sf('zweiTW',false);render()">🧤 Ein Torwart</button>
+      <button class="tw-toggle-btn ${form.zweiTW?'active':''}" onclick="sf('zweiTW',true);render()">🧤🧤 Zwei Torwarte</button>
+    </div>
+  </div>
+
+  ${!form.zweiTW?`
+  <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart?'ferr':''}" onchange="sf('torwart',this.value);render()">${twOpts(form.torwart)}</select></div>
   <div class="field-row">
     <div class="field"><label class="lbl">Tore Heim *</label><input type="number" class="${e.toreHeim?'ferr':''}" min="0" placeholder="0" value="${form.toreHeim}" oninput="sf('toreHeim',this.value);render()"/></div>
     <div class="field"><label class="lbl">Tore Gast *</label><input type="number" class="${e.toreGast?'ferr':''}" min="0" placeholder="0" value="${form.toreGast}" oninput="sf('toreGast',this.value);render()"/></div>
   </div>
-  <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart?'ferr':''}" onchange="sf('torwart',this.value);render()">${twOpts(form.torwart)}</select></div>
-  ${normalLive}
-  ${form.typ==='Pflichtspiel'?`
-  <div class="field"><label class="lbl">2. Torwart bei Verletzung (optional)</label><select onchange="sf('torwart2',this.value);render()">${twOpts(form.torwart2)}</select></div>
-  ${hasTW2?`<div style="font-size:11px;color:#6b7280;margin:-4px 0 8px">Halbzeitergebnisse:</div>
-  <div class="hz-box"><div class="hz-title c-hz1">1. HZ — TW ${form.torwart}</div>
-  <div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="${form.toreHz1}" oninput="sf('toreHz1',this.value);render()"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="${form.toreGeg1}" oninput="sf('toreGeg1',this.value);render()"/></div></div>
-  ${liveInfo(form.torwart,'1. HZ',form.toreHz1,form.toreGeg1)}</div>
-  <div class="hz-box"><div class="hz-title c-hz2">2. HZ — TW ${form.torwart2}</div>
-  <div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="${form.toreHz2}" oninput="sf('toreHz2',this.value);render()"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="${form.toreGeg2}" oninput="sf('toreGeg2',this.value);render()"/></div></div>
-  ${liveInfo(form.torwart2,'2. HZ',form.toreHz2,form.toreGeg2)}</div>${preview}`:''}
-  `:''}
+  ${liveInfo(form.torwart,'Vollzeit',form.toreHeim,form.toreGast)}
   `:`
-  <div class="hz-box"><div class="hz-title c-hz1">1. HALBZEIT</div>
-  <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart?'ferr':''}" onchange="sf('torwart',this.value);checkSameTW();render()">${twOpts(form.torwart)}</select></div>
-  <div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="${form.toreHz1}" oninput="sf('toreHz1',this.value);render()"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="${form.toreGeg1}" oninput="sf('toreGeg1',this.value);render()"/></div></div>
-  ${liveInfo(form.torwart,'1. HZ',form.toreHz1,form.toreGeg1)}</div>
-  <div class="hz-box"><div class="hz-title c-hz2">2. HALBZEIT</div>
-  <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart2?'ferr':''}" onchange="sf('torwart2',this.value);checkSameTW();render()">${twOpts(form.torwart2)}</select></div>
-  <div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="${form.toreHz2}" oninput="sf('toreHz2',this.value);render()"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="${form.toreGeg2}" oninput="sf('toreGeg2',this.value);render()"/></div></div>
-  ${liveInfo(form.torwart2,'2. HZ',form.toreHz2,form.toreGeg2)}</div>
+  <div class="hz-box">
+    <div class="hz-title c-hz1">1. HALBZEIT</div>
+    <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart1?'ferr':''}" onchange="sf('torwart1',this.value);render()">${twOpts(form.torwart1)}</select></div>
+    <div class="field-row">
+      <div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="${form.toreHz1H}" oninput="sf('toreHz1H',this.value);render()"/></div>
+      <div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="${form.toreHz1G}" oninput="sf('toreHz1G',this.value);render()"/></div>
+    </div>
+    ${liveInfo(form.torwart1,'1. HZ',form.toreHz1H,form.toreHz1G)}
+  </div>
+  <div class="hz-box">
+    <div class="hz-title c-hz2">2. HALBZEIT</div>
+    <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart2?'ferr':''}" onchange="sf('torwart2',this.value);render()">${twOpts(form.torwart2,form.torwart1)}</select></div>
+    <div class="field-row">
+      <div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="${form.toreHz2H}" oninput="sf('toreHz2H',this.value);render()"/></div>
+      <div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="${form.toreHz2G}" oninput="sf('toreHz2G',this.value);render()"/></div>
+    </div>
+    ${liveInfo(form.torwart2,'2. HZ',form.toreHz2H,form.toreHz2G)}
+  </div>
   ${preview}
   `}
+
   <div class="field"><label class="lbl">Bemerkung / Notiz</label><textarea placeholder="z.B. starker Wind, Verletzung, Penaltyserie..." oninput="sf('bemerkung',this.value)">${form.bemerkung}</textarea></div>
   <button class="btn-primary" onclick="submitForm()">${editId?'💾 Speichern':'✅ Spiel eintragen'}</button>
   ${editId?`<button class="btn-secondary" onclick="cancelEdit()">Abbrechen</button>`:''}
@@ -364,160 +310,105 @@ function renderEingabe(){
 ${spiele.length>0?`<div class="quick-grid">${quickCards}</div>`:''}`;
 }
 
-// ═══ SPIELE ═══
 function renderSpiele(){
-  const filtered=getFiltered();
-  const grouped=groupSpiele(filtered);
-  return`
-<div class="search-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Gegner, Spieltag oder Notiz suchen…" value="${searchQ}" oninput="searchQ=this.value;render()"/></div>
+  const grouped=groupSpiele(getFiltered());
+  return`<div class="search-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Gegner, Spieltag oder Notiz suchen…" value="${searchQ}" oninput="searchQ=this.value;render()"/></div>
 <div class="filter-row">
   ${['Alle','Pflichtspiel','Testspiel'].map(f=>`<button class="filter-btn${filterTyp===f?' active':''}" onclick="setFilter('${f}')">${f}</button>`).join('')}
   <button class="sort-btn" onclick="sortDesc=!sortDesc;render()">${sortDesc?'↓ Neueste':'↑ Älteste'}</button>
   <span class="filter-count">${grouped.length} Spiele</span>
 </div>
-${grouped.length===0?`<div class="no-spiele">${searchQ?'Keine Treffer':'Noch keine Spiele eingetragen.'}</div>`:grouped.map(renderSpielCard).join('')}`;
-}
-
-function renderSpielCard(spiel){
-  const farbe=RC[spiel.ergebnis]||'#aaa';
-  const datum=fmtDate(spiel.datum);
-  const st=spiel.spieltag?` · ST ${spiel.spieltag}`:'';
-  const h=spiel.heimwaerts==='Heim';
-
-  if(spiel._isG){
-    const hz1=spiel._gruppe.find(x=>x.halbzeit==='1');
-    const hz2=spiel._gruppe.find(x=>x.halbzeit==='2');
+${grouped.length===0?'<div class="no-spiele">Noch keine Spiele eingetragen.</div>':grouped.map(s=>{
+  const farbe=RC[s.ergebnis]||'#aaa';const datum=fmtDate(s.datum);const st=s.spieltag?` · ST ${s.spieltag}`:'';const h=s.heimwaerts==='Heim';
+  if(s._isG){
+    const hz1=s._gruppe.find(x=>x.halbzeit==='1'),hz2=s._gruppe.find(x=>x.halbzeit==='2');
     const c1=gc(hz1?.torwart),c2=gc(hz2?.torwart);
-    const fbId=spiel._fbId;
     return`<div class="spiel-card" style="border-left-color:${farbe}"><div class="spiel-inner"><div style="flex:1">
-    <div class="spiel-score">${h?`<span class="hertha">Hertha</span> ${spiel.toreHeim}:${spiel.toreGast} ${spiel.gegner}`:`${spiel.gegner} ${spiel.toreGast}:${spiel.toreHeim} <span class="hertha">Hertha</span>`}</div>
-    <div class="spiel-meta"><span style="color:${farbe};font-weight:700">${spiel.ergebnis}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${datum}${st}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${spiel.typ} · ${spiel.heimwaerts}</span></div>
+    <div class="spiel-score">${h?`<span class="hertha">Hertha</span> ${s.toreHeim}:${s.toreGast} ${s.gegner}`:`${s.gegner} ${s.toreGast}:${s.toreHeim} <span class="hertha">Hertha</span>`}</div>
+    <div class="spiel-meta"><span style="color:${farbe};font-weight:700">${s.ergebnis}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${datum}${st}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${s.typ} · ${s.heimwaerts}</span></div>
     <div class="hz-pills">
       ${hz1?`<div class="hz-pill" style="background:${c1.bg};color:${c1.accent};border-color:${c1.accent}40"><b>TW ${hz1.torwart}</b> 1.HZ ${hz1.hzH}:${hz1.hzG} · ${hz1.kassiert}GT</div>`:''}
       ${hz2?`<div class="hz-pill" style="background:${c2.bg};color:${c2.accent};border-color:${c2.accent}40"><b>TW ${hz2.torwart}</b> 2.HZ ${hz2.hzH}:${hz2.hzG} · ${hz2.kassiert}GT</div>`:''}
     </div>
-    ${spiel.bemerkung?`<div class="spiel-notiz">💬 ${spiel.bemerkung}</div>`:''}
+    ${s.bemerkung?`<div class="spiel-notiz">💬 ${s.bemerkung}</div>`:''}
   </div>
-  <div class="spiel-actions">
-    <button class="btn-icon" onclick="editSpiel('${spiel.gid}',true)">✏️</button>
-    <button class="btn-icon btn-del" onclick="delSpiel('${spiel.gid}',true)">🗑️</button>
-  </div></div></div>`;
+  <div class="spiel-actions"><button class="btn-icon" onclick="editSpiel('${s.gid}',true)">✏️</button><button class="btn-icon btn-del" onclick="delSpiel('${s.gid}',true)">🗑️</button></div>
+  </div></div>`;
   }
-
-  const c=gc(spiel.torwart);
-  let tw2pills='';
-  if(spiel.torwart2){
-    const c2=gc(spiel.torwart2);
-    tw2pills=`<div class="hz-pills"><div class="hz-pill" style="background:${c.bg};color:${c.accent};border-color:${c.accent}40"><b>TW ${spiel.torwart}</b> 1.HZ · ${spiel.kass1!==undefined?spiel.kass1:'?'}GT</div><div class="hz-pill" style="background:${c2.bg};color:${c2.accent};border-color:${c2.accent}40"><b>TW ${spiel.torwart2}</b> 2.HZ · ${spiel.kass2!==undefined?spiel.kass2:'?'}GT</div></div>`;
-  }
+  const c=gc(s.torwart);
   return`<div class="spiel-card" style="border-left-color:${farbe}"><div class="spiel-inner"><div style="flex:1">
-  <div class="spiel-score">${h?`<span class="hertha">Hertha</span> ${spiel.toreHeim}:${spiel.toreGast} ${spiel.gegner}`:`${spiel.gegner} ${spiel.toreGast}:${spiel.toreHeim} <span class="hertha">Hertha</span>`}</div>
-  <div class="spiel-meta"><span style="color:${farbe};font-weight:700">${spiel.ergebnis}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${datum}${st}</span><span style="color:#4b5563">·</span><span class="badge" style="background:${c.bg};color:${c.accent};border-color:${c.accent}40">TW ${spiel.torwart}</span><span style="color:#6b7280">${spiel.typ} · ${spiel.heimwaerts}</span></div>
-  ${tw2pills}
-  ${spiel.bemerkung?`<div class="spiel-notiz">💬 ${spiel.bemerkung}</div>`:''}
+  <div class="spiel-score">${h?`<span class="hertha">Hertha</span> ${s.toreHeim}:${s.toreGast} ${s.gegner}`:`${s.gegner} ${s.toreGast}:${s.toreHeim} <span class="hertha">Hertha</span>`}</div>
+  <div class="spiel-meta"><span style="color:${farbe};font-weight:700">${s.ergebnis}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${datum}${st}</span><span style="color:#4b5563">·</span><span class="badge" style="background:${c.bg};color:${c.accent};border-color:${c.accent}40">TW ${s.torwart}</span><span style="color:#6b7280">${s.typ} · ${s.heimwaerts}</span></div>
+  ${s.bemerkung?`<div class="spiel-notiz">💬 ${s.bemerkung}</div>`:''}
   </div>
-  <div class="spiel-actions">
-    <button class="btn-icon" onclick="editSpiel('${spiel._fbId}',false)">✏️</button>
-    <button class="btn-icon btn-del" onclick="delSpiel('${spiel._fbId}',false)">🗑️</button>
-  </div></div></div>`;
+  <div class="spiel-actions"><button class="btn-icon" onclick="editSpiel('${s._fbId}',false)">✏️</button><button class="btn-icon btn-del" onclick="delSpiel('${s._fbId}',false)">🗑️</button></div>
+  </div></div>`;
+}).join('')}`;
 }
 
-// ═══ SAISON ═══
 function renderSaison(){
   const filtered=getFiltered();
   const allStats=['1','12','22'].map(tw=>getStats(tw,filtered)).filter(Boolean);
   const fb=`<div class="filter-row">${['Alle','Pflichtspiel','Testspiel'].map(f=>`<button class="filter-btn${filterTyp===f?' active':''}" onclick="setFilter('${f}')">${f}</button>`).join('')}</div>`;
   if(!allStats.length)return fb+'<div class="no-spiele">Noch keine Spiele eingetragen.</div>';
-
   const cards=allStats.map(s=>{
-    const c=gc(s.tw);
-    const wr=s.spiele?((s.siege/s.spiele)*100).toFixed(0):0;
+    const c=gc(s.tw);const wr=s.spiele?((s.siege/s.spiele)*100).toFixed(0):0;
     const recent=[...s.liste].sort((a,b)=>b.datum.localeCompare(a.datum)).slice(0,5).map(x=>{
-      const fc=RC[x.ergebnis]||'#aaa';
-      const k=x.ergebnis==='Sieg'?'S':x.ergebnis==='Niederlage'?'N':'U';
-      const hz=x.halbzeit?` ${x.halbzeit}.HZ`:'';
-      return`<div class="recent-pill" style="background:${fc}20;color:${fc};border-color:${fc}40">${k}${hz} ${x.kassiert}GT</div>`;
+      const fc=RC[x.ergebnis]||'#aaa';const k=x.ergebnis==='Sieg'?'S':x.ergebnis==='Niederlage'?'N':'U';
+      return`<div class="recent-pill" style="background:${fc}20;color:${fc};border-color:${fc}40">${k}${x.halbzeit?` ${x.halbzeit}.HZ`:''} ${x.kassiert}GT</div>`;
     }).join('');
     const wechselNote=s.hatWechsel?`<div class="tw-wechsel-note">⚠️ Enthält Einsätze bei TW-Wechsel — S/U/N basiert auf Gesamtergebnis</div>`:'';
     return`<div class="stat-card" style="border-color:${c.accent}30">
   <div class="stat-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px">🧤</span><div><div class="stat-tw" style="color:${c.accent}">Torwart ${s.tw}</div><div class="stat-einsaetze">${s.spiele} Einsätze · ${filterTyp==='Alle'?'Gesamt':filterTyp}</div></div></div><div><div class="stat-rate">${wr}%</div><div class="stat-rate-lbl">Siegquote</div></div></div>
-  <div class="bar"><div style="flex:${s.siege||0.001};background:#22c55e"></div><div style="flex:${s.unentschieden||0.001};background:#f59e0b"></div><div style="flex:${s.niederlagen||0.001};background:#ef4444"></div></div>
+  <div class="bar"><div style="flex:${s.siege||.001};background:#22c55e"></div><div style="flex:${s.unentschieden||.001};background:#f59e0b"></div><div style="flex:${s.niederlagen||.001};background:#ef4444"></div></div>
   <div class="stat-grid3"><div class="stat-cell"><div class="stat-num" style="color:#22c55e">${s.siege}</div><div class="stat-lbl">Siege</div></div><div class="stat-cell"><div class="stat-num" style="color:#f59e0b">${s.unentschieden}</div><div class="stat-lbl">Unentschieden</div></div><div class="stat-cell"><div class="stat-num" style="color:#ef4444">${s.niederlagen}</div><div class="stat-lbl">Niederlagen</div></div></div>
   <div class="stat-grid3"><div class="stat-cell"><div class="stat-icon">⚽</div><div class="stat-num" style="color:#fff">${s.geschossen}</div><div class="stat-lbl">Geschossen</div></div><div class="stat-cell"><div class="stat-icon">🥅</div><div class="stat-num" style="color:#fff">${s.kassiert}</div><div class="stat-lbl">Kassiert</div></div><div class="stat-cell"><div class="stat-icon">📊</div><div class="stat-num" style="color:#fff">${s.schnitt}</div><div class="stat-lbl">Ø Gegentore</div></div></div>
   <div class="recent-lbl">LETZTE EINSÄTZE</div><div class="recent-pills">${recent||'<span style="color:#4b5563;font-size:12px">–</span>'}</div>
   ${wechselNote}
 </div>`;
   }).join('');
-
   const sorted=[...allStats].sort((a,b)=>(b.siege/b.spiele)-(a.siege/a.spiele));
-  const rows=sorted.map(s=>{
-    const c=gc(s.tw);const wr=s.spiele?((s.siege/s.spiele)*100).toFixed(0):0;
-    return`<tr><td style="color:${c.accent};font-weight:800">TW ${s.tw}</td><td style="color:#e5e7eb">${s.spiele}</td><td style="color:#22c55e;font-weight:700">${s.siege}</td><td style="color:#f59e0b;font-weight:700">${s.unentschieden}</td><td style="color:#ef4444;font-weight:700">${s.niederlagen}</td><td style="color:#fff;font-weight:700">${wr}%</td><td style="color:#e5e7eb">${s.kassiert}</td><td style="color:#e5e7eb">${s.schnitt}</td></tr>`;
-  }).join('');
-
+  const rows=sorted.map(s=>{const c=gc(s.tw);const wr=s.spiele?((s.siege/s.spiele)*100).toFixed(0):0;return`<tr><td style="color:${c.accent};font-weight:800">TW ${s.tw}</td><td>${s.spiele}</td><td style="color:#22c55e;font-weight:700">${s.siege}</td><td style="color:#f59e0b;font-weight:700">${s.unentschieden}</td><td style="color:#ef4444;font-weight:700">${s.niederlagen}</td><td style="color:#fff;font-weight:700">${wr}%</td><td>${s.kassiert}</td><td>${s.schnitt}</td></tr>`;}).join('');
   return`${fb}${cards}${allStats.length>1?`<div class="card"><div class="card-title">⚔️ Direktvergleich</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr>${['TW','Einsätze','S','U','N','Quote','Kassiert','Ø GT'].map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div></div>`:''}`;
 }
 
-// ═══ FORM ACTIONS ═══
 window.sf=function(k,v){form[k]=v;}
-window.toggleGeteilt=function(){form.geteilt=!form.geteilt;form.toreHz1='';form.toreGeg1='';form.toreHz2='';form.toreGeg2='';form.torwart2='';render();}
-window.checkSameTW=function(){if(form.torwart&&form.torwart2&&form.torwart===form.torwart2)toast('⚠️ Beide Halbzeiten haben denselben Torwart!','warn',3000);}
 window.setFilter=function(f){filterTyp=f;render();}
 
 function validate(){
   formErrors={};
   if(!form.datum)formErrors.datum=true;
   if(!form.gegner.trim())formErrors.gegner=true;
-  const geteilt=form.geteilt&&form.typ==='Testspiel';
-  if(geteilt){
+  if(!form.zweiTW){
     if(!form.torwart)formErrors.torwart=true;
-    if(!form.torwart2)formErrors.torwart2=true;
-    if(form.torwart&&form.torwart2&&form.torwart===form.torwart2)formErrors.torwart2=true;
-  }else{
     if(form.toreHeim==='')formErrors.toreHeim=true;
     if(form.toreGast==='')formErrors.toreGast=true;
-    if(!form.torwart)formErrors.torwart=true;
+  }else{
+    if(!form.torwart1)formErrors.torwart1=true;
+    if(!form.torwart2)formErrors.torwart2=true;
   }
   return Object.keys(formErrors).length===0;
 }
 
 window.submitForm=async function(){
   if(!validate()){toast('Bitte alle Pflichtfelder ausfüllen ✱','err');render();return;}
-  const geteilt=form.geteilt&&form.typ==='Testspiel';
-  const hasTW2=form.typ==='Pflichtspiel'&&form.torwart2;
   const baseId=Date.now();
-
   try{
-    if(geteilt||hasTW2){
-      const hz1H=parseInt(form.toreHz1||0),hz1G=parseInt(form.toreGeg1||0);
-      const hz2H=parseInt(form.toreHz2||0),hz2G=parseInt(form.toreGeg2||0);
+    if(form.zweiTW){
+      const hz1H=parseInt(form.toreHz1H||0),hz1G=parseInt(form.toreHz1G||0);
+      const hz2H=parseInt(form.toreHz2H||0),hz2G=parseInt(form.toreHz2G||0);
       const gesH=hz1H+hz2H,gesG=hz1G+hz2G;
-      const hGes=form.heimwaerts==='Heim'?gesH:gesG;
-      const gGes=form.heimwaerts==='Heim'?gesG:gesH;
+      const hGes=form.heimwaerts==='Heim'?gesH:gesG,gGes=form.heimwaerts==='Heim'?gesG:gesH;
       const e=erg(hGes,gGes);
       const gid=editId&&editId.startsWith('g_')?editId:`g_${baseId}`;
-
-      if(editId){
-        const toDelete=spiele.filter(x=>x.gid===editId);
-        for(const s of toDelete)await remove(ref(db,`spiele/${s._fbId}`));
-      }
-
-      const s1={gid,datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,geteilt:true,halbzeit:'1',torwart:form.torwart,toreHeim:gesH,toreGast:gesG,kassiert:form.heimwaerts==='Heim'?hz1G:hz1H,geschossen:form.heimwaerts==='Heim'?hz1H:hz1G,ergebnis:e,hzH:hz1H,hzG:hz1G};
-      const s2={gid,datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,geteilt:true,halbzeit:'2',torwart:form.torwart2,toreHeim:gesH,toreGast:gesG,kassiert:form.heimwaerts==='Heim'?hz2G:hz2H,geschossen:form.heimwaerts==='Heim'?hz2H:hz2G,ergebnis:e,hzH:hz2H,hzG:hz2G};
-      await push(spieleRef,s1);
-      await push(spieleRef,s2);
+      if(editId){const toDelete=spiele.filter(x=>x.gid===editId);for(const s of toDelete)await remove(ref(db,`spiele/${s._fbId}`));}
+      await push(spieleRef,{gid,datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,geteilt:true,halbzeit:'1',torwart:form.torwart1,toreHeim:gesH,toreGast:gesG,kassiert:form.heimwaerts==='Heim'?hz1G:hz1H,geschossen:form.heimwaerts==='Heim'?hz1H:hz1G,ergebnis:e,hzH:hz1H,hzG:hz1G});
+      await push(spieleRef,{gid,datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,geteilt:true,halbzeit:'2',torwart:form.torwart2,toreHeim:gesH,toreGast:gesG,kassiert:form.heimwaerts==='Heim'?hz2G:hz2H,geschossen:form.heimwaerts==='Heim'?hz2H:hz2G,ergebnis:e,hzH:hz2H,hzG:hz2G});
     }else{
       const h=parseInt(form.toreHeim),g=parseInt(form.toreGast);
-      const kass=form.heimwaerts==='Heim'?g:h;
-      const gesch=form.heimwaerts==='Heim'?h:g;
+      const kass=form.heimwaerts==='Heim'?g:h,gesch=form.heimwaerts==='Heim'?h:g;
       const e=erg(gesch,kass);
-      let extra={};
-      if(form.torwart2&&form.toreHz1!==''){
-        const hz1H=parseInt(form.toreHz1||0),hz1G=parseInt(form.toreGeg1||0);
-        const hz2H=parseInt(form.toreHz2||0),hz2G=parseInt(form.toreGeg2||0);
-        extra={torwart2:form.torwart2,kass1:form.heimwaerts==='Heim'?hz1G:hz1H,kass2:form.heimwaerts==='Heim'?hz2G:hz2H};
-      }
-      const spiel={datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,torwart:form.torwart,geteilt:false,toreHeim:h,toreGast:g,kassiert:kass,geschossen:gesch,ergebnis:e,...extra};
+      const spiel={datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,torwart:form.torwart,geteilt:false,toreHeim:h,toreGast:g,kassiert:kass,geschossen:gesch,ergebnis:e};
       if(editId){await set(ref(db,`spiele/${editId}`),spiel);}
       else{await push(spieleRef,spiel);}
     }
@@ -534,26 +425,25 @@ window.editSpiel=function(id,isG){
   prevView='spiele';
   if(isG){
     const gruppe=spiele.filter(x=>x.gid===id);
-    const hz1=gruppe.find(x=>x.halbzeit==='1');
-    const hz2=gruppe.find(x=>x.halbzeit==='2');
+    const hz1=gruppe.find(x=>x.halbzeit==='1'),hz2=gruppe.find(x=>x.halbzeit==='2');
     form=defForm();
     form.datum=hz1?.datum||'';form.gegner=hz1?.gegner||'';form.spieltag=hz1?.spieltag||'';
-    form.typ=hz1?.typ||'Testspiel';form.heimwaerts=hz1?.heimwaerts||'Heim';
-    form.bemerkung=hz1?.bemerkung||'';form.geteilt=hz1?.typ==='Testspiel';
-    form.torwart=hz1?.torwart||'';form.torwart2=hz2?.torwart||'';
-    form.toreHz1=String(hz1?.hzH??'');form.toreGeg1=String(hz1?.hzG??'');
-    form.toreHz2=String(hz2?.hzH??'');form.toreGeg2=String(hz2?.hzG??'');
+    form.typ=hz1?.typ||'Pflichtspiel';form.heimwaerts=hz1?.heimwaerts||'Heim';
+    form.bemerkung=hz1?.bemerkung||'';form.zweiTW=true;
+    form.torwart1=hz1?.torwart||'';form.torwart2=hz2?.torwart||'';
+    form.toreHz1H=String(hz1?.hzH??'');form.toreHz1G=String(hz1?.hzG??'');
+    form.toreHz2H=String(hz2?.hzH??'');form.toreHz2G=String(hz2?.hzG??'');
     editId=id;
   }else{
     const s=spiele.find(x=>x._fbId===id);if(!s)return;
-    form={...defForm(),datum:s.datum,gegner:s.gegner,spieltag:s.spieltag||'',typ:s.typ,heimwaerts:s.heimwaerts,bemerkung:s.bemerkung||'',torwart:s.torwart,torwart2:s.torwart2||'',toreHeim:String(s.toreHeim),toreGast:String(s.toreGast)};
+    form={...defForm(),datum:s.datum,gegner:s.gegner,spieltag:s.spieltag||'',typ:s.typ,heimwaerts:s.heimwaerts,bemerkung:s.bemerkung||'',torwart:s.torwart,zweiTW:false,toreHeim:String(s.toreHeim),toreGast:String(s.toreGast)};
     editId=id;
   }
   sw('eingabe');
 }
 
 window.delSpiel=async function(id,isG){
-  showModal('Spiel löschen','Dieses Spiel wirklich löschen? Das kann nicht rückgängig gemacht werden.','Löschen',async()=>{
+  showModal('Löschen?','Spiel wirklich löschen?','Löschen',async()=>{
     try{
       if(isG){const gruppe=spiele.filter(x=>x.gid===id);for(const s of gruppe)await remove(ref(db,`spiele/${s._fbId}`));}
       else{await remove(ref(db,`spiele/${id}`));}
