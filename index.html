@@ -11,10 +11,10 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;-webkit-tap-highlight-color:transparent}
 body{min-height:100%;background:#0f1117;color:#e8eaf0;font-family:-apple-system,'Segoe UI',sans-serif;font-size:15px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-input,select,textarea,button{font-family:inherit;font-size:15px}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);color:#fff;font-weight:700;font-size:13px;padding:10px 18px;border-radius:20px;z-index:999;transition:transform .3s ease;box-shadow:0 4px 20px #0008;max-width:90vw;text-align:center}
+input,select,textarea,button,div{font-family:inherit}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);color:#fff;font-weight:700;font-size:13px;padding:10px 18px;border-radius:20px;z-index:999;transition:transform .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.5);max-width:90vw;text-align:center}
 #toast.show{transform:translateX(-50%) translateY(0)}
-#toast.ok{background:#22c55e}#toast.err{background:#ef4444}#toast.info{background:#4a9eff}#toast.warn{background:#f59e0b;color:#000}
+#toast.ok{background:#22c55e}#toast.err{background:#ef4444}#toast.info{background:#4a9eff}
 #loading{position:fixed;inset:0;background:#0f1117;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:500;gap:16px}
 #loading .spin{width:40px;height:40px;border:3px solid #2a2f45;border-top-color:#4a9eff;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -24,10 +24,10 @@ input,select,textarea,button{font-family:inherit;font-size:15px}
 .hdr-left{display:flex;align-items:center;gap:10px}
 .hdr-icon{font-size:24px}.hdr-title{font-weight:800;font-size:17px;color:#fff}
 .hdr-sub{font-size:11px;color:#6b7280;margin-top:1px}
-.hdr-sync{font-size:11px;color:#22c55e;text-align:right}
+.hdr-sync{font-size:11px;color:#22c55e}
 .hdr-sync.offline{color:#ef4444}
 #nav{display:flex}
-.nav-btn{flex:1;padding:10px 4px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:transparent;color:#6b7280;border-bottom:2px solid transparent;letter-spacing:.2px}
+.nav-btn{flex:1;padding:10px 4px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:transparent;color:#6b7280;border-bottom:2px solid transparent}
 .nav-btn.active{color:#fff;border-bottom-color:#4a9eff}
 #main{max-width:680px;margin:0 auto;padding:18px 14px 100px}
 .card{background:#1a1f35;border-radius:16px;padding:18px;border:1px solid #2a2f45;margin-bottom:14px}
@@ -44,24 +44,23 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .search-wrap input{padding-left:36px}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b7280;font-size:15px;pointer-events:none}
 .tw-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.tw-toggle-btn{padding:12px;border-radius:10px;border:1.5px solid #2a2f45;background:#0f1117;color:#9ca3af;font-weight:600;font-size:13px;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-.tw-toggle-btn.active{border-color:#4a9eff;color:#4a9eff;background:#1a2a3a}
+.tw-btn{padding:12px;border-radius:10px;border:1.5px solid #2a2f45;background:#0f1117;color:#9ca3af;font-weight:600;font-size:13px;cursor:pointer;text-align:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.tw-btn.active{border-color:#4a9eff;color:#4a9eff;background:#1a2a3a}
 .hz-box{background:#0f1117;border-radius:12px;padding:14px;border:1px solid #2a2f45;margin-bottom:10px}
 .hz-title{font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.5px}
 .c-hz1{color:#4a9eff}.c-hz2{color:#4adf7f}
-.live-info{background:#1a2a1a;border:1px solid #22c55e30;border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#9ca3af;line-height:1.6}
+.live-info{background:#1a2a1a;border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#9ca3af;line-height:1.6}
 .live-info .hi{color:#fff;font-weight:700}.live-info .gt{color:#ef4444;font-weight:700}
-.preview{background:#1a2a3a;border-radius:10px;padding:10px 14px;border:1px solid #4a9eff30;margin-bottom:10px}
+.preview{background:#1a2a3a;border-radius:10px;padding:10px 14px;border:1px solid rgba(74,158,255,.2);margin-bottom:10px}
 .preview-lbl{font-size:11px;color:#6b7280;margin-bottom:2px}
 .preview-score{font-size:20px;font-weight:800;color:#fff}
-.btn-primary{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#4a9eff,#2563eb);color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px}
-.btn-primary:active{opacity:.85}
-.btn-secondary{width:100%;padding:11px;border-radius:12px;border:1px solid #2a2f45;background:transparent;color:#6b7280;font-weight:600;font-size:14px;cursor:pointer;margin-top:6px}
+.btn-primary{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#4a9eff,#2563eb);color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;touch-action:manipulation}
+.btn-secondary{width:100%;padding:11px;border-radius:12px;border:1px solid #2a2f45;background:transparent;color:#6b7280;font-weight:600;font-size:14px;cursor:pointer;margin-top:6px;touch-action:manipulation}
 .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-.filter-btn{padding:7px 14px;border-radius:20px;border:1px solid #2a2f45;cursor:pointer;font-size:12px;font-weight:600;background:#1a1f35;color:#6b7280}
+.filter-btn{padding:7px 14px;border-radius:20px;border:1px solid #2a2f45;cursor:pointer;font-size:12px;font-weight:600;background:#1a1f35;color:#6b7280;touch-action:manipulation}
 .filter-btn.active{background:#4a9eff;color:#fff;border-color:#4a9eff}
 .filter-count{margin-left:auto;font-size:12px;color:#6b7280}
-.sort-btn{padding:6px 12px;border-radius:20px;border:1px solid #2a2f45;cursor:pointer;font-size:11px;font-weight:600;background:#1a1f35;color:#6b7280}
+.sort-btn{padding:6px 12px;border-radius:20px;border:1px solid #2a2f45;cursor:pointer;font-size:11px;font-weight:600;background:#1a1f35;color:#6b7280;touch-action:manipulation}
 .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
 .quick-card{border-radius:12px;padding:14px;text-align:center;border:1px solid transparent}
 .quick-tw{font-weight:800;font-size:13px}.quick-num{font-size:22px;font-weight:800;color:#fff;margin-top:4px}
@@ -77,34 +76,39 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .hz-pill{border-radius:8px;padding:5px 9px;font-size:11px;border:1px solid transparent;line-height:1.3}
 .spiel-notiz{font-size:11px;color:#6b7280;margin-top:6px;font-style:italic}
 .spiel-actions{display:flex;gap:5px;margin-left:10px;flex-shrink:0}
-.btn-icon{border:none;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:13px;background:#2a2f45}
+.btn-icon{border:none;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:13px;background:#2a2f45;touch-action:manipulation}
 .btn-del{background:#3a1f1f}
 .no-spiele{text-align:center;color:#4b5563;padding:50px 0;font-size:13px}
 .stat-card{background:#1a1f35;border-radius:16px;padding:20px;margin-bottom:14px;border:1px solid transparent}
 .stat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.stat-tw{font-weight:800;font-size:17px}.stat-einsaetze{font-size:11px;color:#6b7280;margin-top:1px}
-.stat-rate{font-size:26px;font-weight:900;color:#fff;text-align:right}.stat-rate-lbl{font-size:10px;color:#6b7280}
+.stat-tw{font-weight:800;font-size:17px}
+.stat-einsaetze{font-size:11px;color:#6b7280;margin-top:1px}
+.stat-rate{font-size:26px;font-weight:900;color:#fff;text-align:right}
+.stat-rate-lbl{font-size:10px;color:#6b7280}
 .bar{display:flex;border-radius:6px;overflow:hidden;height:9px;margin-bottom:14px}
 .stat-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
 .stat-cell{background:#0f1117;border-radius:10px;padding:11px 8px;text-align:center}
-.stat-num{font-size:22px;font-weight:800}.stat-lbl{font-size:10px;color:#6b7280;margin-top:2px}
+.stat-num{font-size:22px;font-weight:800}
+.stat-lbl{font-size:10px;color:#6b7280;margin-top:2px}
 .stat-icon{font-size:11px;margin-bottom:2px}
 .recent-lbl{font-size:11px;color:#6b7280;margin:12px 0 7px;font-weight:600;letter-spacing:.4px}
 .recent-pills{display:flex;gap:6px;flex-wrap:wrap}
 .recent-pill{border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;border:1px solid transparent}
-.tw-wechsel-note{font-size:11px;color:#f59e0b;margin-top:6px;padding:6px 10px;background:#2a1f0f;border-radius:8px}
+.note-box{font-size:11px;color:#f59e0b;margin-top:6px;padding:6px 10px;background:#2a1f0f;border-radius:8px}
+.uebersicht{background:#1a1f35;border-radius:16px;padding:18px;border:1px solid #2a2f45;margin-bottom:14px}
 .cmp-wrap{overflow-x:auto}
-.cmp-table{width:100%;border-collapse:collapse;font-size:12px;min-width:320px}
+.cmp-table{width:100%;border-collapse:collapse;font-size:12px;min-width:340px}
 .cmp-table th{padding:8px 6px;text-align:center;font-weight:600;color:#6b7280;border-bottom:1px solid #2a2f45}
 .cmp-table td{padding:9px 6px;text-align:center;border-bottom:1px solid #1a2030}
-#modal-bg{display:none;position:fixed;inset:0;background:#0009;z-index:200;align-items:center;justify-content:center}
+#modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center}
 #modal-bg.show{display:flex}
 #modal{background:#1a1f35;border-radius:20px;padding:24px;max-width:320px;width:90%;border:1px solid #2a2f45}
 #modal h3{font-size:16px;color:#fff;margin-bottom:10px}
 #modal p{font-size:13px;color:#9ca3af;line-height:1.5;margin-bottom:16px}
 .modal-btns{display:flex;gap:8px}
-.modal-btns button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:700;font-size:14px;cursor:pointer}
-.modal-ok{background:#ef4444;color:#fff}.modal-cancel{background:#2a2f45;color:#9ca3af}
+.modal-btns button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:700;font-size:14px;cursor:pointer;touch-action:manipulation}
+.modal-ok{background:#ef4444;color:#fff}
+.modal-cancel{background:#2a2f45;color:#9ca3af}
 @supports(padding:env(safe-area-inset-bottom)){
   #main{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
   #header{padding-top:calc(16px + env(safe-area-inset-top))}
@@ -112,13 +116,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 </style>
 </head>
 <body>
-<div id="loading"><div class="spin"></div><p>Verbinde mit Datenbank…</p></div>
+<div id="loading"><div class="spin"></div><p>Verbinde mit Datenbank...</p></div>
 <div id="toast"></div>
-<div id="modal-bg"><div id="modal"><h3 id="modal-title"></h3><p id="modal-msg"></p><div class="modal-btns"><button class="modal-cancel" onclick="closeModal()">Abbrechen</button><button class="modal-ok" id="modal-ok-btn">OK</button></div></div></div>
+<div id="modal-bg">
+  <div id="modal">
+    <h3 id="modal-title"></h3>
+    <p id="modal-msg"></p>
+    <div class="modal-btns">
+      <button class="modal-cancel" id="modal-cancel-btn">Abbrechen</button>
+      <button class="modal-ok" id="modal-ok-btn">OK</button>
+    </div>
+  </div>
+</div>
 <div id="header">
   <div class="hdr-top">
-    <div class="hdr-left"><span class="hdr-icon">🧤</span><div><div class="hdr-title">Torwart-Tracker</div><div class="hdr-sub" id="hdr-sub"></div></div></div>
-    <div class="hdr-sync" id="hdr-sync">● Live</div>
+    <div class="hdr-left">
+      <span class="hdr-icon">&#x1F9E4;</span>
+      <div>
+        <div class="hdr-title">Torwart-Tracker</div>
+        <div class="hdr-sub" id="hdr-sub"></div>
+      </div>
+    </div>
+    <div class="hdr-sync" id="hdr-sync">&#9679; Live</div>
   </div>
   <div id="nav">
     <button class="nav-btn active" data-v="eingabe" onclick="sw('eingabe')">Eintragen</button>
@@ -132,7 +151,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, onValue, push, set, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
-const firebaseConfig = {
+const FB = {
   apiKey: "AIzaSyB0uCjqcDmgnHTaVjYekLLQEzpUUEKyfBg",
   authDomain: "tw-tracking-u14.firebaseapp.com",
   databaseURL: "https://tw-tracking-u14-default-rtdb.firebaseio.com",
@@ -142,316 +161,485 @@ const firebaseConfig = {
   appId: "1:619546408524:web:7dec4f09c1400fbbe5e6e9"
 };
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(FB);
 const db = getDatabase(app);
 const spieleRef = ref(db, 'spiele');
 
-const TW_COLORS={'1':{bg:'#1a3a5c',accent:'#4a9eff'},'12':{bg:'#1a4a2e',accent:'#4adf7f'},'22':{bg:'#4a1a1a',accent:'#ff6b4a'}};
-const RC={Sieg:'#22c55e',Niederlage:'#ef4444',Unentschieden:'#f59e0b'};
+const TW = {
+  '1':  {bg:'#1a3a5c', ac:'#4a9eff'},
+  '12': {bg:'#1a4a2e', ac:'#4adf7f'},
+  '22': {bg:'#4a1a1a', ac:'#ff6b4a'}
+};
+const RC = {Sieg:'#22c55e', Niederlage:'#ef4444', Unentschieden:'#f59e0b'};
 
-let spiele=[];
-let view='eingabe',filterTyp='Alle',sortDesc=true,searchQ='',editId=null,prevView='spiele',modalCb=null,toastTimer=null;
+let spiele = [];
+let view = 'eingabe';
+let filterTyp = 'Alle';
+let sortDesc = true;
+let searchQ = '';
+let editId = null;
+let prevView = 'spiele';
+let modalCb = null;
+let toastTimer = null;
 
-function defForm(){
-  return{datum:'',gegner:'',spieltag:'',typ:'Pflichtspiel',heimwaerts:'Heim',bemerkung:'',
-    zweiTW:false,
-    torwart:'',toreHeim:'',toreGast:'',
-    torwart1:'',torwart2:'',
-    toreHz1H:'',toreHz1G:'',
-    toreHz2H:'',toreHz2G:''};
+function defForm() {
+  return {
+    datum:'', gegner:'', spieltag:'', typ:'Pflichtspiel', heimwaerts:'Heim', bemerkung:'',
+    zweiTW: false,
+    torwart:'', toreHeim:'', toreGast:'',
+    torwart1:'', torwart2:'',
+    hz1H:'', hz1G:'', hz2H:'', hz2G:''
+  };
 }
-let form=defForm(),formErrors={};
+let form = defForm();
+let ferr = {};
 
-function getSaison(){const y=new Date().getFullYear(),m=new Date().getMonth();return m>=6?`${y}/${String(y+1).slice(-2)}`:`${y-1}/${String(y).slice(-2)}`;}
-document.getElementById('hdr-sub').textContent=`Hertha BSC U14 · ${getSaison()}`;
+function getSaison() {
+  var y = new Date().getFullYear(), m = new Date().getMonth();
+  return m >= 6 ? (y + '/' + String(y+1).slice(-2)) : ((y-1) + '/' + String(y).slice(-2));
+}
+document.getElementById('hdr-sub').textContent = 'Hertha BSC U14 \u00b7 ' + getSaison();
 
-onValue(spieleRef,(snapshot)=>{
-  const data=snapshot.val();
-  spiele=data?Object.entries(data).map(([id,val])=>({...val,_fbId:id})):[];
-  document.getElementById('loading').style.display='none';
-  document.getElementById('hdr-sync').textContent='● Live';
-  document.getElementById('hdr-sync').className='hdr-sync';
+onValue(spieleRef, function(snap) {
+  var data = snap.val();
+  spiele = data ? Object.entries(data).map(function(e) { return Object.assign({}, e[1], {_id: e[0]}); }) : [];
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('hdr-sync').textContent = '\u25CF Live';
+  document.getElementById('hdr-sync').className = 'hdr-sync';
   render();
-},(error)=>{
-  document.getElementById('loading').style.display='none';
-  document.getElementById('hdr-sync').textContent='● Offline';
-  document.getElementById('hdr-sync').className='hdr-sync offline';
-  toast('Verbindungsfehler — bitte Internet prüfen','err',4000);
+}, function() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('hdr-sync').textContent = '\u25CF Offline';
+  document.getElementById('hdr-sync').className = 'hdr-sync offline';
+  toast('Verbindungsfehler', 'err', 4000);
 });
 
-function gc(tw){return TW_COLORS[tw]||{bg:'#2a2a3a',accent:'#aaa'};}
-function fmtDate(d){if(!d)return'';const p=d.split('-');return p.length===3?`${p[2]}.${p[1]}.${p[0]}`:d;}
-function erg(h,g){return h>g?'Sieg':h<g?'Niederlage':'Unentschieden';}
+function gc(tw) { return TW[tw] || {bg:'#2a2a3a', ac:'#aaa'}; }
+function fd(d) {
+  if (!d) return '';
+  var p = d.split('-');
+  return p.length === 3 ? (p[2] + '.' + p[1] + '.' + p[0]) : d;
+}
+function erg(h, g) { return h > g ? 'Sieg' : h < g ? 'Niederlage' : 'Unentschieden'; }
 
-function toast(msg,type='ok',dur=2500){
-  const el=document.getElementById('toast');el.innerHTML=msg;el.className=type+' show';
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),dur);
+function toast(msg, type, dur) {
+  if (!type) type = 'ok';
+  if (!dur) dur = 2500;
+  var el = document.getElementById('toast');
+  el.innerHTML = msg;
+  el.className = type + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function() { el.classList.remove('show'); }, dur);
 }
-function showModal(title,msg,okLabel,cb){
-  document.getElementById('modal-title').textContent=title;
-  document.getElementById('modal-msg').textContent=msg;
-  const btn=document.getElementById('modal-ok-btn');btn.textContent=okLabel;btn.style.background='#ef4444';
-  modalCb=cb;document.getElementById('modal-bg').classList.add('show');
-}
-window.closeModal=function(){document.getElementById('modal-bg').classList.remove('show');modalCb=null;}
-document.getElementById('modal-ok-btn').onclick=function(){closeModal();if(modalCb)modalCb();}
 
-function getStats(tw,liste){
-  const s=liste.filter(x=>x.torwart===tw);if(!s.length)return null;
-  const siege=s.filter(x=>x.ergebnis==='Sieg').length;
-  const nied=s.filter(x=>x.ergebnis==='Niederlage').length;
-  const unt=s.filter(x=>x.ergebnis==='Unentschieden').length;
-  const kass=s.reduce((a,x)=>a+x.kassiert,0);
-  const gesch=s.reduce((a,x)=>a+x.geschossen,0);
-  return{tw,spiele:s.length,siege,niederlagen:nied,unentschieden:unt,kassiert:kass,geschossen:gesch,schnitt:(kass/s.length).toFixed(2),liste:s,hatWechsel:s.some(x=>x.halbzeit)};
+document.getElementById('modal-cancel-btn').onclick = function() {
+  document.getElementById('modal-bg').classList.remove('show');
+  modalCb = null;
+};
+document.getElementById('modal-ok-btn').onclick = function() {
+  document.getElementById('modal-bg').classList.remove('show');
+  if (modalCb) modalCb();
+  modalCb = null;
+};
+
+function showModal(title, msg, okLabel, cb) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-msg').textContent = msg;
+  document.getElementById('modal-ok-btn').textContent = okLabel;
+  modalCb = cb;
+  document.getElementById('modal-bg').classList.add('show');
 }
-function getFiltered(){
-  let res=filterTyp==='Alle'?spiele:spiele.filter(x=>x.typ===filterTyp);
-  if(searchQ){const q=searchQ.toLowerCase();res=res.filter(x=>x.gegner?.toLowerCase().includes(q)||x.spieltag?.toLowerCase().includes(q)||x.bemerkung?.toLowerCase().includes(q));}
-  return res;
+
+function getStats(tw, liste) {
+  var s = liste.filter(function(x) { return x.torwart === tw; });
+  if (!s.length) return null;
+  var einsaetze = s.reduce(function(a, x) { return a + (x.geteilt ? 0.5 : 1); }, 0);
+  var siege = s.filter(function(x) { return x.ergebnis === 'Sieg'; }).length;
+  var nied = s.filter(function(x) { return x.ergebnis === 'Niederlage'; }).length;
+  var unt = s.filter(function(x) { return x.ergebnis === 'Unentschieden'; }).length;
+  var kass = s.reduce(function(a, x) { return a + x.kassiert; }, 0);
+  var gesch = s.reduce(function(a, x) { return a + x.geschossen; }, 0);
+  var pflE = s.filter(function(x) { return x.typ === 'Pflichtspiel'; }).reduce(function(a, x) { return a + (x.geteilt ? 0.5 : 1); }, 0);
+  var testE = s.filter(function(x) { return x.typ === 'Testspiel'; }).reduce(function(a, x) { return a + (x.geteilt ? 0.5 : 1); }, 0);
+  return {
+    tw: tw, liste: s, einsaetze: einsaetze, siege: siege, niederlagen: nied,
+    unentschieden: unt, kassiert: kass, geschossen: gesch,
+    schnitt: einsaetze ? (kass / einsaetze).toFixed(2) : '0.00',
+    pflichtE: pflE, testE: testE,
+    hatWechsel: s.some(function(x) { return x.halbzeit; })
+  };
 }
-function groupSpiele(liste){
-  const seen=new Set(),res=[];
-  const sorted=[...liste].sort((a,b)=>sortDesc?b.datum.localeCompare(a.datum):a.datum.localeCompare(b.datum));
-  for(const s of sorted){
-    if(s.geteilt&&s.gid){if(!seen.has(s.gid)){seen.add(s.gid);res.push({...s,_gruppe:liste.filter(x=>x.gid===s.gid),_isG:true});}}
-    else res.push(s);
+
+function getFiltered() {
+  var res = filterTyp === 'Alle' ? spiele : spiele.filter(function(x) { return x.typ === filterTyp; });
+  if (searchQ) {
+    var q = searchQ.toLowerCase();
+    res = res.filter(function(x) {
+      return (x.gegner && x.gegner.toLowerCase().indexOf(q) >= 0) ||
+             (x.spieltag && x.spieltag.toLowerCase().indexOf(q) >= 0) ||
+             (x.bemerkung && x.bemerkung.toLowerCase().indexOf(q) >= 0);
+    });
   }
   return res;
 }
 
-window.sw=function(v){
-  if(v!=='eingabe'&&view==='eingabe')prevView=v;
-  view=v;if(v!=='eingabe')editId=null;
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
-  render();window.scrollTo(0,0);
-}
-function render(){document.getElementById('main').innerHTML=view==='eingabe'?renderEingabe():view==='spiele'?renderSpiele():renderSaison();}
-
-function liveInfo(tw,hz,heimTore,gastTore){
-  if(!tw||heimTore===''||gastTore==='')return'';
-  const h=parseInt(heimTore),g=parseInt(gastTore);if(isNaN(h)||isNaN(g))return'';
-  const kass=form.heimwaerts==='Heim'?g:h;const gesch=form.heimwaerts==='Heim'?h:g;
-  const e2=erg(gesch,kass);const fc=RC[e2];
-  return`<div class="live-info">TW ${tw} · ${hz}: <span class="hi">${gesch} Tore geschossen</span> · <span class="gt">${kass} Gegentore</span> · <span style="color:${fc};font-weight:700">${e2}</span></div>`;
-}
-
-function renderEingabe(){
-  const e=formErrors;
-  const twOpts=(sel,excl='')=>['','1','12','22'].filter(t=>t!==excl).map(t=>`<option value="${t}" ${sel===t?'selected':''}>${t?`TW ${t}`:'— auswählen —'}</option>`).join('');
-
-  const quickCards=['1','12','22'].map(tw=>{
-    const s=getStats(tw,spiele),c=gc(tw);
-    if(!s)return`<div class="quick-card" style="background:#1a1f35;border-color:#2a2f45"><div class="quick-tw" style="color:#4b5563">TW ${tw}</div><div style="font-size:11px;color:#374151;margin-top:6px">Keine Spiele</div></div>`;
-    return`<div class="quick-card" style="background:${c.bg};border-color:${c.accent}30"><div class="quick-tw" style="color:${c.accent}">TW ${tw}</div><div class="quick-num">${s.spiele}</div><div class="quick-lbl">Einsätze</div><div class="quick-rec">${s.siege}S · ${s.unentschieden}U · ${s.niederlagen}N</div></div>`;
-  }).join('');
-
-  let preview='';
-  if(form.zweiTW&&form.toreHz1H!==''&&form.toreHz1G!==''&&form.toreHz2H!==''&&form.toreHz2G!==''){
-    const h=parseInt(form.toreHz1H||0)+parseInt(form.toreHz2H||0);
-    const g=parseInt(form.toreHz1G||0)+parseInt(form.toreHz2G||0);
-    const hG=form.heimwaerts==='Heim'?h:g,gG=form.heimwaerts==='Heim'?g:h;
-    const e2=erg(hG,gG);const fc=RC[e2];
-    preview=`<div class="preview"><div class="preview-lbl">Gesamtergebnis</div><div class="preview-score">${form.heimwaerts==='Heim'?`Hertha ${h}:${g} ${form.gegner||'Gegner'}`:`${form.gegner||'Gegner'} ${g}:${h} Hertha`} · <span style="color:${fc}">${e2}</span></div></div>`;
-  }
-
-  return`<div class="card">
-  <div class="card-title">${editId?'✏️ Spiel bearbeiten':'➕ Neues Spiel eintragen'}</div>
-  <div class="field-row">
-    <div class="field"><label class="lbl">Datum *</label><input type="date" class="${e.datum?'ferr':''}" value="${form.datum}" oninput="sf('datum',this.value)"/></div>
-    <div class="field"><label class="lbl">Spieltag / Runde</label><input type="text" placeholder="z.B. 12 · Pokal" value="${form.spieltag}" oninput="sf('spieltag',this.value)"/></div>
-  </div>
-  <div class="field"><label class="lbl">Gegner *</label><input type="text" class="${e.gegner?'ferr':''}" placeholder="z.B. BFC Dynamo U14" value="${form.gegner}" oninput="sf('gegner',this.value)"/></div>
-  <div class="field-row">
-    <div class="field"><label class="lbl">Spieltyp</label><select onchange="sf('typ',this.value);render()"><option ${form.typ==='Pflichtspiel'?'selected':''}>Pflichtspiel</option><option ${form.typ==='Testspiel'?'selected':''}>Testspiel</option></select></div>
-    <div class="field"><label class="lbl">Heim / Auswärts</label><select onchange="sf('heimwaerts',this.value);render()"><option ${form.heimwaerts==='Heim'?'selected':''}>Heim</option><option ${form.heimwaerts==='Auswärts'?'selected':''}>Auswärts</option></select></div>
-  </div>
-
-  <div class="field"><label class="lbl">Torwarte</label>
-    <div class="tw-toggle">
-      <div class="tw-toggle-btn ${!form.zweiTW?'active':''}" onclick="setZweiTW(false)">🧤 Ein Torwart</div>
-      <div class="tw-toggle-btn ${form.zweiTW?'active':''}" onclick="setZweiTW(true)">🧤🧤 Zwei Torwarte</div>
-    </div>
-  </div>
-
-  ${!form.zweiTW?`
-  <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart?'ferr':''}" onchange="sf('torwart',this.value);render()">${twOpts(form.torwart)}</select></div>
-  <div class="field-row">
-    <div class="field"><label class="lbl">Tore Heim *</label><input type="number" class="${e.toreHeim?'ferr':''}" min="0" placeholder="0" value="${form.toreHeim}" oninput="sf('toreHeim',this.value);render()"/></div>
-    <div class="field"><label class="lbl">Tore Gast *</label><input type="number" class="${e.toreGast?'ferr':''}" min="0" placeholder="0" value="${form.toreGast}" oninput="sf('toreGast',this.value);render()"/></div>
-  </div>
-  ${liveInfo(form.torwart,'Vollzeit',form.toreHeim,form.toreGast)}
-  `:`
-  <div class="hz-box">
-    <div class="hz-title c-hz1">1. HALBZEIT</div>
-    <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart1?'ferr':''}" onchange="sf('torwart1',this.value);render()">${twOpts(form.torwart1)}</select></div>
-    <div class="field-row">
-      <div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="${form.toreHz1H}" oninput="sf('toreHz1H',this.value);render()"/></div>
-      <div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="${form.toreHz1G}" oninput="sf('toreHz1G',this.value);render()"/></div>
-    </div>
-    ${liveInfo(form.torwart1,'1. HZ',form.toreHz1H,form.toreHz1G)}
-  </div>
-  <div class="hz-box">
-    <div class="hz-title c-hz2">2. HALBZEIT</div>
-    <div class="field"><label class="lbl">Torwart *</label><select class="${e.torwart2?'ferr':''}" onchange="sf('torwart2',this.value);render()">${twOpts(form.torwart2,form.torwart1)}</select></div>
-    <div class="field-row">
-      <div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="${form.toreHz2H}" oninput="sf('toreHz2H',this.value);render()"/></div>
-      <div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="${form.toreHz2G}" oninput="sf('toreHz2G',this.value);render()"/></div>
-    </div>
-    ${liveInfo(form.torwart2,'2. HZ',form.toreHz2H,form.toreHz2G)}
-  </div>
-  ${preview}
-  `}
-
-  <div class="field"><label class="lbl">Bemerkung / Notiz</label><textarea placeholder="z.B. starker Wind, Verletzung, Penaltyserie..." oninput="sf('bemerkung',this.value)">${form.bemerkung}</textarea></div>
-  <button class="btn-primary" onclick="submitForm()">${editId?'💾 Speichern':'✅ Spiel eintragen'}</button>
-  ${editId?`<button class="btn-secondary" onclick="cancelEdit()">Abbrechen</button>`:''}
-</div>
-${spiele.length>0?`<div class="quick-grid">${quickCards}</div>`:''}`;
-}
-
-function renderSpiele(){
-  const grouped=groupSpiele(getFiltered());
-  return`<div class="search-wrap"><span class="search-icon">🔍</span><input type="text" placeholder="Gegner, Spieltag oder Notiz suchen…" value="${searchQ}" oninput="searchQ=this.value;render()"/></div>
-<div class="filter-row">
-  ${['Alle','Pflichtspiel','Testspiel'].map(f=>`<button class="filter-btn${filterTyp===f?' active':''}" onclick="setFilter('${f}')">${f}</button>`).join('')}
-  <button class="sort-btn" onclick="sortDesc=!sortDesc;render()">${sortDesc?'↓ Neueste':'↑ Älteste'}</button>
-  <span class="filter-count">${grouped.length} Spiele</span>
-</div>
-${grouped.length===0?'<div class="no-spiele">Noch keine Spiele eingetragen.</div>':grouped.map(s=>{
-  const farbe=RC[s.ergebnis]||'#aaa';const datum=fmtDate(s.datum);const st=s.spieltag?` · ST ${s.spieltag}`:'';const h=s.heimwaerts==='Heim';
-  if(s._isG){
-    const hz1=s._gruppe.find(x=>x.halbzeit==='1'),hz2=s._gruppe.find(x=>x.halbzeit==='2');
-    const c1=gc(hz1?.torwart),c2=gc(hz2?.torwart);
-    return`<div class="spiel-card" style="border-left-color:${farbe}"><div class="spiel-inner"><div style="flex:1">
-    <div class="spiel-score">${h?`<span class="hertha">Hertha</span> ${s.toreHeim}:${s.toreGast} ${s.gegner}`:`${s.gegner} ${s.toreGast}:${s.toreHeim} <span class="hertha">Hertha</span>`}</div>
-    <div class="spiel-meta"><span style="color:${farbe};font-weight:700">${s.ergebnis}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${datum}${st}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${s.typ} · ${s.heimwaerts}</span></div>
-    <div class="hz-pills">
-      ${hz1?`<div class="hz-pill" style="background:${c1.bg};color:${c1.accent};border-color:${c1.accent}40"><b>TW ${hz1.torwart}</b> 1.HZ ${hz1.hzH}:${hz1.hzG} · ${hz1.kassiert}GT</div>`:''}
-      ${hz2?`<div class="hz-pill" style="background:${c2.bg};color:${c2.accent};border-color:${c2.accent}40"><b>TW ${hz2.torwart}</b> 2.HZ ${hz2.hzH}:${hz2.hzG} · ${hz2.kassiert}GT</div>`:''}
-    </div>
-    ${s.bemerkung?`<div class="spiel-notiz">💬 ${s.bemerkung}</div>`:''}
-  </div>
-  <div class="spiel-actions"><button class="btn-icon" onclick="editSpiel('${s.gid}',true)">✏️</button><button class="btn-icon btn-del" onclick="delSpiel('${s.gid}',true)">🗑️</button></div>
-  </div></div>`;
-  }
-  const c=gc(s.torwart);
-  return`<div class="spiel-card" style="border-left-color:${farbe}"><div class="spiel-inner"><div style="flex:1">
-  <div class="spiel-score">${h?`<span class="hertha">Hertha</span> ${s.toreHeim}:${s.toreGast} ${s.gegner}`:`${s.gegner} ${s.toreGast}:${s.toreHeim} <span class="hertha">Hertha</span>`}</div>
-  <div class="spiel-meta"><span style="color:${farbe};font-weight:700">${s.ergebnis}</span><span style="color:#4b5563">·</span><span style="color:#6b7280">${datum}${st}</span><span style="color:#4b5563">·</span><span class="badge" style="background:${c.bg};color:${c.accent};border-color:${c.accent}40">TW ${s.torwart}</span><span style="color:#6b7280">${s.typ} · ${s.heimwaerts}</span></div>
-  ${s.bemerkung?`<div class="spiel-notiz">💬 ${s.bemerkung}</div>`:''}
-  </div>
-  <div class="spiel-actions"><button class="btn-icon" onclick="editSpiel('${s._fbId}',false)">✏️</button><button class="btn-icon btn-del" onclick="delSpiel('${s._fbId}',false)">🗑️</button></div>
-  </div></div>`;
-}).join('')}`;
-}
-
-function renderSaison(){
-  const filtered=getFiltered();
-  const allStats=['1','12','22'].map(tw=>getStats(tw,filtered)).filter(Boolean);
-  const fb=`<div class="filter-row">${['Alle','Pflichtspiel','Testspiel'].map(f=>`<button class="filter-btn${filterTyp===f?' active':''}" onclick="setFilter('${f}')">${f}</button>`).join('')}</div>`;
-  if(!allStats.length)return fb+'<div class="no-spiele">Noch keine Spiele eingetragen.</div>';
-  const cards=allStats.map(s=>{
-    const c=gc(s.tw);const wr=s.spiele?((s.siege/s.spiele)*100).toFixed(0):0;
-    const recent=[...s.liste].sort((a,b)=>b.datum.localeCompare(a.datum)).slice(0,5).map(x=>{
-      const fc=RC[x.ergebnis]||'#aaa';const k=x.ergebnis==='Sieg'?'S':x.ergebnis==='Niederlage'?'N':'U';
-      return`<div class="recent-pill" style="background:${fc}20;color:${fc};border-color:${fc}40">${k}${x.halbzeit?` ${x.halbzeit}.HZ`:''} ${x.kassiert}GT</div>`;
-    }).join('');
-    const wechselNote=s.hatWechsel?`<div class="tw-wechsel-note">⚠️ Enthält Einsätze bei TW-Wechsel — S/U/N basiert auf Gesamtergebnis</div>`:'';
-    return`<div class="stat-card" style="border-color:${c.accent}30">
-  <div class="stat-header"><div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px">🧤</span><div><div class="stat-tw" style="color:${c.accent}">Torwart ${s.tw}</div><div class="stat-einsaetze">${s.spiele} Einsätze · ${filterTyp==='Alle'?'Gesamt':filterTyp}</div></div></div><div><div class="stat-rate">${wr}%</div><div class="stat-rate-lbl">Siegquote</div></div></div>
-  <div class="bar"><div style="flex:${s.siege||.001};background:#22c55e"></div><div style="flex:${s.unentschieden||.001};background:#f59e0b"></div><div style="flex:${s.niederlagen||.001};background:#ef4444"></div></div>
-  <div class="stat-grid3"><div class="stat-cell"><div class="stat-num" style="color:#22c55e">${s.siege}</div><div class="stat-lbl">Siege</div></div><div class="stat-cell"><div class="stat-num" style="color:#f59e0b">${s.unentschieden}</div><div class="stat-lbl">Unentschieden</div></div><div class="stat-cell"><div class="stat-num" style="color:#ef4444">${s.niederlagen}</div><div class="stat-lbl">Niederlagen</div></div></div>
-  <div class="stat-grid3"><div class="stat-cell"><div class="stat-icon">⚽</div><div class="stat-num" style="color:#fff">${s.geschossen}</div><div class="stat-lbl">Geschossen</div></div><div class="stat-cell"><div class="stat-icon">🥅</div><div class="stat-num" style="color:#fff">${s.kassiert}</div><div class="stat-lbl">Kassiert</div></div><div class="stat-cell"><div class="stat-icon">📊</div><div class="stat-num" style="color:#fff">${s.schnitt}</div><div class="stat-lbl">Ø Gegentore</div></div></div>
-  <div class="recent-lbl">LETZTE EINSÄTZE</div><div class="recent-pills">${recent||'<span style="color:#4b5563;font-size:12px">–</span>'}</div>
-  ${wechselNote}
-</div>`;
-  }).join('');
-  const sorted=[...allStats].sort((a,b)=>(b.siege/b.spiele)-(a.siege/a.spiele));
-  const rows=sorted.map(s=>{const c=gc(s.tw);const wr=s.spiele?((s.siege/s.spiele)*100).toFixed(0):0;return`<tr><td style="color:${c.accent};font-weight:800">TW ${s.tw}</td><td>${s.spiele}</td><td style="color:#22c55e;font-weight:700">${s.siege}</td><td style="color:#f59e0b;font-weight:700">${s.unentschieden}</td><td style="color:#ef4444;font-weight:700">${s.niederlagen}</td><td style="color:#fff;font-weight:700">${wr}%</td><td>${s.kassiert}</td><td>${s.schnitt}</td></tr>`;}).join('');
-  return`${fb}${cards}${allStats.length>1?`<div class="card"><div class="card-title">⚔️ Direktvergleich</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr>${['TW','Einsätze','S','U','N','Quote','Kassiert','Ø GT'].map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div></div>`:''}`;
-}
-
-window.sf=function(k,v){form[k]=v;}
-window.setZweiTW=function(val){form.zweiTW=val;render();}
-window.setFilter=function(f){filterTyp=f;render();}
-
-function validate(){
-  formErrors={};
-  if(!form.datum)formErrors.datum=true;
-  if(!form.gegner.trim())formErrors.gegner=true;
-  if(!form.zweiTW){
-    if(!form.torwart)formErrors.torwart=true;
-    if(form.toreHeim==='')formErrors.toreHeim=true;
-    if(form.toreGast==='')formErrors.toreGast=true;
-  }else{
-    if(!form.torwart1)formErrors.torwart1=true;
-    if(!form.torwart2)formErrors.torwart2=true;
-  }
-  return Object.keys(formErrors).length===0;
-}
-
-window.submitForm=async function(){
-  if(!validate()){toast('Bitte alle Pflichtfelder ausfüllen ✱','err');render();return;}
-  const baseId=Date.now();
-  try{
-    if(form.zweiTW){
-      const hz1H=parseInt(form.toreHz1H||0),hz1G=parseInt(form.toreHz1G||0);
-      const hz2H=parseInt(form.toreHz2H||0),hz2G=parseInt(form.toreHz2G||0);
-      const gesH=hz1H+hz2H,gesG=hz1G+hz2G;
-      const hGes=form.heimwaerts==='Heim'?gesH:gesG,gGes=form.heimwaerts==='Heim'?gesG:gesH;
-      const e=erg(hGes,gGes);
-      const gid=editId&&editId.startsWith('g_')?editId:`g_${baseId}`;
-      if(editId){const toDelete=spiele.filter(x=>x.gid===editId);for(const s of toDelete)await remove(ref(db,`spiele/${s._fbId}`));}
-      await push(spieleRef,{gid,datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,geteilt:true,halbzeit:'1',torwart:form.torwart1,toreHeim:gesH,toreGast:gesG,kassiert:form.heimwaerts==='Heim'?hz1G:hz1H,geschossen:form.heimwaerts==='Heim'?hz1H:hz1G,ergebnis:e,hzH:hz1H,hzG:hz1G});
-      await push(spieleRef,{gid,datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,geteilt:true,halbzeit:'2',torwart:form.torwart2,toreHeim:gesH,toreGast:gesG,kassiert:form.heimwaerts==='Heim'?hz2G:hz2H,geschossen:form.heimwaerts==='Heim'?hz2H:hz2G,ergebnis:e,hzH:hz2H,hzG:hz2G});
-    }else{
-      const h=parseInt(form.toreHeim),g=parseInt(form.toreGast);
-      const kass=form.heimwaerts==='Heim'?g:h,gesch=form.heimwaerts==='Heim'?h:g;
-      const e=erg(gesch,kass);
-      const spiel={datum:form.datum,gegner:form.gegner,spieltag:form.spieltag,typ:form.typ,heimwaerts:form.heimwaerts,bemerkung:form.bemerkung,torwart:form.torwart,geteilt:false,toreHeim:h,toreGast:g,kassiert:kass,geschossen:gesch,ergebnis:e};
-      if(editId){await set(ref(db,`spiele/${editId}`),spiel);}
-      else{await push(spieleRef,spiel);}
+function groupSpiele(liste) {
+  var seen = {}, res = [];
+  var sorted = liste.slice().sort(function(a, b) {
+    return sortDesc ? b.datum.localeCompare(a.datum) : a.datum.localeCompare(b.datum);
+  });
+  sorted.forEach(function(s) {
+    if (s.geteilt && s.gid) {
+      if (!seen[s.gid]) {
+        seen[s.gid] = true;
+        var gruppe = liste.filter(function(x) { return x.gid === s.gid; });
+        var copy = Object.assign({}, s);
+        copy._gruppe = gruppe;
+        copy._isG = true;
+        res.push(copy);
+      }
+    } else {
+      res.push(s);
     }
-    const wasEdit=!!editId;
-    editId=null;form=defForm();formErrors={};
-    toast(wasEdit?'✅ Aktualisiert':'✅ Gespeichert');
-    if(wasEdit)sw(prevView);else{render();window.scrollTo(0,0);}
-  }catch(err){toast('Fehler beim Speichern — Internet prüfen','err',4000);}
+  });
+  return res;
 }
 
-window.cancelEdit=function(){editId=null;form=defForm();formErrors={};sw(prevView);}
+window.sw = function(v) {
+  if (v !== 'eingabe' && view === 'eingabe') prevView = v;
+  view = v;
+  if (v !== 'eingabe') editId = null;
+  document.querySelectorAll('.nav-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.v === v);
+  });
+  render();
+  window.scrollTo(0, 0);
+};
 
-window.editSpiel=function(id,isG){
-  prevView='spiele';
-  if(isG){
-    const gruppe=spiele.filter(x=>x.gid===id);
-    const hz1=gruppe.find(x=>x.halbzeit==='1'),hz2=gruppe.find(x=>x.halbzeit==='2');
-    form=defForm();
-    form.datum=hz1?.datum||'';form.gegner=hz1?.gegner||'';form.spieltag=hz1?.spieltag||'';
-    form.typ=hz1?.typ||'Pflichtspiel';form.heimwaerts=hz1?.heimwaerts||'Heim';
-    form.bemerkung=hz1?.bemerkung||'';form.zweiTW=true;
-    form.torwart1=hz1?.torwart||'';form.torwart2=hz2?.torwart||'';
-    form.toreHz1H=String(hz1?.hzH??'');form.toreHz1G=String(hz1?.hzG??'');
-    form.toreHz2H=String(hz2?.hzH??'');form.toreHz2G=String(hz2?.hzG??'');
-    editId=id;
-  }else{
-    const s=spiele.find(x=>x._fbId===id);if(!s)return;
-    form={...defForm(),datum:s.datum,gegner:s.gegner,spieltag:s.spieltag||'',typ:s.typ,heimwaerts:s.heimwaerts,bemerkung:s.bemerkung||'',torwart:s.torwart,zweiTW:false,toreHeim:String(s.toreHeim),toreGast:String(s.toreGast)};
-    editId=id;
+function render() {
+  var el = document.getElementById('main');
+  if (view === 'eingabe') el.innerHTML = renderEingabe();
+  else if (view === 'spiele') el.innerHTML = renderSpiele();
+  else el.innerHTML = renderSaison();
+}
+
+function liveInfo(tw, hz, hH, hG) {
+  if (!tw || hH === '' || hG === '') return '';
+  var h = parseInt(hH), g = parseInt(hG);
+  if (isNaN(h) || isNaN(g)) return '';
+  var kass = form.heimwaerts === 'Heim' ? g : h;
+  var gesch = form.heimwaerts === 'Heim' ? h : g;
+  var e2 = erg(gesch, kass);
+  var fc = RC[e2];
+  return '<div class="live-info">TW ' + tw + ' \u00b7 ' + hz + ': <span class="hi">' + gesch + ' Tore</span> \u00b7 <span class="gt">' + kass + ' Gegentore</span> \u00b7 <span style="color:' + fc + ';font-weight:700">' + e2 + '</span></div>';
+}
+
+function twOpts(sel, excl) {
+  return ['', '1', '12', '22'].filter(function(t) { return t !== excl; }).map(function(t) {
+    return '<option value="' + t + '"' + (sel === t ? ' selected' : '') + '>' + (t ? 'TW ' + t : '\u2014 ausw\u00e4hlen \u2014') + '</option>';
+  }).join('');
+}
+
+function renderEingabe() {
+  var e = ferr;
+  var preview = '';
+  if (form.zweiTW && form.hz1H !== '' && form.hz1G !== '' && form.hz2H !== '' && form.hz2G !== '') {
+    var ph = parseInt(form.hz1H||0) + parseInt(form.hz2H||0);
+    var pg = parseInt(form.hz1G||0) + parseInt(form.hz2G||0);
+    var phG = form.heimwaerts === 'Heim' ? ph : pg;
+    var pgG = form.heimwaerts === 'Heim' ? pg : ph;
+    var pe = erg(phG, pgG);
+    var pfc = RC[pe];
+    var scoreStr = form.heimwaerts === 'Heim' ?
+      ('Hertha ' + ph + ':' + pg + ' ' + (form.gegner||'Gegner')) :
+      ((form.gegner||'Gegner') + ' ' + pg + ':' + ph + ' Hertha');
+    preview = '<div class="preview"><div class="preview-lbl">Gesamtergebnis</div><div class="preview-score">' + scoreStr + ' \u00b7 <span style="color:' + pfc + '">' + pe + '</span></div></div>';
+  }
+
+  var normalLive = '';
+  if (!form.zweiTW && form.torwart && form.toreHeim !== '' && form.toreGast !== '') {
+    normalLive = liveInfo(form.torwart, 'Vollzeit', form.toreHeim, form.toreGast);
+  }
+
+  var quickCards = ['1','12','22'].map(function(tw) {
+    var s = getStats(tw, spiele);
+    var c = gc(tw);
+    if (!s) return '<div class="quick-card" style="background:#1a1f35;border-color:#2a2f45"><div class="quick-tw" style="color:#4b5563">TW ' + tw + '</div><div style="font-size:11px;color:#374151;margin-top:6px">Keine Spiele</div></div>';
+    var eStr = s.einsaetze % 1 === 0 ? s.einsaetze : s.einsaetze.toFixed(1);
+    return '<div class="quick-card" style="background:' + c.bg + ';border-color:' + c.ac + '30"><div class="quick-tw" style="color:' + c.ac + '">TW ' + tw + '</div><div class="quick-num">' + eStr + '</div><div class="quick-lbl">Eins\u00e4tze</div><div class="quick-rec">' + s.siege + 'S \u00b7 ' + s.unentschieden + 'U \u00b7 ' + s.niederlagen + 'N</div></div>';
+  }).join('');
+
+  var twSection = '';
+  if (!form.zweiTW) {
+    twSection = '<div class="field"><label class="lbl">Torwart *</label><select class="' + (e.torwart?'ferr':'') + '" onchange="sf(\'torwart\',this.value);render()">' + twOpts(form.torwart) + '</select></div>' +
+      '<div class="field-row"><div class="field"><label class="lbl">Tore Heim *</label><input type="number" class="' + (e.toreHeim?'ferr':'') + '" min="0" placeholder="0" value="' + form.toreHeim + '" oninput="sf(\'toreHeim\',this.value);render()"/></div><div class="field"><label class="lbl">Tore Gast *</label><input type="number" class="' + (e.toreGast?'ferr':'') + '" min="0" placeholder="0" value="' + form.toreGast + '" oninput="sf(\'toreGast\',this.value);render()"/></div></div>' +
+      normalLive;
+  } else {
+    twSection = '<div class="hz-box"><div class="hz-title c-hz1">1. HALBZEIT</div>' +
+      '<div class="field"><label class="lbl">Torwart *</label><select class="' + (e.torwart1?'ferr':'') + '" onchange="sf(\'torwart1\',this.value);render()">' + twOpts(form.torwart1) + '</select></div>' +
+      '<div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="' + form.hz1H + '" oninput="sf(\'hz1H\',this.value);render()"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="' + form.hz1G + '" oninput="sf(\'hz1G\',this.value);render()"/></div></div>' +
+      liveInfo(form.torwart1, '1. HZ', form.hz1H, form.hz1G) +
+      '</div>' +
+      '<div class="hz-box"><div class="hz-title c-hz2">2. HALBZEIT</div>' +
+      '<div class="field"><label class="lbl">Torwart *</label><select class="' + (e.torwart2?'ferr':'') + '" onchange="sf(\'torwart2\',this.value);render()">' + twOpts(form.torwart2, form.torwart1) + '</select></div>' +
+      '<div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="' + form.hz2H + '" oninput="sf(\'hz2H\',this.value);render()"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="' + form.hz2G + '" oninput="sf(\'hz2G\',this.value);render()"/></div></div>' +
+      liveInfo(form.torwart2, '2. HZ', form.hz2H, form.hz2G) +
+      '</div>' + preview;
+  }
+
+  return '<div class="card">' +
+    '<div class="card-title">' + (editId ? 'Spiel bearbeiten' : '+ Neues Spiel eintragen') + '</div>' +
+    '<div class="field-row"><div class="field"><label class="lbl">Datum *</label><input type="date" class="' + (e.datum?'ferr':'') + '" value="' + form.datum + '" oninput="sf(\'datum\',this.value)"/></div><div class="field"><label class="lbl">Spieltag / Runde</label><input type="text" placeholder="z.B. 12" value="' + form.spieltag + '" oninput="sf(\'spieltag\',this.value)"/></div></div>' +
+    '<div class="field"><label class="lbl">Gegner *</label><input type="text" class="' + (e.gegner?'ferr':'') + '" placeholder="z.B. BFC Dynamo U14" value="' + form.gegner + '" oninput="sf(\'gegner\',this.value)"/></div>' +
+    '<div class="field-row"><div class="field"><label class="lbl">Spieltyp</label><select onchange="sf(\'typ\',this.value);render()"><option' + (form.typ==='Pflichtspiel'?' selected':'') + '>Pflichtspiel</option><option' + (form.typ==='Testspiel'?' selected':'') + '>Testspiel</option></select></div><div class="field"><label class="lbl">Heim / Ausw&auml;rts</label><select onchange="sf(\'heimwaerts\',this.value);render()"><option' + (form.heimwaerts==='Heim'?' selected':'') + '>Heim</option><option' + (form.heimwaerts==='Ausw\u00e4rts'?' selected':'') + '>Ausw&auml;rts</option></select></div></div>' +
+    '<div class="field"><label class="lbl">Torwarte</label><div class="tw-toggle"><div class="tw-btn' + (!form.zweiTW?' active':'') + '" onclick="setZweiTW(false)">Ein Torwart</div><div class="tw-btn' + (form.zweiTW?' active':'') + '" onclick="setZweiTW(true)">Zwei Torwarte</div></div></div>' +
+    twSection +
+    '<div class="field"><label class="lbl">Bemerkung</label><textarea placeholder="z.B. starker Wind, Verletzung..." oninput="sf(\'bemerkung\',this.value)">' + form.bemerkung + '</textarea></div>' +
+    '<button class="btn-primary" onclick="submitForm()">' + (editId ? 'Speichern' : 'Spiel eintragen') + '</button>' +
+    (editId ? '<button class="btn-secondary" onclick="cancelEdit()">Abbrechen</button>' : '') +
+    '</div>' +
+    (spiele.length > 0 ? '<div class="quick-grid">' + quickCards + '</div>' : '');
+}
+
+function renderSpiele() {
+  var grouped = groupSpiele(getFiltered());
+  var filterBtns = ['Alle','Pflichtspiel','Testspiel'].map(function(f) {
+    return '<button class="filter-btn' + (filterTyp===f?' active':'') + '" onclick="setFilter(\'' + f + '\')">' + f + '</button>';
+  }).join('');
+
+  var cards = grouped.length === 0 ? '<div class="no-spiele">Noch keine Spiele eingetragen.</div>' :
+    grouped.map(function(s) {
+      var farbe = RC[s.ergebnis] || '#aaa';
+      var datum = fd(s.datum);
+      var st = s.spieltag ? (' \u00b7 ST ' + s.spieltag) : '';
+      var h = s.heimwaerts === 'Heim';
+
+      if (s._isG) {
+        var hz1 = s._gruppe.filter(function(x) { return x.halbzeit === '1'; })[0];
+        var hz2 = s._gruppe.filter(function(x) { return x.halbzeit === '2'; })[0];
+        var c1 = gc(hz1 ? hz1.torwart : '');
+        var c2 = gc(hz2 ? hz2.torwart : '');
+        var sc = h ? ('Hertha <span class="hertha">' + s.toreHeim + ':' + s.toreGast + '</span> ' + s.gegner) :
+                     (s.gegner + ' ' + s.toreGast + ':' + s.toreHeim + ' <span class="hertha">Hertha</span>');
+        var pills = '';
+        if (hz1) pills += '<div class="hz-pill" style="background:' + c1.bg + ';color:' + c1.ac + ';border-color:' + c1.ac + '40"><b>TW ' + hz1.torwart + '</b> 1.HZ ' + hz1.hzH + ':' + hz1.hzG + ' \u00b7 ' + hz1.kassiert + 'GT</div>';
+        if (hz2) pills += '<div class="hz-pill" style="background:' + c2.bg + ';color:' + c2.ac + ';border-color:' + c2.ac + '40"><b>TW ' + hz2.torwart + '</b> 2.HZ ' + hz2.hzH + ':' + hz2.hzG + ' \u00b7 ' + hz2.kassiert + 'GT</div>';
+        return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
+          '<div class="spiel-inner"><div style="flex:1">' +
+          '<div class="spiel-score">' + sc + '</div>' +
+          '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#4b5563">\u00b7</span><span style="color:#6b7280">' + datum + st + '</span><span style="color:#4b5563">\u00b7</span><span style="color:#6b7280">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
+          '<div class="hz-pills">' + pills + '</div>' +
+          (s.bemerkung ? '<div class="spiel-notiz">' + s.bemerkung + '</div>' : '') +
+          '</div>' +
+          '<div class="spiel-actions"><button class="btn-icon" onclick="editSpiel(\'' + s.gid + '\',true)">&#x270F;&#xFE0F;</button><button class="btn-icon btn-del" onclick="delSpiel(\'' + s.gid + '\',true)">&#x1F5D1;&#xFE0F;</button></div>' +
+          '</div></div>';
+      }
+
+      var c = gc(s.torwart);
+      var sc2 = h ? ('Hertha <span class="hertha">' + s.toreHeim + ':' + s.toreGast + '</span> ' + s.gegner) :
+                    (s.gegner + ' ' + s.toreGast + ':' + s.toreHeim + ' <span class="hertha">Hertha</span>');
+      return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
+        '<div class="spiel-inner"><div style="flex:1">' +
+        '<div class="spiel-score">' + sc2 + '</div>' +
+        '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#4b5563">\u00b7</span><span style="color:#6b7280">' + datum + st + '</span><span style="color:#4b5563">\u00b7</span><span class="badge" style="background:' + c.bg + ';color:' + c.ac + ';border-color:' + c.ac + '40">TW ' + s.torwart + '</span><span style="color:#6b7280">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
+        (s.bemerkung ? '<div class="spiel-notiz">' + s.bemerkung + '</div>' : '') +
+        '</div>' +
+        '<div class="spiel-actions"><button class="btn-icon" onclick="editSpiel(\'' + s._id + '\',false)">&#x270F;&#xFE0F;</button><button class="btn-icon btn-del" onclick="delSpiel(\'' + s._id + '\',false)">&#x1F5D1;&#xFE0F;</button></div>' +
+        '</div></div>';
+    }).join('');
+
+  return '<div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input type="text" placeholder="Suchen..." value="' + searchQ + '" oninput="searchQ=this.value;render()"/></div>' +
+    '<div class="filter-row">' + filterBtns +
+    '<button class="sort-btn" onclick="sortDesc=!sortDesc;render()">' + (sortDesc ? 'Neueste' : 'Alteste') + '</button>' +
+    '<span class="filter-count">' + grouped.length + ' Spiele</span></div>' +
+    cards;
+}
+
+function renderSaison() {
+  var filtered = getFiltered();
+  var allStats = ['1','12','22'].map(function(tw) { return getStats(tw, filtered); }).filter(Boolean);
+  var grouped = groupSpiele(filtered);
+  var gesamtSpiele = grouped.length;
+  var pflichtSpiele = grouped.filter(function(x) { return x.typ === 'Pflichtspiel'; }).length;
+  var testSpiele = grouped.filter(function(x) { return x.typ === 'Testspiel'; }).length;
+
+  var filterBtns = ['Alle','Pflichtspiel','Testspiel'].map(function(f) {
+    return '<button class="filter-btn' + (filterTyp===f?' active':'') + '" onclick="setFilter(\'' + f + '\')">' + f + '</button>';
+  }).join('');
+
+  if (!allStats.length) return '<div class="filter-row">' + filterBtns + '</div><div class="no-spiele">Noch keine Spiele eingetragen.</div>';
+
+  var uebersicht = '<div class="uebersicht"><div class="card-title">Spiel\u00fcbersicht</div>' +
+    '<div class="stat-grid3">' +
+    '<div class="stat-cell"><div class="stat-num" style="color:#fff">' + gesamtSpiele + '</div><div class="stat-lbl">Spiele gesamt</div></div>' +
+    '<div class="stat-cell"><div class="stat-num" style="color:#4a9eff">' + pflichtSpiele + '</div><div class="stat-lbl">Pflichtspiele</div></div>' +
+    '<div class="stat-cell"><div class="stat-num" style="color:#4adf7f">' + testSpiele + '</div><div class="stat-lbl">Testspiele</div></div>' +
+    '</div></div>';
+
+  var cards = allStats.map(function(s) {
+    var c = gc(s.tw);
+    var wr = s.einsaetze ? ((s.siege / s.einsaetze) * 100).toFixed(0) : 0;
+    var eStr = s.einsaetze % 1 === 0 ? String(s.einsaetze) : s.einsaetze.toFixed(1);
+    var pflStr = s.pflichtE % 1 === 0 ? String(s.pflichtE) : s.pflichtE.toFixed(1);
+    var testStr = s.testE % 1 === 0 ? String(s.testE) : s.testE.toFixed(1);
+
+    var recent = s.liste.slice().sort(function(a,b) { return b.datum.localeCompare(a.datum); }).slice(0,5).map(function(x) {
+      var fc = RC[x.ergebnis] || '#aaa';
+      var k = x.ergebnis === 'Sieg' ? 'S' : x.ergebnis === 'Niederlage' ? 'N' : 'U';
+      var hz = x.halbzeit ? (' ' + x.halbzeit + '.HZ') : '';
+      var gt = x.geteilt ? ' (1/2)' : '';
+      return '<div class="recent-pill" style="background:' + fc + '20;color:' + fc + ';border-color:' + fc + '40">' + k + hz + gt + ' ' + x.kassiert + 'GT</div>';
+    }).join('');
+
+    return '<div class="stat-card" style="border-color:' + c.ac + '30">' +
+      '<div class="stat-header">' +
+      '<div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px">&#x1F9E4;</span>' +
+      '<div><div class="stat-tw" style="color:' + c.ac + '">Torwart ' + s.tw + '</div>' +
+      '<div class="stat-einsaetze">' + eStr + ' Eins\u00e4tze \u00b7 ' + (filterTyp==='Alle'?'Gesamt':filterTyp) + '</div>' +
+      (filterTyp==='Alle' ? '<div style="font-size:10px;color:#4b5563;margin-top:2px">' + pflStr + ' Pflicht \u00b7 ' + testStr + ' Test</div>' : '') +
+      '</div></div>' +
+      '<div><div class="stat-rate">' + wr + '%</div><div class="stat-rate-lbl">Siegquote</div></div>' +
+      '</div>' +
+      '<div class="bar"><div style="flex:' + (s.siege||0.001) + ';background:#22c55e"></div><div style="flex:' + (s.unentschieden||0.001) + ';background:#f59e0b"></div><div style="flex:' + (s.niederlagen||0.001) + ';background:#ef4444"></div></div>' +
+      '<div class="stat-grid3">' +
+      '<div class="stat-cell"><div class="stat-num" style="color:#22c55e">' + s.siege + '</div><div class="stat-lbl">Siege</div></div>' +
+      '<div class="stat-cell"><div class="stat-num" style="color:#f59e0b">' + s.unentschieden + '</div><div class="stat-lbl">Unentschieden</div></div>' +
+      '<div class="stat-cell"><div class="stat-num" style="color:#ef4444">' + s.niederlagen + '</div><div class="stat-lbl">Niederlagen</div></div>' +
+      '</div>' +
+      '<div class="stat-grid3">' +
+      '<div class="stat-cell"><div class="stat-icon">&#x26BD;</div><div class="stat-num" style="color:#fff">' + s.geschossen + '</div><div class="stat-lbl">Geschossen</div></div>' +
+      '<div class="stat-cell"><div class="stat-icon">&#x1F945;</div><div class="stat-num" style="color:#fff">' + s.kassiert + '</div><div class="stat-lbl">Kassiert</div></div>' +
+      '<div class="stat-cell"><div class="stat-icon">&#x1F4CA;</div><div class="stat-num" style="color:#fff">' + s.schnitt + '</div><div class="stat-lbl">Gegentore/Eins.</div></div>' +
+      '</div>' +
+      '<div class="recent-lbl">LETZTE EINSAETZE</div>' +
+      '<div class="recent-pills">' + (recent || '<span style="color:#4b5563;font-size:12px">-</span>') + '</div>' +
+      (s.hatWechsel ? '<div class="note-box">Geteilte Spiele zaehlen als 1/2 Einsatz</div>' : '') +
+      '</div>';
+  }).join('');
+
+  var tableRows = '';
+  if (allStats.length > 1) {
+    var sorted = allStats.slice().sort(function(a,b) {
+      var ra = a.einsaetze ? a.siege / a.einsaetze : 0;
+      var rb = b.einsaetze ? b.siege / b.einsaetze : 0;
+      return rb - ra;
+    });
+    tableRows = sorted.map(function(s) {
+      var c = gc(s.tw);
+      var wr = s.einsaetze ? ((s.siege / s.einsaetze) * 100).toFixed(0) : 0;
+      var eStr = s.einsaetze % 1 === 0 ? String(s.einsaetze) : s.einsaetze.toFixed(1);
+      var pflStr = s.pflichtE % 1 === 0 ? String(s.pflichtE) : s.pflichtE.toFixed(1);
+      var testStr = s.testE % 1 === 0 ? String(s.testE) : s.testE.toFixed(1);
+      return '<tr><td style="color:' + c.ac + ';font-weight:800">TW ' + s.tw + '</td><td>' + eStr + '</td><td style="color:#4a9eff">' + pflStr + '</td><td style="color:#4adf7f">' + testStr + '</td><td style="color:#22c55e;font-weight:700">' + s.siege + '</td><td style="color:#f59e0b;font-weight:700">' + s.unentschieden + '</td><td style="color:#ef4444;font-weight:700">' + s.niederlagen + '</td><td style="color:#fff;font-weight:700">' + wr + '%</td><td>' + s.kassiert + '</td><td>' + s.schnitt + '</td></tr>';
+    }).join('');
+  }
+
+  var compare = allStats.length > 1 ? '<div class="card"><div class="card-title">Direktvergleich</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>Pfl.</th><th>Test</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>' + tableRows + '</tbody></table></div></div>' : '';
+
+  return '<div class="filter-row">' + filterBtns + '</div>' + uebersicht + cards + compare;
+}
+
+window.sf = function(k, v) { form[k] = v; };
+window.setZweiTW = function(val) { form.zweiTW = val; render(); };
+window.setFilter = function(f) { filterTyp = f; render(); };
+
+function validate() {
+  ferr = {};
+  if (!form.datum) ferr.datum = true;
+  if (!form.gegner.trim()) ferr.gegner = true;
+  if (!form.zweiTW) {
+    if (!form.torwart) ferr.torwart = true;
+    if (form.toreHeim === '') ferr.toreHeim = true;
+    if (form.toreGast === '') ferr.toreGast = true;
+  } else {
+    if (!form.torwart1) ferr.torwart1 = true;
+    if (!form.torwart2) ferr.torwart2 = true;
+  }
+  return Object.keys(ferr).length === 0;
+}
+
+window.submitForm = async function() {
+  if (!validate()) { toast('Bitte alle Pflichtfelder ausf\u00fcllen', 'err'); render(); return; }
+  var baseId = Date.now();
+  try {
+    if (form.zweiTW) {
+      var hz1H = parseInt(form.hz1H||0), hz1G = parseInt(form.hz1G||0);
+      var hz2H = parseInt(form.hz2H||0), hz2G = parseInt(form.hz2G||0);
+      var gesH = hz1H + hz2H, gesG = hz1G + hz2G;
+      var hGes = form.heimwaerts === 'Heim' ? gesH : gesG;
+      var gGes = form.heimwaerts === 'Heim' ? gesG : gesH;
+      var e = erg(hGes, gGes);
+      var gid = (editId && String(editId).indexOf('g_') === 0) ? editId : ('g_' + baseId);
+      if (editId) {
+        var toDelete = spiele.filter(function(x) { return x.gid === editId; });
+        for (var i = 0; i < toDelete.length; i++) await remove(ref(db, 'spiele/' + toDelete[i]._id));
+      }
+      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'1', torwart:form.torwart1, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz1G:hz1H, geschossen:form.heimwaerts==='Heim'?hz1H:hz1G, ergebnis:e, hzH:hz1H, hzG:hz1G});
+      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'2', torwart:form.torwart2, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz2G:hz2H, geschossen:form.heimwaerts==='Heim'?hz2H:hz2G, ergebnis:e, hzH:hz2H, hzG:hz2G});
+    } else {
+      var h = parseInt(form.toreHeim), g = parseInt(form.toreGast);
+      var kass = form.heimwaerts === 'Heim' ? g : h;
+      var gesch = form.heimwaerts === 'Heim' ? h : g;
+      var e2 = erg(gesch, kass);
+      var spiel = {datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, torwart:form.torwart, geteilt:false, toreHeim:h, toreGast:g, kassiert:kass, geschossen:gesch, ergebnis:e2};
+      if (editId) await set(ref(db, 'spiele/' + editId), spiel);
+      else await push(spieleRef, spiel);
+    }
+    var wasEdit = !!editId;
+    editId = null; form = defForm(); ferr = {};
+    toast(wasEdit ? 'Aktualisiert' : 'Gespeichert');
+    if (wasEdit) sw(prevView); else { render(); window.scrollTo(0,0); }
+  } catch(err) { toast('Fehler beim Speichern', 'err', 4000); }
+};
+
+window.cancelEdit = function() { editId = null; form = defForm(); ferr = {}; sw(prevView); };
+
+window.editSpiel = function(id, isG) {
+  prevView = 'spiele';
+  if (isG) {
+    var gruppe = spiele.filter(function(x) { return x.gid === id; });
+    var hz1 = gruppe.filter(function(x) { return x.halbzeit === '1'; })[0];
+    var hz2 = gruppe.filter(function(x) { return x.halbzeit === '2'; })[0];
+    form = defForm();
+    form.datum = hz1 ? hz1.datum : '';
+    form.gegner = hz1 ? hz1.gegner : '';
+    form.spieltag = hz1 ? (hz1.spieltag || '') : '';
+    form.typ = hz1 ? hz1.typ : 'Pflichtspiel';
+    form.heimwaerts = hz1 ? hz1.heimwaerts : 'Heim';
+    form.bemerkung = hz1 ? (hz1.bemerkung || '') : '';
+    form.zweiTW = true;
+    form.torwart1 = hz1 ? hz1.torwart : '';
+    form.torwart2 = hz2 ? hz2.torwart : '';
+    form.hz1H = hz1 ? String(hz1.hzH) : '';
+    form.hz1G = hz1 ? String(hz1.hzG) : '';
+    form.hz2H = hz2 ? String(hz2.hzH) : '';
+    form.hz2G = hz2 ? String(hz2.hzG) : '';
+    editId = id;
+  } else {
+    var s = spiele.filter(function(x) { return x._id === id; })[0];
+    if (!s) return;
+    form = defForm();
+    form.datum = s.datum; form.gegner = s.gegner; form.spieltag = s.spieltag || '';
+    form.typ = s.typ; form.heimwaerts = s.heimwaerts; form.bemerkung = s.bemerkung || '';
+    form.torwart = s.torwart; form.toreHeim = String(s.toreHeim); form.toreGast = String(s.toreGast);
+    editId = id;
   }
   sw('eingabe');
-}
+};
 
-window.delSpiel=async function(id,isG){
-  showModal('Löschen?','Spiel wirklich löschen?','Löschen',async()=>{
-    try{
-      if(isG){const gruppe=spiele.filter(x=>x.gid===id);for(const s of gruppe)await remove(ref(db,`spiele/${s._fbId}`));}
-      else{await remove(ref(db,`spiele/${id}`));}
-      toast('🗑️ Gelöscht','info');
-    }catch(err){toast('Fehler beim Löschen','err');}
+window.delSpiel = function(id, isG) {
+  showModal('L\u00f6schen?', 'Spiel wirklich l\u00f6schen?', 'L\u00f6schen', async function() {
+    try {
+      if (isG) {
+        var gruppe = spiele.filter(function(x) { return x.gid === id; });
+        for (var i = 0; i < gruppe.length; i++) await remove(ref(db, 'spiele/' + gruppe[i]._id));
+      } else {
+        await remove(ref(db, 'spiele/' + id));
+      }
+      toast('Gel\u00f6scht', 'info');
+    } catch(err) { toast('Fehler beim L\u00f6schen', 'err'); }
   });
-}
+};
 </script>
 </body>
 </html>
