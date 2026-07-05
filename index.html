@@ -254,9 +254,9 @@ function getStats(tw, liste) {
   var s = liste.filter(function(x) { return x.torwart === tw; });
   if (!s.length) return null;
   var einsaetze = s.reduce(function(a, x) { return a + (x.geteilt ? 0.5 : 1); }, 0);
-  var siege = s.filter(function(x) { return x.ergebnis === 'Sieg'; }).length;
-  var nied = s.filter(function(x) { return x.ergebnis === 'Niederlage'; }).length;
-  var unt = s.filter(function(x) { return x.ergebnis === 'Unentschieden'; }).length;
+  var siege = s.reduce(function(a, x) { return a + (x.ergebnis === 'Sieg' ? (x.geteilt ? 0.5 : 1) : 0); }, 0);
+  var nied = s.reduce(function(a, x) { return a + (x.ergebnis === 'Niederlage' ? (x.geteilt ? 0.5 : 1) : 0); }, 0);
+  var unt = s.reduce(function(a, x) { return a + (x.ergebnis === 'Unentschieden' ? (x.geteilt ? 0.5 : 1) : 0); }, 0);
   var kass = s.reduce(function(a, x) { return a + x.kassiert; }, 0);
   var gesch = s.reduce(function(a, x) { return a + x.geschossen; }, 0);
   var pflE = s.filter(function(x) { return x.typ === 'Pflichtspiel'; }).reduce(function(a, x) { return a + (x.geteilt ? 0.5 : 1); }, 0);
@@ -575,8 +575,8 @@ window.submitForm = async function() {
         var toDelete = spiele.filter(function(x) { return x.gid === editId; });
         for (var i = 0; i < toDelete.length; i++) await remove(ref(db, 'spiele/' + toDelete[i]._id));
       }
-      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'1', torwart:form.torwart1, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz1G:hz1H, geschossen:form.heimwaerts==='Heim'?hz1H:hz1G, ergebnis:e, hzH:hz1H, hzG:hz1G});
-      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'2', torwart:form.torwart2, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz2G:hz2H, geschossen:form.heimwaerts==='Heim'?hz2H:hz2G, ergebnis:e, hzH:hz2H, hzG:hz2G});
+      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'1', torwart:form.torwart1, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz1G:hz1H, geschossen:form.heimwaerts==='Heim'?hz1H:hz1G, ergebnis:erg(form.heimwaerts==='Heim'?hz1H:hz1G, form.heimwaerts==='Heim'?hz1G:hz1H), hzH:hz1H, hzG:hz1G});
+      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'2', torwart:form.torwart2, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz2G:hz2H, geschossen:form.heimwaerts==='Heim'?hz2H:hz2G, ergebnis:erg(form.heimwaerts==='Heim'?hz2H:hz2G, form.heimwaerts==='Heim'?hz2G:hz2H), hzH:hz2H, hzG:hz2G});
     } else {
       var h = parseInt(form.toreHeim), g = parseInt(form.toreGast);
       var kass = form.heimwaerts === 'Heim' ? g : h;
