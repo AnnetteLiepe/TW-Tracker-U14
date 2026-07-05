@@ -188,7 +188,7 @@ function defForm() {
     zweiTW: false,
     torwart:'', toreHeim:'', toreGast:'',
     torwart1:'', torwart2:'',
-    hz1H:'', hz1G:'', hz2H:'', hz2G:''
+    hz1H:'0', hz1G:'0', hz2H:'0', hz2G:'0'
   };
 }
 let form = defForm();
@@ -324,7 +324,7 @@ function render() {
 }
 
 function liveInfo(tw, hz, hH, hG) {
-  if (!tw || hH === '' || hG === '') return '';
+  if (!tw || hH === null || hH === undefined || hG === null || hG === undefined) return '';
   var h = parseInt(hH), g = parseInt(hG);
   if (isNaN(h) || isNaN(g)) return '';
   var kass = form.heimwaerts === 'Heim' ? g : h;
@@ -343,7 +343,7 @@ function twOpts(sel, excl) {
 function renderEingabe() {
   var e = ferr;
   var preview = '';
-  if (form.zweiTW && form.hz1H !== '' && form.hz1G !== '' && form.hz2H !== '' && form.hz2G !== '') {
+  if (form.zweiTW && form.torwart1 && form.torwart2) {
     var ph = parseInt(form.hz1H||0) + parseInt(form.hz2H||0);
     var pg = parseInt(form.hz1G||0) + parseInt(form.hz2G||0);
     var phG = form.heimwaerts === 'Heim' ? ph : pg;
@@ -372,17 +372,17 @@ function renderEingabe() {
   var twSection = '';
   if (!form.zweiTW) {
     twSection = '<div class="field"><label class="lbl">Torwart *</label><select class="' + (e.torwart?'ferr':'') + '" onchange="sf(\'torwart\',this.value);render()">' + twOpts(form.torwart) + '</select></div>' +
-      '<div class="field-row"><div class="field"><label class="lbl">Tore Heim *</label><input type="number" class="' + (e.toreHeim?'ferr':'') + '" min="0" placeholder="0" value="' + form.toreHeim + '" oninput="sf(\'toreHeim\',this.value);render()"/></div><div class="field"><label class="lbl">Tore Gast *</label><input type="number" class="' + (e.toreGast?'ferr':'') + '" min="0" placeholder="0" value="' + form.toreGast + '" oninput="sf(\'toreGast\',this.value);render()"/></div></div>' +
+      '<div class="field-row"><div class="field"><label class="lbl">Tore Heim *</label><input type="number" class="' + (e.toreHeim?'ferr':'') + '" min="0" placeholder="0" value="' + form.toreHeim + '" oninput="sfr('toreHeim',this.value)"/></div><div class="field"><label class="lbl">Tore Gast *</label><input type="number" class="' + (e.toreGast?'ferr':'') + '" min="0" placeholder="0" value="' + form.toreGast + '" oninput="sfr('toreGast',this.value)"/></div></div>' +
       normalLive;
   } else {
     twSection = '<div class="hz-box"><div class="hz-title c-hz1">1. HALBZEIT</div>' +
       '<div class="field"><label class="lbl">Torwart *</label><select class="' + (e.torwart1?'ferr':'') + '" onchange="sf(\'torwart1\',this.value);render()">' + twOpts(form.torwart1) + '</select></div>' +
-      '<div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="' + form.hz1H + '" oninput="sf(\'hz1H\',this.value);render()"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="' + form.hz1G + '" oninput="sf(\'hz1G\',this.value);render()"/></div></div>' +
+      '<div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="' + form.hz1H + '" oninput="sfr('hz1H',this.value)"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="' + form.hz1G + '" oninput="sfr('hz1G',this.value)"/></div></div>' +
       liveInfo(form.torwart1, '1. HZ', form.hz1H, form.hz1G) +
       '</div>' +
       '<div class="hz-box"><div class="hz-title c-hz2">2. HALBZEIT</div>' +
       '<div class="field"><label class="lbl">Torwart *</label><select class="' + (e.torwart2?'ferr':'') + '" onchange="sf(\'torwart2\',this.value);render()">' + twOpts(form.torwart2, form.torwart1) + '</select></div>' +
-      '<div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="' + form.hz2H + '" oninput="sf(\'hz2H\',this.value);render()"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="' + form.hz2G + '" oninput="sf(\'hz2G\',this.value);render()"/></div></div>' +
+      '<div class="field-row"><div><label class="lbl">Tore Heim</label><input type="number" min="0" placeholder="0" value="' + form.hz2H + '" oninput="sfr('hz2H',this.value)"/></div><div><label class="lbl">Tore Gast</label><input type="number" min="0" placeholder="0" value="' + form.hz2G + '" oninput="sfr('hz2G',this.value)"/></div></div>' +
       liveInfo(form.torwart2, '2. HZ', form.hz2H, form.hz2G) +
       '</div>' + preview;
   }
@@ -540,6 +540,7 @@ function renderSaison() {
 }
 
 window.sf = function(k, v) { form[k] = v; };
+window.sfr = function(k, v) { form[k] = v; render(); };
 window.setZweiTW = function(val) { form.zweiTW = val; render(); };
 window.setFilter = function(f) { filterTyp = f; render(); };
 
