@@ -352,7 +352,7 @@ function renderEingabe() {
     var pfc = RC[pe];
     var scoreStr = form.heimwaerts === 'Heim' ?
       ('Hertha ' + ph + ':' + pg + ' ' + (form.gegner||'Gegner')) :
-      ((form.gegner||'Gegner') + ' ' + pg + ':' + ph + ' Hertha');
+      ((form.gegner||'Gegner') + ' ' + ph + ':' + pg + ' Hertha');
     preview = '<div class="preview"><div class="preview-lbl">Gesamtergebnis</div><div class="preview-score">' + scoreStr + ' \u00b7 <span style="color:' + pfc + '">' + pe + '</span></div></div>';
   }
 
