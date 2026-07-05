@@ -534,9 +534,83 @@ function renderSaison() {
     }).join('');
   }
 
+  // Verlaufsgrafik
+  var chartCard = '';
+  if (allStats.length > 0) {
+    var chartH = 140;
+    var chartW = 320;
+    var pad = 30;
+    var colors = {'1':'#4a9eff', '12':'#4adf7f', '22':'#ff6b4a'};
+
+    // Build data per TW: sorted spiels with running average
+    var twData = {};
+    ['1','12','22'].forEach(function(tw) {
+      var s = getStats(tw, filtered);
+      if (!s) return;
+      var sorted = s.liste.slice().sort(function(a,b){return a.datum.localeCompare(b.datum);});
+      var cumKass = 0, cumEin = 0;
+      twData[tw] = sorted.map(function(x) {
+        cumKass += x.kassiert;
+        cumEin += x.geteilt ? 0.5 : 1;
+        return cumEin ? cumKass / cumEin : 0;
+      });
+    });
+
+    // Find max value and max data points
+    var allVals = [];
+    Object.values(twData).forEach(function(arr) { arr.forEach(function(v){allVals.push(v);}); });
+    var maxVal = allVals.length ? Math.max.apply(null, allVals) : 4;
+    maxVal = Math.max(maxVal, 1);
+    var maxPoints = 0;
+    Object.values(twData).forEach(function(arr){ if(arr.length > maxPoints) maxPoints = arr.length; });
+    if (maxPoints < 2) maxPoints = 2;
+
+    // Draw SVG lines
+    var lines = '';
+    Object.keys(twData).forEach(function(tw) {
+      var arr = twData[tw];
+      if (!arr.length) return;
+      var col = colors[tw] || '#aaa';
+      var pts = arr.map(function(v, i) {
+        var x = pad + (i / (maxPoints - 1)) * (chartW - pad * 2);
+        var y = chartH - pad - (v / maxVal) * (chartH - pad * 2);
+        return x.toFixed(1) + ',' + y.toFixed(1);
+      }).join(' ');
+      lines += '<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+      // Dots
+      arr.forEach(function(v, i) {
+        var x = pad + (i / (maxPoints - 1)) * (chartW - pad * 2);
+        var y = chartH - pad - (v / maxVal) * (chartH - pad * 2);
+        lines += '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="'+col+'"/>';
+      });
+    });
+
+    // Y axis labels
+    var yLabels = '';
+    for (var i = 0; i <= 4; i++) {
+      var val = (maxVal * i / 4).toFixed(1);
+      var y = chartH - pad - (i / 4) * (chartH - pad * 2);
+      yLabels += '<text x="'+(pad-4)+'" y="'+(y+4)+'" text-anchor="end" fill="#4b5563" font-size="9">'+val+'</text>';
+      yLabels += '<line x1="'+pad+'" y1="'+y+'" x2="'+(chartW-pad)+'" y2="'+y+'" stroke="#2a2f45" stroke-width="0.5"/>';
+    }
+
+    // Legend
+    var legend = Object.keys(twData).map(function(tw) {
+      var col = colors[tw];
+      return '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;font-size:11px;color:'+col+'"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="'+col+'" stroke-width="2.5"/></svg>TW '+tw+'</span>';
+    }).join('');
+
+    chartCard = '<div class="card"><div class="card-title">Verlauf Gegentorschnitt</div>' +
+      '<div style="overflow-x:auto"><svg width="'+chartW+'" height="'+chartH+'" style="display:block;margin:0 auto">'+
+      yLabels + lines +
+      '</svg></div>' +
+      '<div style="margin-top:10px;text-align:center">'+legend+'</div>' +
+      '</div>';
+  }
+
   var compare = allStats.length > 1 ? '<div class="card"><div class="card-title">Direktvergleich</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>Pfl.</th><th>Test</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>' + tableRows + '</tbody></table></div></div>' : '';
 
-  return '<div class="filter-row">' + filterBtns + '</div>' + uebersicht + cards + compare;
+  return '<div class="filter-row">' + filterBtns + '</div>' + uebersicht + cards + chartCard + compare;
 }
 
 window.sf = function(k, v) { form[k] = v; };
