@@ -370,8 +370,8 @@ function renderEingabe() {
     var s = getStats(tw, spiele);
     var c = gc(tw);
     if (!s) return '<div class="quick-card" style="background:#1a1f35;border-color:#2a2f45"><div class="quick-tw" style="color:#4b5563">TW ' + tw + '</div><div style="font-size:11px;color:#374151;margin-top:6px">Keine Spiele</div></div>';
-    var eStr = s.einsaetze % 1 === 0 ? s.einsaetze : s.einsaetze.toFixed(1);
-    return '<div class="quick-card" style="background:' + c.bg + ';border-color:' + c.ac + '30"><div class="quick-tw" style="color:' + c.ac + '">TW ' + tw + '</div><div class="quick-num">' + eStr + '</div><div class="quick-lbl">Eins\u00e4tze</div><div class="quick-rec">' + s.siege + 'S \u00b7 ' + s.unentschieden + 'U \u00b7 ' + s.niederlagen + 'N</div></div>';
+    var einStr = s.einsaetze % 1 === 0 ? s.einsaetze : s.einsaetze.toFixed(1);
+    return '<div class="quick-card" style="background:' + c.bg + ';border-color:' + c.ac + '30"><div class="quick-tw" style="color:' + c.ac + '">TW ' + tw + '</div><div class="quick-num">' + einStr + '</div><div class="quick-lbl">Eins\u00e4tze</div><div class="quick-rec">' + s.siege + 'S \u00b7 ' + s.unentschieden + 'U \u00b7 ' + s.niederlagen + 'N</div></div>';
   }).join('');
 
   var twSection = '';
@@ -465,7 +465,7 @@ function renderSpiele() {
     cards;
 }
 
-function eStr(n) { return n % 1 === 0 ? String(n) : n.toFixed(1); }
+function eStr(n) { if (n === undefined || n === null) return '0'; return n % 1 === 0 ? String(n) : n.toFixed(1); }
 
 function sRow(label, arr, col) {
   if (!arr.length) return '';
