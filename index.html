@@ -263,10 +263,10 @@ function getStats(tw, liste) {
   var pflE = s.filter(function(x) { return x.typ === 'Pflichtspiel'; }).reduce(function(a, x) { return a + (x.geteilt ? 0.5 : 1); }, 0);
   var testE = s.filter(function(x) { return x.typ === 'Testspiel'; }).reduce(function(a, x) { return a + (x.geteilt ? 0.5 : 1); }, 0);
   return {
-    tw: tw, liste: s, einsaetze: einsaetze, siege: siege, niederlagen: nied,
+    tw: tw, liste: s, ein: einsaetze, siege: siege, niederlagen: nied,
     unentschieden: unt, kassiert: kass, geschossen: gesch,
     schnitt: einsaetze ? (kass / einsaetze).toFixed(2) : '0.00',
-    pflichtE: pflE, testE: testE,
+    pflE: pflE, testE: testE,
     hatWechsel: s.some(function(x) { return x.halbzeit; })
   };
 }
@@ -370,7 +370,7 @@ function renderEingabe() {
     var s = getStats(tw, spiele);
     var c = gc(tw);
     if (!s) return '<div class="quick-card" style="background:#1a1f35;border-color:#2a2f45"><div class="quick-tw" style="color:#4b5563">TW ' + tw + '</div><div style="font-size:11px;color:#374151;margin-top:6px">Keine Spiele</div></div>';
-    var einStr = s.einsaetze % 1 === 0 ? s.einsaetze : s.einsaetze.toFixed(1);
+    var einStr = s.ein % 1 === 0 ? s.ein : s.ein.toFixed(1);
     return '<div class="quick-card" style="background:' + c.bg + ';border-color:' + c.ac + '30"><div class="quick-tw" style="color:' + c.ac + '">TW ' + tw + '</div><div class="quick-num">' + einStr + '</div><div class="quick-lbl">Eins\u00e4tze</div><div class="quick-rec">' + s.siege + 'S \u00b7 ' + s.unentschieden + 'U \u00b7 ' + s.niederlagen + 'N</div></div>';
   }).join('');
 
