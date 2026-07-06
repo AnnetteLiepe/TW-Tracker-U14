@@ -564,11 +564,11 @@ function renderSaison() {
 
     // Find max value and max data points
     var allVals = [];
-    Object.values(twData).forEach(function(arr) { arr.forEach(function(v){allVals.push(v);}); });
+    Object.keys(twData).forEach(function(tw) { twData[tw].forEach(function(v){allVals.push(v);}); });
     var maxVal = allVals.length ? Math.max.apply(null, allVals) : 4;
     maxVal = Math.max(maxVal, 1);
     var maxPoints = 0;
-    Object.values(twData).forEach(function(arr){ if(arr.length > maxPoints) maxPoints = arr.length; });
+    Object.keys(twData).forEach(function(tw){ if(twData[tw].length > maxPoints) maxPoints = twData[tw].length; });
     if (maxPoints < 2) maxPoints = 2;
 
     // Draw SVG lines
