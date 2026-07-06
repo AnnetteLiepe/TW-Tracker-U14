@@ -188,7 +188,8 @@ function defForm() {
     zweiTW: false,
     torwart:'', toreHeim:'', toreGast:'',
     torwart1:'', torwart2:'',
-    hz1H:'0', hz1G:'0', hz2H:'0', hz2G:'0'
+    hz1H:'0', hz1G:'0', hz2H:'0', hz2G:'0',
+    platzWir:'', platzGegner:''
   };
 }
 let form = defForm();
@@ -394,6 +395,11 @@ function renderEingabe() {
     '<div class="field-row"><div class="field"><label class="lbl">Spieltyp</label><select onchange="sf(\'typ\',this.value);render()"><option' + (form.typ==='Pflichtspiel'?' selected':'') + '>Pflichtspiel</option><option' + (form.typ==='Testspiel'?' selected':'') + '>Testspiel</option></select></div><div class="field"><label class="lbl">Heim / Ausw&auml;rts</label><select onchange="sf(\'heimwaerts\',this.value);render()"><option' + (form.heimwaerts==='Heim'?' selected':'') + '>Heim</option><option' + (form.heimwaerts==='Ausw\u00e4rts'?' selected':'') + '>Ausw&auml;rts</option></select></div></div>' +
     '<div class="field"><label class="lbl">Torwarte</label><div class="tw-toggle"><div class="tw-btn' + (!form.zweiTW?' active':'') + '" onclick="setZweiTW(false)">Ein Torwart</div><div class="tw-btn' + (form.zweiTW?' active':'') + '" onclick="setZweiTW(true)">Zwei Torwarte</div></div></div>' +
     twSection +
+    (form.typ === 'Pflichtspiel' ?
+      '<div class="field-row">' +
+        '<div class="field"><label class="lbl">Unser Tabellenplatz</label><input type="number" min="1" max="20" placeholder="z.B. 3" value="' + form.platzWir + '" oninput="sf(\'platzWir\',this.value)"/></div>' +
+        '<div class="field"><label class="lbl">Tabellenplatz Gegner</label><input type="number" min="1" max="20" placeholder="z.B. 7" value="' + form.platzGegner + '" oninput="sf(\'platzGegner\',this.value)"/></div>' +
+      '</div>' : '') +
     '<div class="field"><label class="lbl">Bemerkung</label><textarea placeholder="z.B. starker Wind, Verletzung..." oninput="sf(\'bemerkung\',this.value)">' + form.bemerkung + '</textarea></div>' +
     '<button class="btn-primary" onclick="submitForm()">' + (editId ? 'Speichern' : 'Spiel eintragen') + '</button>' +
     (editId ? '<button class="btn-secondary" onclick="cancelEdit()">Abbrechen</button>' : '') +
@@ -610,7 +616,85 @@ function renderSaison() {
 
   var compare = allStats.length > 1 ? '<div class="card"><div class="card-title">Direktvergleich</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>Pfl.</th><th>Test</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>' + tableRows + '</tbody></table></div></div>' : '';
 
-  return '<div class="filter-row">' + filterBtns + '</div>' + uebersicht + cards + chartCard + compare;
+  // Gegner-Stärke-Analyse (nur Pflichtspiele mit Tabellenplatz)
+  var staerkeCard = '';
+  var pflichtMitPlatz = filtered.filter(function(x) {
+    return x.typ === 'Pflichtspiel' && x.platzWir && x.platzGegner && !x.geteilt;
+  });
+  if (pflichtMitPlatz.length > 0) {
+    var staerkeRows = allStats.map(function(s) {
+      var twSpiele = pflichtMitPlatz.filter(function(x) { return x.torwart === s.tw; });
+      if (!twSpiele.length) return '';
+      var staerker = twSpiele.filter(function(x) { return x.platzGegner < x.platzWir - 2; });
+      var gleich   = twSpiele.filter(function(x) { return Math.abs(x.platzGegner - x.platzWir) <= 2; });
+      var schwaecher = twSpiele.filter(function(x) { return x.platzGegner > x.platzWir + 2; });
+
+      function sRow(label, arr, col) {
+        if (!arr.length) return '';
+        var s2 = arr.filter(function(x){return x.ergebnis==='Sieg';}).length;
+        var u = arr.filter(function(x){return x.ergebnis==='Unentschieden';}).length;
+        var n = arr.filter(function(x){return x.ergebnis==='Niederlage';}).length;
+        return '<tr><td style="color:'+col+'">' + label + '</td><td>' + arr.length + '</td>' +
+          '<td style="color:#22c55e">' + s2 + '</td><td style="color:#f59e0b">' + u + '</td><td style="color:#ef4444">' + n + '</td></tr>';
+      }
+
+      var c = gc(s.tw);
+      return '<div style="margin-bottom:14px">' +
+        '<div style="font-weight:700;color:' + c.ac + ';margin-bottom:8px">TW ' + s.tw + '</div>' +
+        '<div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>Gegner</th><th>Spiele</th><th>S</th><th>U</th><th>N</th></tr></thead><tbody>' +
+        sRow('Staerker', staerker, '#ef4444') +
+        sRow('Gleichstark', gleich, '#f59e0b') +
+        sRow('Schwaecher', schwaecher, '#22c55e') +
+        '</tbody></table></div></div>';
+    }).join('');
+
+    staerkeCard = '<div class="card"><div class="card-title">Gegnerstaerke-Analyse (Pflichtspiele)</div>' +
+      '<div style="font-size:11px;color:#6b7280;margin-bottom:12px">Staerker = Gegner mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>' +
+      staerkeRows + '</div>';
+  }
+
+  // Pflicht/Test-Aufschlüsselung
+  var pflichtTest = '';
+  var pflGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Pflichtspiel';}));
+  var testGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Testspiel';}));
+
+  function spieleTabelle(gruppe, label) {
+    if (!gruppe.length) return '';
+    var s = gruppe.filter(function(x){return x.ergebnis==='Sieg';}).length;
+    var u = gruppe.filter(function(x){return x.ergebnis==='Unentschieden';}).length;
+    var n = gruppe.filter(function(x){return x.ergebnis==='Niederlage';}).length;
+    var quote = gruppe.length ? ((s/gruppe.length)*100).toFixed(0) : 0;
+    return '<div style="margin-bottom:6px"><span style="font-size:12px;color:#9ca3af">' + label + ':</span> ' +
+      '<span style="font-size:13px;color:#fff;font-weight:700">' + gruppe.length + ' Spiele</span> &nbsp; ' +
+      '<span style="color:#22c55e">' + s + 'S</span> &nbsp;' +
+      '<span style="color:#f59e0b">' + u + 'U</span> &nbsp;' +
+      '<span style="color:#ef4444">' + n + 'N</span> &nbsp;' +
+      '<span style="color:#4a9eff">' + quote + '% Siege</span></div>';
+  }
+
+  pflichtTest = '<div class="card"><div class="card-title">Pflicht- vs. Testspiele</div>' +
+    spieleTabelle(pflGesamt, 'Pflichtspiele gesamt') +
+    spieleTabelle(testGesamt, 'Testspiele gesamt') +
+    '<div style="height:1px;background:#2a2f45;margin:12px 0"></div>' +
+    allStats.map(function(s) {
+      var c = gc(s.tw);
+      var pflS = s.liste.filter(function(x){return x.typ==='Pflichtspiel';});
+      var testS = s.liste.filter(function(x){return x.typ==='Testspiel';});
+      var pflEin = pflS.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
+      var testEin = testS.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
+      var pflSieg = pflS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
+      var pflNied = pflS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
+      var testSieg = testS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
+      var testNied = testS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
+      return '<div style="margin-bottom:10px">' +
+        '<div style="font-weight:700;color:' + c.ac + ';margin-bottom:4px">TW ' + s.tw + '</div>' +
+        (pflEin > 0 ? '<div style="font-size:12px;color:#9ca3af">Pflicht: <span style="color:#fff">' + eStr(pflEin) + ' Eins.</span> &nbsp; <span style="color:#22c55e">' + eStr(pflSieg) + 'S</span> &nbsp; <span style="color:#ef4444">' + eStr(pflNied) + 'N</span></div>' : '') +
+        (testEin > 0 ? '<div style="font-size:12px;color:#9ca3af">Test: <span style="color:#fff">' + eStr(testEin) + ' Eins.</span> &nbsp; <span style="color:#22c55e">' + eStr(testSieg) + 'S</span> &nbsp; <span style="color:#ef4444">' + eStr(testNied) + 'N</span></div>' : '') +
+        '</div>';
+    }).join('') +
+    '</div>';
+
+  return '<div class="filter-row">' + filterBtns + '</div>' + uebersicht + cards + pflichtTest + chartCard + staerkeCard + compare;
 }
 
 window.sf = function(k, v) { form[k] = v; };
@@ -656,7 +740,7 @@ window.submitForm = async function() {
       var kass = form.heimwaerts === 'Heim' ? g : h;
       var gesch = form.heimwaerts === 'Heim' ? h : g;
       var e2 = erg(gesch, kass);
-      var spiel = {datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, torwart:form.torwart, geteilt:false, toreHeim:h, toreGast:g, kassiert:kass, geschossen:gesch, ergebnis:e2};
+      var spiel = {datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, torwart:form.torwart, geteilt:false, toreHeim:h, toreGast:g, kassiert:kass, geschossen:gesch, ergebnis:e2, platzWir:form.platzWir?parseInt(form.platzWir):null, platzGegner:form.platzGegner?parseInt(form.platzGegner):null};
       if (editId) await set(ref(db, 'spiele/' + editId), spiel);
       else await push(spieleRef, spiel);
     }
@@ -697,6 +781,8 @@ window.editSpiel = function(id, isG) {
     form.datum = s.datum; form.gegner = s.gegner; form.spieltag = s.spieltag || '';
     form.typ = s.typ; form.heimwaerts = s.heimwaerts; form.bemerkung = s.bemerkung || '';
     form.torwart = s.torwart; form.toreHeim = String(s.toreHeim); form.toreGast = String(s.toreGast);
+    form.platzWir = s.platzWir ? String(s.platzWir) : '';
+    form.platzGegner = s.platzGegner ? String(s.platzGegner) : '';
     editId = id;
   }
   sw('eingabe');
