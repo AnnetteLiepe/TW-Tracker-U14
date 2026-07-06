@@ -465,6 +465,8 @@ function renderSpiele() {
     cards;
 }
 
+function eStr(n) { return n % 1 === 0 ? String(n) : n.toFixed(1); }
+
 function sRow(label, arr, col) {
   if (!arr.length) return '';
   var s2 = arr.filter(function(x){return x.ergebnis==='Sieg';}).length;
