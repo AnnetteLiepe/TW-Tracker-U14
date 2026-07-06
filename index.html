@@ -319,9 +319,13 @@ window.sw = function(v) {
 
 function render() {
   var el = document.getElementById('main');
-  if (view === 'eingabe') el.innerHTML = renderEingabe();
-  else if (view === 'spiele') el.innerHTML = renderSpiele();
-  else el.innerHTML = renderSaison();
+  try {
+    if (view === 'eingabe') el.innerHTML = renderEingabe();
+    else if (view === 'spiele') el.innerHTML = renderSpiele();
+    else el.innerHTML = renderSaison();
+  } catch(e) {
+    el.innerHTML = '<div style="color:#ef4444;padding:20px;font-size:13px">Fehler: ' + e.message + '</div>';
+  }
 }
 
 function liveInfo(tw, hz, hH, hG) {
@@ -476,6 +480,11 @@ function spieleTabelle(gruppe, label) {
   var n = gruppe.filter(function(x){return x.ergebnis==='Niederlage';}).length;
   var quote = gruppe.length ? ((s/gruppe.length)*100).toFixed(0) : 0;
   return '<div style="margin-bottom:6px"><span style="font-size:12px;color:#9ca3af">'+label+':</span> <span style="font-size:13px;color:#fff;font-weight:700">'+gruppe.length+' Spiele</span> &nbsp; <span style="color:#22c55e">'+s+'S</span> &nbsp;<span style="color:#f59e0b">'+u+'U</span> &nbsp;<span style="color:#ef4444">'+n+'N</span> &nbsp;<span style="color:#4a9eff">'+quote+'% Siege</span></div>';
+}
+
+function getErgebnis(x) {
+  if (x._isG) return x.ergebnis;
+  return x.ergebnis;
 }
 
 function renderSaison() {
