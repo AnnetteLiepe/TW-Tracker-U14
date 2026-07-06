@@ -461,222 +461,90 @@ function renderSpiele() {
     cards;
 }
 
+function sRow(label, arr, col) {
+  if (!arr.length) return '';
+  var s2 = arr.filter(function(x){return x.ergebnis==='Sieg';}).length;
+  var u = arr.filter(function(x){return x.ergebnis==='Unentschieden';}).length;
+  var n = arr.filter(function(x){return x.ergebnis==='Niederlage';}).length;
+  return '<tr><td style="color:'+col+'">'+label+'</td><td>'+arr.length+'</td><td style="color:#22c55e">'+s2+'</td><td style="color:#f59e0b">'+u+'</td><td style="color:#ef4444">'+n+'</td></tr>';
+}
+
+function spieleTabelle(gruppe, label) {
+  if (!gruppe.length) return '';
+  var s = gruppe.filter(function(x){return x.ergebnis==='Sieg';}).length;
+  var u = gruppe.filter(function(x){return x.ergebnis==='Unentschieden';}).length;
+  var n = gruppe.filter(function(x){return x.ergebnis==='Niederlage';}).length;
+  var quote = gruppe.length ? ((s/gruppe.length)*100).toFixed(0) : 0;
+  return '<div style="margin-bottom:6px"><span style="font-size:12px;color:#9ca3af">'+label+':</span> <span style="font-size:13px;color:#fff;font-weight:700">'+gruppe.length+' Spiele</span> &nbsp; <span style="color:#22c55e">'+s+'S</span> &nbsp;<span style="color:#f59e0b">'+u+'U</span> &nbsp;<span style="color:#ef4444">'+n+'N</span> &nbsp;<span style="color:#4a9eff">'+quote+'% Siege</span></div>';
+}
+
 function renderSaison() {
   var filtered = getFiltered();
-  var allStats = ['1','12','22'].map(function(tw) { return getStats(tw, filtered); }).filter(Boolean);
+  var allStats = ['1','12','22'].map(function(tw){return getStats(tw,filtered);}).filter(Boolean);
   var grouped = groupSpiele(filtered);
   var gesamtSpiele = grouped.length;
-  var pflichtSpiele = grouped.filter(function(x) { return x.typ === 'Pflichtspiel'; }).length;
-  var testSpiele = grouped.filter(function(x) { return x.typ === 'Testspiel'; }).length;
+  var pflichtSpiele = grouped.filter(function(x){return x.typ==='Pflichtspiel';}).length;
+  var testSpiele = grouped.filter(function(x){return x.typ==='Testspiel';}).length;
 
-  var filterBtns = ['Alle','Pflichtspiel','Testspiel'].map(function(f) {
-    return '<button class="filter-btn' + (filterTyp===f?' active':'') + '" onclick="setFilter(\'' + f + '\')">' + f + '</button>';
+  var filterBtns = ['Alle','Pflichtspiel','Testspiel'].map(function(f){
+    return '<button class="filter-btn'+(filterTyp===f?' active':'')+('" onclick="setFilter(\'' + f + '\')">')+f+'</button>';
   }).join('');
 
-  if (!allStats.length) return '<div class="filter-row">' + filterBtns + '</div><div class="no-spiele">Noch keine Spiele eingetragen.</div>';
+  if (!allStats.length) return '<div class="filter-row">'+filterBtns+'</div><div class="no-spiele">Noch keine Spiele eingetragen.</div>';
 
-  var uebersicht = '<div class="uebersicht"><div class="card-title">Spiel\u00fcbersicht</div>' +
-    '<div class="stat-grid3">' +
-    '<div class="stat-cell"><div class="stat-num" style="color:#fff">' + gesamtSpiele + '</div><div class="stat-lbl">Spiele gesamt</div></div>' +
-    '<div class="stat-cell"><div class="stat-num" style="color:#4a9eff">' + pflichtSpiele + '</div><div class="stat-lbl">Pflichtspiele</div></div>' +
-    '<div class="stat-cell"><div class="stat-num" style="color:#4adf7f">' + testSpiele + '</div><div class="stat-lbl">Testspiele</div></div>' +
+  // Spieluebersicht
+  var uebersicht = '<div class="uebersicht"><div class="card-title">Spieluebersicht</div><div class="g3">'+
+    '<div class="stat-cell"><div class="stat-num" style="color:#fff">'+gesamtSpiele+'</div><div class="stat-lbl">Spiele gesamt</div></div>'+
+    '<div class="stat-cell"><div class="stat-num" style="color:#4a9eff">'+pflichtSpiele+'</div><div class="stat-lbl">Pflichtspiele</div></div>'+
+    '<div class="stat-cell"><div class="stat-num" style="color:#4adf7f">'+testSpiele+'</div><div class="stat-lbl">Testspiele</div></div>'+
     '</div></div>';
 
+  // TW-Karten
   var cards = allStats.map(function(s) {
     var c = gc(s.tw);
-    var wr = s.einsaetze ? ((s.siege / s.einsaetze) * 100).toFixed(0) : 0;
-    var eStr = s.einsaetze % 1 === 0 ? String(s.einsaetze) : s.einsaetze.toFixed(1);
-    var pflStr = s.pflichtE % 1 === 0 ? String(s.pflichtE) : s.pflichtE.toFixed(1);
-    var testStr = s.testE % 1 === 0 ? String(s.testE) : s.testE.toFixed(1);
-
-    var recent = s.liste.slice().sort(function(a,b) { return b.datum.localeCompare(a.datum); }).slice(0,5).map(function(x) {
-      var fc = RC[x.ergebnis] || '#aaa';
-      var k = x.ergebnis === 'Sieg' ? 'S' : x.ergebnis === 'Niederlage' ? 'N' : 'U';
-      var hz = x.halbzeit ? (' ' + x.halbzeit + '.HZ') : '';
-      var gt = x.geteilt ? ' (1/2)' : '';
-      return '<div class="recent-pill" style="background:' + fc + '20;color:' + fc + ';border-color:' + fc + '40">' + k + hz + gt + ' ' + x.kassiert + 'GT</div>';
+    var wr = s.ein ? ((s.siege/s.ein)*100).toFixed(0) : 0;
+    var recent = s.liste.slice().sort(function(a,b){return b.datum.localeCompare(a.datum);}).slice(0,5).map(function(x){
+      var fc = RC[x.ergebnis]||'#aaa';
+      var k = x.ergebnis==='Sieg'?'S':x.ergebnis==='Niederlage'?'N':'U';
+      var hz = x.halbzeit?' '+x.halbzeit+'.HZ':'';
+      var gt = x.geteilt?' (1/2)':'';
+      return '<div class="recent-pill" style="background:'+fc+'20;color:'+fc+';border-color:'+fc+'40">'+k+hz+gt+' '+x.kassiert+'GT</div>';
     }).join('');
-
-    return '<div class="stat-card" style="border-color:' + c.ac + '30">' +
-      '<div class="stat-header">' +
-      '<div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px">&#x1F9E4;</span>' +
-      '<div><div class="stat-tw" style="color:' + c.ac + '">Torwart ' + s.tw + '</div>' +
-      '<div class="stat-einsaetze">' + eStr + ' Eins\u00e4tze \u00b7 ' + (filterTyp==='Alle'?'Gesamt':filterTyp) + '</div>' +
-      (filterTyp==='Alle' ? '<div style="font-size:10px;color:#4b5563;margin-top:2px">' + pflStr + ' Pflicht \u00b7 ' + testStr + ' Test</div>' : '') +
-      '</div></div>' +
-      '<div><div class="stat-rate">' + wr + '%</div><div class="stat-rate-lbl">Siegquote</div></div>' +
-      '</div>' +
-      '<div class="bar"><div style="flex:' + (s.siege||0.001) + ';background:#22c55e"></div><div style="flex:' + (s.unentschieden||0.001) + ';background:#f59e0b"></div><div style="flex:' + (s.niederlagen||0.001) + ';background:#ef4444"></div></div>' +
-      '<div class="stat-grid3">' +
-      '<div class="stat-cell"><div class="stat-num" style="color:#22c55e">' + s.siege + '</div><div class="stat-lbl">Siege</div></div>' +
-      '<div class="stat-cell"><div class="stat-num" style="color:#f59e0b">' + s.unentschieden + '</div><div class="stat-lbl">Unentschieden</div></div>' +
-      '<div class="stat-cell"><div class="stat-num" style="color:#ef4444">' + s.niederlagen + '</div><div class="stat-lbl">Niederlagen</div></div>' +
-      '</div>' +
-      '<div class="stat-grid3">' +
-      '<div class="stat-cell"><div class="stat-icon">&#x26BD;</div><div class="stat-num" style="color:#fff">' + s.geschossen + '</div><div class="stat-lbl">Geschossen</div></div>' +
-      '<div class="stat-cell"><div class="stat-icon">&#x1F945;</div><div class="stat-num" style="color:#fff">' + s.kassiert + '</div><div class="stat-lbl">Kassiert</div></div>' +
-      '<div class="stat-cell"><div class="stat-icon">&#x1F4CA;</div><div class="stat-num" style="color:#fff">' + s.schnitt + '</div><div class="stat-lbl">Gegentore/Eins.</div></div>' +
-      '</div>' +
-      '<div class="recent-lbl">LETZTE EINSAETZE</div>' +
-      '<div class="recent-pills">' + (recent || '<span style="color:#4b5563;font-size:12px">-</span>') + '</div>' +
-      (s.hatWechsel ? '<div class="note-box">Geteilte Spiele zaehlen als 1/2 Einsatz</div>' : '') +
+    return '<div class="stat-card" style="border-color:'+c.ac+'30">'+
+      '<div class="stat-header">'+
+        '<div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px">&#x1F9E4;</span>'+
+        '<div><div class="stat-tw" style="color:'+c.ac+'">Torwart '+s.tw+'</div>'+
+        '<div class="stat-ein">'+eStr(s.ein)+' Einsaetze &middot; '+(filterTyp==='Alle'?'Gesamt':filterTyp)+'</div>'+
+        (filterTyp==='Alle'?'<div style="font-size:10px;color:#4b5563;margin-top:2px">'+eStr(s.pflE)+' Pflicht &middot; '+eStr(s.testE)+' Test</div>':'')+
+        '</div></div>'+
+        '<div><div class="stat-rate">'+wr+'%</div><div class="stat-rate-lbl">Siegquote</div></div>'+
+      '</div>'+
+      '<div class="bar"><div style="flex:'+(s.siege||0.001)+';background:#22c55e"></div><div style="flex:'+(s.unentschieden||0.001)+';background:#f59e0b"></div><div style="flex:'+(s.niederlagen||0.001)+';background:#ef4444"></div></div>'+
+      '<div class="g3">'+
+        '<div class="stat-cell"><div class="stat-num" style="color:#22c55e">'+eStr(s.siege)+'</div><div class="stat-lbl">Siege</div></div>'+
+        '<div class="stat-cell"><div class="stat-num" style="color:#f59e0b">'+eStr(s.unentschieden)+'</div><div class="stat-lbl">Unentschieden</div></div>'+
+        '<div class="stat-cell"><div class="stat-num" style="color:#ef4444">'+eStr(s.niederlagen)+'</div><div class="stat-lbl">Niederlagen</div></div>'+
+      '</div>'+
+      '<div class="g3">'+
+        '<div class="stat-cell"><div class="stat-icon">&#x26BD;</div><div class="stat-num" style="color:#fff">'+s.geschossen+'</div><div class="stat-lbl">Geschossen</div></div>'+
+        '<div class="stat-cell"><div class="stat-icon">&#x1F945;</div><div class="stat-num" style="color:#fff">'+s.kassiert+'</div><div class="stat-lbl">Kassiert</div></div>'+
+        '<div class="stat-cell"><div class="stat-icon">&#x1F4CA;</div><div class="stat-num" style="color:#fff">'+s.schnitt+'</div><div class="stat-lbl">Schnitt</div></div>'+
+      '</div>'+
+      '<div class="recent-lbl">LETZTE EINSAETZE</div>'+
+      '<div class="recent-pills">'+(recent||'<span style="color:#4b5563">-</span>')+'</div>'+
+      (s.hatWechsel?'<div class="note-box">Geteilte Spiele zaehlen als 1/2 Einsatz</div>':'')+
       '</div>';
   }).join('');
 
-  var tableRows = '';
-  if (allStats.length > 1) {
-    var sorted = allStats.slice().sort(function(a,b) {
-      var ra = a.einsaetze ? a.siege / a.einsaetze : 0;
-      var rb = b.einsaetze ? b.siege / b.einsaetze : 0;
-      return rb - ra;
-    });
-    tableRows = sorted.map(function(s) {
-      var c = gc(s.tw);
-      var wr = s.einsaetze ? ((s.siege / s.einsaetze) * 100).toFixed(0) : 0;
-      var eStr = s.einsaetze % 1 === 0 ? String(s.einsaetze) : s.einsaetze.toFixed(1);
-      var pflStr = s.pflichtE % 1 === 0 ? String(s.pflichtE) : s.pflichtE.toFixed(1);
-      var testStr = s.testE % 1 === 0 ? String(s.testE) : s.testE.toFixed(1);
-      return '<tr><td style="color:' + c.ac + ';font-weight:800">TW ' + s.tw + '</td><td>' + eStr + '</td><td style="color:#4a9eff">' + pflStr + '</td><td style="color:#4adf7f">' + testStr + '</td><td style="color:#22c55e;font-weight:700">' + s.siege + '</td><td style="color:#f59e0b;font-weight:700">' + s.unentschieden + '</td><td style="color:#ef4444;font-weight:700">' + s.niederlagen + '</td><td style="color:#fff;font-weight:700">' + wr + '%</td><td>' + s.kassiert + '</td><td>' + s.schnitt + '</td></tr>';
-    }).join('');
-  }
-
-  // Verlaufsgrafik
-  var chartCard = '';
-  if (allStats.length > 0) {
-    var chartH = 140;
-    var chartW = 320;
-    var pad = 30;
-    var colors = {'1':'#4a9eff', '12':'#4adf7f', '22':'#ff6b4a'};
-
-    // Build data per TW: sorted spiels with running average
-    var twData = {};
-    ['1','12','22'].forEach(function(tw) {
-      var s = getStats(tw, filtered);
-      if (!s) return;
-      var sorted = s.liste.slice().sort(function(a,b){return a.datum.localeCompare(b.datum);});
-      var cumKass = 0, cumEin = 0;
-      twData[tw] = sorted.map(function(x) {
-        cumKass += x.kassiert;
-        cumEin += x.geteilt ? 0.5 : 1;
-        return cumEin ? cumKass / cumEin : 0;
-      });
-    });
-
-    // Find max value and max data points
-    var allVals = [];
-    Object.keys(twData).forEach(function(tw) { twData[tw].forEach(function(v){allVals.push(v);}); });
-    var maxVal = allVals.length ? Math.max.apply(null, allVals) : 4;
-    maxVal = Math.max(maxVal, 1);
-    var maxPoints = 0;
-    Object.keys(twData).forEach(function(tw){ if(twData[tw].length > maxPoints) maxPoints = twData[tw].length; });
-    if (maxPoints < 2) maxPoints = 2;
-
-    // Draw SVG lines
-    var lines = '';
-    Object.keys(twData).forEach(function(tw) {
-      var arr = twData[tw];
-      if (!arr.length) return;
-      var col = colors[tw] || '#aaa';
-      var pts = arr.map(function(v, i) {
-        var x = pad + (i / (maxPoints - 1)) * (chartW - pad * 2);
-        var y = chartH - pad - (v / maxVal) * (chartH - pad * 2);
-        return x.toFixed(1) + ',' + y.toFixed(1);
-      }).join(' ');
-      lines += '<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
-      // Dots
-      arr.forEach(function(v, i) {
-        var x = pad + (i / (maxPoints - 1)) * (chartW - pad * 2);
-        var y = chartH - pad - (v / maxVal) * (chartH - pad * 2);
-        lines += '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="'+col+'"/>';
-      });
-    });
-
-    // Y axis labels
-    var yLabels = '';
-    for (var i = 0; i <= 4; i++) {
-      var val = (maxVal * i / 4).toFixed(1);
-      var y = chartH - pad - (i / 4) * (chartH - pad * 2);
-      yLabels += '<text x="'+(pad-4)+'" y="'+(y+4)+'" text-anchor="end" fill="#4b5563" font-size="9">'+val+'</text>';
-      yLabels += '<line x1="'+pad+'" y1="'+y+'" x2="'+(chartW-pad)+'" y2="'+y+'" stroke="#2a2f45" stroke-width="0.5"/>';
-    }
-
-    // Legend
-    var legend = Object.keys(twData).map(function(tw) {
-      var col = colors[tw];
-      return '<span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;font-size:11px;color:'+col+'"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="'+col+'" stroke-width="2.5"/></svg>TW '+tw+'</span>';
-    }).join('');
-
-    chartCard = '<div class="card"><div class="card-title">Verlauf Gegentorschnitt</div>' +
-      '<div style="overflow-x:auto"><svg width="'+chartW+'" height="'+chartH+'" style="display:block;margin:0 auto">'+
-      yLabels + lines +
-      '</svg></div>' +
-      '<div style="margin-top:10px;text-align:center">'+legend+'</div>' +
-      '</div>';
-  }
-
-  var compare = allStats.length > 1 ? '<div class="card"><div class="card-title">Direktvergleich</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>Pfl.</th><th>Test</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>' + tableRows + '</tbody></table></div></div>' : '';
-
-  // Gegner-Stärke-Analyse (nur Pflichtspiele mit Tabellenplatz)
-  var staerkeCard = '';
-  var pflichtMitPlatz = filtered.filter(function(x) {
-    return x.typ === 'Pflichtspiel' && x.platzWir && x.platzGegner && !x.geteilt;
-  });
-  if (pflichtMitPlatz.length > 0) {
-    var staerkeRows = allStats.map(function(s) {
-      var twSpiele = pflichtMitPlatz.filter(function(x) { return x.torwart === s.tw; });
-      if (!twSpiele.length) return '';
-      var staerker = twSpiele.filter(function(x) { return x.platzGegner < x.platzWir - 2; });
-      var gleich   = twSpiele.filter(function(x) { return Math.abs(x.platzGegner - x.platzWir) <= 2; });
-      var schwaecher = twSpiele.filter(function(x) { return x.platzGegner > x.platzWir + 2; });
-
-      function sRow(label, arr, col) {
-        if (!arr.length) return '';
-        var s2 = arr.filter(function(x){return x.ergebnis==='Sieg';}).length;
-        var u = arr.filter(function(x){return x.ergebnis==='Unentschieden';}).length;
-        var n = arr.filter(function(x){return x.ergebnis==='Niederlage';}).length;
-        return '<tr><td style="color:'+col+'">' + label + '</td><td>' + arr.length + '</td>' +
-          '<td style="color:#22c55e">' + s2 + '</td><td style="color:#f59e0b">' + u + '</td><td style="color:#ef4444">' + n + '</td></tr>';
-      }
-
-      var c = gc(s.tw);
-      return '<div style="margin-bottom:14px">' +
-        '<div style="font-weight:700;color:' + c.ac + ';margin-bottom:8px">TW ' + s.tw + '</div>' +
-        '<div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>Gegner</th><th>Spiele</th><th>S</th><th>U</th><th>N</th></tr></thead><tbody>' +
-        sRow('Staerker', staerker, '#ef4444') +
-        sRow('Gleichstark', gleich, '#f59e0b') +
-        sRow('Schwaecher', schwaecher, '#22c55e') +
-        '</tbody></table></div></div>';
-    }).join('');
-
-    staerkeCard = '<div class="card"><div class="card-title">Gegnerstaerke-Analyse (Pflichtspiele)</div>' +
-      '<div style="font-size:11px;color:#6b7280;margin-bottom:12px">Staerker = Gegner mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>' +
-      staerkeRows + '</div>';
-  }
-
-  // Pflicht/Test-Aufschlüsselung
-  var pflichtTest = '';
+  // Pflicht vs Test
   var pflGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Pflichtspiel';}));
   var testGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Testspiel';}));
 
-  function spieleTabelle(gruppe, label) {
-    if (!gruppe.length) return '';
-    var s = gruppe.filter(function(x){return x.ergebnis==='Sieg';}).length;
-    var u = gruppe.filter(function(x){return x.ergebnis==='Unentschieden';}).length;
-    var n = gruppe.filter(function(x){return x.ergebnis==='Niederlage';}).length;
-    var quote = gruppe.length ? ((s/gruppe.length)*100).toFixed(0) : 0;
-    return '<div style="margin-bottom:6px"><span style="font-size:12px;color:#9ca3af">' + label + ':</span> ' +
-      '<span style="font-size:13px;color:#fff;font-weight:700">' + gruppe.length + ' Spiele</span> &nbsp; ' +
-      '<span style="color:#22c55e">' + s + 'S</span> &nbsp;' +
-      '<span style="color:#f59e0b">' + u + 'U</span> &nbsp;' +
-      '<span style="color:#ef4444">' + n + 'N</span> &nbsp;' +
-      '<span style="color:#4a9eff">' + quote + '% Siege</span></div>';
-  }
-
-  pflichtTest = '<div class="card"><div class="card-title">Pflicht- vs. Testspiele</div>' +
-    spieleTabelle(pflGesamt, 'Pflichtspiele gesamt') +
-    spieleTabelle(testGesamt, 'Testspiele gesamt') +
-    '<div style="height:1px;background:#2a2f45;margin:12px 0"></div>' +
-    allStats.map(function(s) {
+  var pflichtTest = '<div class="card"><div class="card-title">Pflicht- vs. Testspiele</div>'+
+    spieleTabelle(pflGesamt,'Pflichtspiele gesamt')+
+    spieleTabelle(testGesamt,'Testspiele gesamt')+
+    '<div style="height:1px;background:#2a2f45;margin:12px 0"></div>'+
+    allStats.map(function(s){
       var c = gc(s.tw);
       var pflS = s.liste.filter(function(x){return x.typ==='Pflichtspiel';});
       var testS = s.liste.filter(function(x){return x.typ==='Testspiel';});
@@ -686,15 +554,102 @@ function renderSaison() {
       var pflNied = pflS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
       var testSieg = testS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
       var testNied = testS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
-      return '<div style="margin-bottom:10px">' +
-        '<div style="font-weight:700;color:' + c.ac + ';margin-bottom:4px">TW ' + s.tw + '</div>' +
-        (pflEin > 0 ? '<div style="font-size:12px;color:#9ca3af">Pflicht: <span style="color:#fff">' + eStr(pflEin) + ' Eins.</span> &nbsp; <span style="color:#22c55e">' + eStr(pflSieg) + 'S</span> &nbsp; <span style="color:#ef4444">' + eStr(pflNied) + 'N</span></div>' : '') +
-        (testEin > 0 ? '<div style="font-size:12px;color:#9ca3af">Test: <span style="color:#fff">' + eStr(testEin) + ' Eins.</span> &nbsp; <span style="color:#22c55e">' + eStr(testSieg) + 'S</span> &nbsp; <span style="color:#ef4444">' + eStr(testNied) + 'N</span></div>' : '') +
+      return '<div style="margin-bottom:10px">'+
+        '<div style="font-weight:700;color:'+c.ac+';margin-bottom:4px">TW '+s.tw+'</div>'+
+        (pflEin>0?'<div style="font-size:12px;color:#9ca3af">Pflicht: <span style="color:#fff">'+eStr(pflEin)+' Eins.</span> &nbsp; <span style="color:#22c55e">'+eStr(pflSieg)+'S</span> &nbsp; <span style="color:#ef4444">'+eStr(pflNied)+'N</span></div>':'')+
+        (testEin>0?'<div style="font-size:12px;color:#9ca3af">Test: <span style="color:#fff">'+eStr(testEin)+' Eins.</span> &nbsp; <span style="color:#22c55e">'+eStr(testSieg)+'S</span> &nbsp; <span style="color:#ef4444">'+eStr(testNied)+'N</span></div>':'')+
         '</div>';
-    }).join('') +
+    }).join('')+
     '</div>';
 
-  return '<div class="filter-row">' + filterBtns + '</div>' + uebersicht + cards + pflichtTest + chartCard + staerkeCard + compare;
+  // Verlaufsgrafik
+  var chartCard = '';
+  var colors = {'1':'#4a9eff','12':'#4adf7f','22':'#ff6b4a'};
+  var chartH = 140, chartW = 320, pad = 30;
+  var twData = {};
+  ['1','12','22'].forEach(function(tw){
+    var s = getStats(tw,filtered);
+    if (!s) return;
+    var sorted = s.liste.slice().sort(function(a,b){return a.datum.localeCompare(b.datum);});
+    var cumK=0,cumE=0;
+    twData[tw] = sorted.map(function(x){
+      cumK+=x.kassiert; cumE+=(x.geteilt?0.5:1);
+      return cumE?cumK/cumE:0;
+    });
+  });
+  var allVals = [];
+  var twKeys = Object.keys(twData);
+  twKeys.forEach(function(tw){twData[tw].forEach(function(v){allVals.push(v);});});
+  var maxVal = allVals.length?Math.max.apply(null,allVals):4;
+  maxVal = Math.max(maxVal,1);
+  var maxPoints = 0;
+  twKeys.forEach(function(tw){if(twData[tw].length>maxPoints)maxPoints=twData[tw].length;});
+  if(maxPoints<2)maxPoints=2;
+  var lines='', legend='';
+  twKeys.forEach(function(tw){
+    var arr=twData[tw]; if(!arr.length)return;
+    var col=colors[tw]||'#aaa';
+    var pts=arr.map(function(v,i){
+      var x=pad+(i/(maxPoints-1))*(chartW-pad*2);
+      var y=chartH-pad-(v/maxVal)*(chartH-pad*2);
+      return x.toFixed(1)+','+y.toFixed(1);
+    }).join(' ');
+    lines+='<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    arr.forEach(function(v,i){
+      var x=pad+(i/(maxPoints-1))*(chartW-pad*2);
+      var y=chartH-pad-(v/maxVal)*(chartH-pad*2);
+      lines+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="'+col+'"/>';
+    });
+    legend+='<span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;font-size:11px;color:'+col+'"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="'+col+'" stroke-width="2.5"/></svg>TW '+tw+'</span>';
+  });
+  var yLabels='';
+  for(var i=0;i<=4;i++){
+    var val=(maxVal*i/4).toFixed(1);
+    var y=chartH-pad-(i/4)*(chartH-pad*2);
+    yLabels+='<text x="'+(pad-4)+'" y="'+(y+4)+'" text-anchor="end" fill="#4b5563" font-size="9">'+val+'</text>';
+    yLabels+='<line x1="'+pad+'" y1="'+y+'" x2="'+(chartW-pad)+'" y2="'+y+'" stroke="#2a2f45" stroke-width="0.5"/>';
+  }
+  chartCard='<div class="card"><div class="card-title">Verlauf Gegentorschnitt</div>'+
+    '<div style="overflow-x:auto"><svg width="'+chartW+'" height="'+chartH+'" style="display:block;margin:0 auto">'+yLabels+lines+'</svg></div>'+
+    '<div style="margin-top:10px;text-align:center">'+legend+'</div></div>';
+
+  // Gegnerstaerke
+  var staerkeCard = '';
+  var pflMitPlatz = filtered.filter(function(x){return x.typ==='Pflichtspiel'&&x.platzWir&&x.platzGegner&&!x.geteilt;});
+  if(pflMitPlatz.length>0){
+    var staerkeRows = allStats.map(function(s){
+      var twS = pflMitPlatz.filter(function(x){return x.torwart===s.tw;});
+      if(!twS.length)return '';
+      var staerker = twS.filter(function(x){return x.platzGegner<x.platzWir-2;});
+      var gleich = twS.filter(function(x){return Math.abs(x.platzGegner-x.platzWir)<=2;});
+      var schwaecher = twS.filter(function(x){return x.platzGegner>x.platzWir+2;});
+      var c = gc(s.tw);
+      return '<div style="margin-bottom:14px">'+
+        '<div style="font-weight:700;color:'+c.ac+';margin-bottom:8px">TW '+s.tw+'</div>'+
+        '<div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>Gegner</th><th>Spiele</th><th>S</th><th>U</th><th>N</th></tr></thead><tbody>'+
+        sRow('Staerker',staerker,'#ef4444')+
+        sRow('Gleichstark',gleich,'#f59e0b')+
+        sRow('Schwaecher',schwaecher,'#22c55e')+
+        '</tbody></table></div></div>';
+    }).join('');
+    staerkeCard='<div class="card"><div class="card-title">Gegnerstaerke (Pflichtspiele)</div>'+
+      '<div style="font-size:11px;color:#6b7280;margin-bottom:12px">Staerker = mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>'+
+      staerkeRows+'</div>';
+  }
+
+  // Direktvergleich
+  var compare = '';
+  if(allStats.length>1){
+    var sortedStats = allStats.slice().sort(function(a,b){return (b.ein?(b.siege/b.ein):0)-(a.ein?(a.siege/a.ein):0);});
+    var tableRows = sortedStats.map(function(s){
+      var c=gc(s.tw);
+      var wr=s.ein?((s.siege/s.ein)*100).toFixed(0):0;
+      return '<tr><td style="color:'+c.ac+';font-weight:800">TW '+s.tw+'</td><td>'+eStr(s.ein)+'</td><td style="color:#4a9eff">'+eStr(s.pflE)+'</td><td style="color:#4adf7f">'+eStr(s.testE)+'</td><td style="color:#22c55e;font-weight:700">'+eStr(s.siege)+'</td><td style="color:#f59e0b;font-weight:700">'+eStr(s.unentschieden)+'</td><td style="color:#ef4444;font-weight:700">'+eStr(s.niederlagen)+'</td><td style="color:#fff;font-weight:700">'+wr+'%</td><td>'+s.kassiert+'</td><td>'+s.schnitt+'</td></tr>';
+    }).join('');
+    compare='<div class="card"><div class="card-title">Direktvergleich</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>Pfl.</th><th>Test</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
+  }
+
+  return '<div class="filter-row">'+filterBtns+'</div>'+uebersicht+cards+pflichtTest+chartCard+staerkeCard+compare;
 }
 
 window.sf = function(k, v) { form[k] = v; };
