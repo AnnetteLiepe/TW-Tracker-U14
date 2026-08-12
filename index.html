@@ -173,7 +173,13 @@ const TW = {
   'T':  {bg:'#3a1a4a', ac:'#a855f7'}
 };
 const TW_LIST = ['1', '12', '22', 'G', 'T'];
+function twId(t) {
+  if (t === 'Gast' || t === 'Gasttorwart') return 'G';
+  if (t === 'Training' || t === 'Trainingstorwart') return 'T';
+  return t;
+}
 function twLabel(t) {
+  t = twId(t);
   if (t === 'G') return 'TW 42';
   if (t === 'T') return 'Trainingstorwart';
   if (t === '1') return 'TW 32';
@@ -224,7 +230,7 @@ onValue(spieleRef, function(snap) {
   toast('Verbindungsfehler', 'err', 4000);
 });
 
-function gc(tw) { return TW[tw] || {bg:'#2a2a3a', ac:'#aaa'}; }
+function gc(tw) { return TW[twId(tw)] || {bg:'#2a2a3a', ac:'#aaa'}; }
 function fd(d) {
   if (!d) return '';
   var p = d.split('-');
@@ -441,8 +447,8 @@ function renderSpiele() {
         var sc = h ? ('Hertha <span class="hertha">' + s.toreHeim + ':' + s.toreGast + '</span> ' + s.gegner) :
                      (s.gegner + ' ' + s.toreHeim + ':' + s.toreGast + ' <span class="hertha">Hertha</span>');
         var pills = '';
-        if (hz1) pills += '<div class="hz-pill" style="background:' + c1.bg + ';color:' + c1.ac + ';border-color:' + c1.ac + '40"><b>TW ' + hz1.torwart + '</b> 1.HZ ' + hz1.hzH + ':' + hz1.hzG + ' \u00b7 ' + hz1.kassiert + 'GT</div>';
-        if (hz2) pills += '<div class="hz-pill" style="background:' + c2.bg + ';color:' + c2.ac + ';border-color:' + c2.ac + '40"><b>TW ' + hz2.torwart + '</b> 2.HZ ' + hz2.hzH + ':' + hz2.hzG + ' \u00b7 ' + hz2.kassiert + 'GT</div>';
+        if (hz1) pills += '<div class="hz-pill" style="background:' + c1.bg + ';color:' + c1.ac + ';border-color:' + c1.ac + '40"><b>' + twLabel(hz1.torwart) + '</b> 1.HZ ' + hz1.hzH + ':' + hz1.hzG + ' \u00b7 ' + hz1.kassiert + 'GT</div>';
+        if (hz2) pills += '<div class="hz-pill" style="background:' + c2.bg + ';color:' + c2.ac + ';border-color:' + c2.ac + '40"><b>' + twLabel(hz2.torwart) + '</b> 2.HZ ' + hz2.hzH + ':' + hz2.hzG + ' \u00b7 ' + hz2.kassiert + 'GT</div>';
         return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
           '<div class="spiel-inner"><div style="flex:1">' +
           '<div class="spiel-score">' + sc + '</div>' +
@@ -460,7 +466,7 @@ function renderSpiele() {
       return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
         '<div class="spiel-inner"><div style="flex:1">' +
         '<div class="spiel-score">' + sc2 + '</div>' +
-        '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#4b5563">\u00b7</span><span style="color:#6b7280">' + datum + st + '</span><span style="color:#4b5563">\u00b7</span><span class="badge" style="background:' + c.bg + ';color:' + c.ac + ';border-color:' + c.ac + '40">TW ' + s.torwart + '</span><span style="color:#6b7280">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
+        '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#4b5563">\u00b7</span><span style="color:#6b7280">' + datum + st + '</span><span style="color:#4b5563">\u00b7</span><span class="badge" style="background:' + c.bg + ';color:' + c.ac + ';border-color:' + c.ac + '40">' + twLabel(s.torwart) + '</span><span style="color:#6b7280">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
         (s.bemerkung ? '<div class="spiel-notiz">' + s.bemerkung + '</div>' : '') +
         '</div>' +
         '<div class="spiel-actions"><button class="btn-icon" onclick="editSpiel(\'' + s._id + '\',false)">&#x270F;&#xFE0F;</button><button class="btn-icon btn-del" onclick="delSpiel(\'' + s._id + '\',false)">&#x1F5D1;&#xFE0F;</button></div>' +
