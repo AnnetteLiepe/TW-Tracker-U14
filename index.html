@@ -190,6 +190,7 @@ const RC = {Sieg:'#22c55e', Niederlage:'#ef4444', Unentschieden:'#f59e0b'};
 let spiele = [];
 let view = 'eingabe';
 let filterTyp = 'Alle';
+let ausTyp = 'Pflichtspiel';
 let sortDesc = true;
 let searchQ = '';
 let editId = null;
@@ -297,6 +298,10 @@ function getFiltered() {
     });
   }
   return res;
+}
+
+function getFilteredFor(typ) {
+  return typ === 'Alle' ? spiele : spiele.filter(function(x) { return x.typ === typ; });
 }
 
 function groupSpiele(liste) {
@@ -505,24 +510,33 @@ function getErgebnis(x) {
 }
 
 function renderSaison() {
-  var filtered = getFiltered();
+  var filtered = getFilteredFor(ausTyp);
   var allStats = TW_LIST.map(function(tw){return getStats(tw,filtered);}).filter(Boolean);
   var grouped = groupSpiele(filtered);
   var gesamtSpiele = grouped.length;
-  var pflichtSpiele = grouped.filter(function(x){return x.typ==='Pflichtspiel';}).length;
-  var testSpiele = grouped.filter(function(x){return x.typ==='Testspiel';}).length;
+  var pflichtSpiele = groupSpiele(spiele).filter(function(x){return x.typ==='Pflichtspiel';}).length;
+  var testSpiele = groupSpiele(spiele).filter(function(x){return x.typ==='Testspiel';}).length;
 
-  var filterBtns = ['Alle','Pflichtspiel','Testspiel'].map(function(f){
-    return '<button class="filter-btn'+(filterTyp===f?' active':'')+('" onclick="setFilter(\'' + f + '\')">')+f+'</button>';
+  var szenarien = [
+    {key:'Pflichtspiel', label:'Pflichtspiele'},
+    {key:'Testspiel', label:'Testspiele'},
+    {key:'Alle', label:'Gesamt'}
+  ];
+  var filterBtns = szenarien.map(function(sz){
+    return '<button class="filter-btn'+(ausTyp===sz.key?' active':'')+('" onclick="setAusTyp(\'' + sz.key + '\')">')+sz.label+'</button>';
   }).join('');
 
-  if (!allStats.length) return '<div class="filter-row">'+filterBtns+'</div><div class="no-spiele">Noch keine Spiele eingetragen.</div>';
+  if (!allStats.length) return '<div class="filter-row">'+filterBtns+'</div><div class="no-spiele">Noch keine '+(ausTyp==='Alle'?'Spiele':ausTyp+'e')+' eingetragen.</div>';
 
   // Spieluebersicht
-  var uebersicht = '<div class="uebersicht"><div class="card-title">Spieluebersicht</div><div class="g3">'+
-    '<div class="stat-cell"><div class="stat-num" style="color:#fff">'+gesamtSpiele+'</div><div class="stat-lbl">Spiele gesamt</div></div>'+
+  var uebersicht = ausTyp === 'Alle' ?
+    '<div class="uebersicht"><div class="card-title">Spieluebersicht</div><div class="g3">'+
+    '<div class="stat-cell"><div class="stat-num" style="color:#fff">'+(pflichtSpiele+testSpiele)+'</div><div class="stat-lbl">Spiele gesamt</div></div>'+
     '<div class="stat-cell"><div class="stat-num" style="color:#4a9eff">'+pflichtSpiele+'</div><div class="stat-lbl">Pflichtspiele</div></div>'+
     '<div class="stat-cell"><div class="stat-num" style="color:#4adf7f">'+testSpiele+'</div><div class="stat-lbl">Testspiele</div></div>'+
+    '</div></div>' :
+    '<div class="uebersicht"><div class="card-title">Spieluebersicht</div><div class="g3">'+
+    '<div class="stat-cell"><div class="stat-num" style="color:'+(ausTyp==='Pflichtspiel'?'#4a9eff':'#4adf7f')+'">'+gesamtSpiele+'</div><div class="stat-lbl">'+(ausTyp==='Pflichtspiel'?'Pflichtspiele':'Testspiele')+'</div></div>'+
     '</div></div>';
 
   // TW-Karten
@@ -540,8 +554,8 @@ function renderSaison() {
       '<div class="stat-header">'+
         '<div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px">&#x1F9E4;</span>'+
         '<div><div class="stat-tw" style="color:'+c.ac+'">'+(s.tw==='G'||s.tw==='T'?twLabel(s.tw):'Torwart '+(s.tw==='1'?'32':s.tw))+'</div>'+
-        '<div class="stat-ein">'+eStr(s.ein)+' Einsaetze &middot; '+(filterTyp==='Alle'?'Gesamt':filterTyp)+'</div>'+
-        (filterTyp==='Alle'?'<div style="font-size:10px;color:#4b5563;margin-top:2px">'+eStr(s.pflE)+' Pflicht &middot; '+eStr(s.testE)+' Test</div>':'')+
+        '<div class="stat-ein">'+eStr(s.ein)+' Einsaetze &middot; '+(ausTyp==='Alle'?'Gesamt':ausTyp+'e')+'</div>'+
+        (ausTyp==='Alle'?'<div style="font-size:10px;color:#4b5563;margin-top:2px">'+eStr(s.pflE)+' Pflicht &middot; '+eStr(s.testE)+' Test</div>':'')+
         '</div></div>'+
         '<div><div class="stat-rate">'+wr+'%</div><div class="stat-rate-lbl">Siegquote</div></div>'+
       '</div>'+
@@ -562,31 +576,34 @@ function renderSaison() {
       '</div>';
   }).join('');
 
-  // Pflicht vs Test
-  var pflGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Pflichtspiel';}));
-  var testGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Testspiel';}));
+  // Pflicht vs Test (nur im Szenario "Gesamt" relevant)
+  var pflichtTest = '';
+  if (ausTyp === 'Alle') {
+    var pflGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Pflichtspiel';}));
+    var testGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Testspiel';}));
 
-  var pflichtTest = '<div class="card"><div class="card-title">Pflicht- vs. Testspiele</div>'+
-    spieleTabelle(pflGesamt,'Pflichtspiele gesamt')+
-    spieleTabelle(testGesamt,'Testspiele gesamt')+
-    '<div style="height:1px;background:#2a2f45;margin:12px 0"></div>'+
-    allStats.map(function(s){
-      var c = gc(s.tw);
-      var pflS = s.liste.filter(function(x){return x.typ==='Pflichtspiel';});
-      var testS = s.liste.filter(function(x){return x.typ==='Testspiel';});
-      var pflEin = pflS.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
-      var testEin = testS.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
-      var pflSieg = pflS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
-      var pflNied = pflS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
-      var testSieg = testS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
-      var testNied = testS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
-      return '<div style="margin-bottom:10px">'+
-        '<div style="font-weight:700;color:'+c.ac+';margin-bottom:4px">'+twLabel(s.tw)+'</div>'+
-        (pflEin>0?'<div style="font-size:12px;color:#9ca3af">Pflicht: <span style="color:#fff">'+eStr(pflEin)+' Eins.</span> &nbsp; <span style="color:#22c55e">'+eStr(pflSieg)+'S</span> &nbsp; <span style="color:#ef4444">'+eStr(pflNied)+'N</span></div>':'')+
-        (testEin>0?'<div style="font-size:12px;color:#9ca3af">Test: <span style="color:#fff">'+eStr(testEin)+' Eins.</span> &nbsp; <span style="color:#22c55e">'+eStr(testSieg)+'S</span> &nbsp; <span style="color:#ef4444">'+eStr(testNied)+'N</span></div>':'')+
-        '</div>';
-    }).join('')+
-    '</div>';
+    pflichtTest = '<div class="card"><div class="card-title">Pflicht- vs. Testspiele</div>'+
+      spieleTabelle(pflGesamt,'Pflichtspiele gesamt')+
+      spieleTabelle(testGesamt,'Testspiele gesamt')+
+      '<div style="height:1px;background:#2a2f45;margin:12px 0"></div>'+
+      allStats.map(function(s){
+        var c = gc(s.tw);
+        var pflS = s.liste.filter(function(x){return x.typ==='Pflichtspiel';});
+        var testS = s.liste.filter(function(x){return x.typ==='Testspiel';});
+        var pflEin = pflS.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
+        var testEin = testS.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
+        var pflSieg = pflS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
+        var pflNied = pflS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
+        var testSieg = testS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
+        var testNied = testS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
+        return '<div style="margin-bottom:10px">'+
+          '<div style="font-weight:700;color:'+c.ac+';margin-bottom:4px">'+twLabel(s.tw)+'</div>'+
+          (pflEin>0?'<div style="font-size:12px;color:#9ca3af">Pflicht: <span style="color:#fff">'+eStr(pflEin)+' Eins.</span> &nbsp; <span style="color:#22c55e">'+eStr(pflSieg)+'S</span> &nbsp; <span style="color:#ef4444">'+eStr(pflNied)+'N</span></div>':'')+
+          (testEin>0?'<div style="font-size:12px;color:#9ca3af">Test: <span style="color:#fff">'+eStr(testEin)+' Eins.</span> &nbsp; <span style="color:#22c55e">'+eStr(testSieg)+'S</span> &nbsp; <span style="color:#ef4444">'+eStr(testNied)+'N</span></div>':'')+
+          '</div>';
+      }).join('')+
+      '</div>';
+  }
 
   // Verlaufsgrafik
   var chartCard = '';
@@ -639,9 +656,9 @@ function renderSaison() {
     '<div style="overflow-x:auto"><svg width="'+chartW+'" height="'+chartH+'" style="display:block;margin:0 auto">'+yLabels+lines+'</svg></div>'+
     '<div style="margin-top:10px;text-align:center">'+legend+'</div></div>';
 
-  // Gegnerstaerke
+  // Gegnerstaerke (immer auf Basis aller Pflichtspiele, im Testspiel-Szenario ausgeblendet)
   var staerkeCard = '';
-  var pflMitPlatz = filtered.filter(function(x){return x.typ==='Pflichtspiel'&&x.platzWir&&x.platzGegner&&!x.geteilt;});
+  var pflMitPlatz = ausTyp === 'Testspiel' ? [] : spiele.filter(function(x){return x.typ==='Pflichtspiel'&&x.platzWir&&x.platzGegner&&!x.geteilt;});
   if(pflMitPlatz.length>0){
     var staerkeRows = allStats.map(function(s){
       var twS = pflMitPlatz.filter(function(x){return x.torwart===s.tw;});
@@ -682,6 +699,7 @@ window.sf = function(k, v) { form[k] = v; };
 window.sfr = function(k, v) { form[k] = v; render(); };
 window.setZweiTW = function(val) { form.zweiTW = val; render(); };
 window.setFilter = function(f) { filterTyp = f; render(); };
+window.setAusTyp = function(f) { ausTyp = f; render(); };
 
 function validate() {
   ferr = {};
