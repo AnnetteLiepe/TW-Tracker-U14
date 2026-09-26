@@ -718,8 +718,8 @@ window.submitForm = async function() {
         var toDelete = spiele.filter(function(x) { return x.gid === editId; });
         for (var i = 0; i < toDelete.length; i++) await remove(ref(db, 'spiele/' + toDelete[i]._id));
       }
-      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'1', torwart:form.torwart1, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz1G:hz1H, geschossen:form.heimwaerts==='Heim'?hz1H:hz1G, ergebnis:erg(form.heimwaerts==='Heim'?hz1H:hz1G, form.heimwaerts==='Heim'?hz1G:hz1H), hzH:hz1H, hzG:hz1G});
-      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'2', torwart:form.torwart2, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz2G:hz2H, geschossen:form.heimwaerts==='Heim'?hz2H:hz2G, ergebnis:erg(form.heimwaerts==='Heim'?hz2H:hz2G, form.heimwaerts==='Heim'?hz2G:hz2H), hzH:hz2H, hzG:hz2G});
+      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'1', torwart:form.torwart1, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz1G:hz1H, geschossen:form.heimwaerts==='Heim'?hz1H:hz1G, ergebnis:e, hzH:hz1H, hzG:hz1G});
+      await push(spieleRef, {gid:gid, datum:form.datum, gegner:form.gegner, spieltag:form.spieltag, typ:form.typ, heimwaerts:form.heimwaerts, bemerkung:form.bemerkung, geteilt:true, halbzeit:'2', torwart:form.torwart2, toreHeim:gesH, toreGast:gesG, kassiert:form.heimwaerts==='Heim'?hz2G:hz2H, geschossen:form.heimwaerts==='Heim'?hz2H:hz2G, ergebnis:e, hzH:hz2H, hzG:hz2G});
     } else {
       var h = parseInt(form.toreHeim), g = parseInt(form.toreGast);
       var kass = form.heimwaerts === 'Heim' ? g : h;
