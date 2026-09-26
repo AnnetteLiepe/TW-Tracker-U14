@@ -10,105 +10,110 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;-webkit-tap-highlight-color:transparent}
-body{min-height:100%;background:#0f1117;color:#e8eaf0;font-family:-apple-system,'Segoe UI',sans-serif;font-size:15px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{min-height:100%;background:#211a14;color:#f2e6d8;font-family:-apple-system,'Segoe UI',sans-serif;font-size:15px;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 input,select,textarea,button,div{font-family:inherit}
-#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);color:#fff;font-weight:700;font-size:13px;padding:10px 18px;border-radius:20px;z-index:999;transition:transform .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.5);max-width:90vw;text-align:center}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);color:#f5ede0;font-weight:700;font-size:13px;padding:10px 18px;border-radius:20px;z-index:999;transition:transform .3s ease;box-shadow:0 4px 20px rgba(0,0,0,.5);max-width:90vw;text-align:center}
 #toast.show{transform:translateX(-50%) translateY(0)}
-#toast.ok{background:#22c55e}#toast.err{background:#ef4444}#toast.info{background:#4a9eff}
-#loading{position:fixed;inset:0;background:#0f1117;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:500;gap:16px}
-#loading .spin{width:40px;height:40px;border:3px solid #2a2f45;border-top-color:#4a9eff;border-radius:50%;animation:spin 1s linear infinite}
+#toast.ok{background:#8aab5a}#toast.err{background:#b3492f}#toast.info{background:#c17a4a}
+#loading{position:fixed;inset:0;background:#211a14;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:500;gap:16px}
+#loading .spin{width:40px;height:40px;border:3px solid #4a3c2e;border-top-color:#c17a4a;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#loading p{color:#6b7280;font-size:13px}
-#header{background:linear-gradient(135deg,#1a1f35,#0f1117);border-bottom:1px solid #2a2f45;padding:16px 16px 0;position:sticky;top:0;z-index:100}
+#loading p{color:#a68a6f;font-size:13px}
+#header{background:linear-gradient(135deg,#2e2419,#211a14);border-bottom:1px solid #4a3c2e;padding:16px 16px 0;position:sticky;top:0;z-index:100}
 .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
 .hdr-left{display:flex;align-items:center;gap:10px}
-.hdr-icon{font-size:24px}.hdr-title{font-weight:800;font-size:17px;color:#fff}
-.hdr-sub{font-size:11px;color:#6b7280;margin-top:1px}
-.hdr-sync{font-size:11px;color:#22c55e}
-.hdr-sync.offline{color:#ef4444}
+.hdr-icon{font-size:24px}.hdr-title{font-weight:800;font-size:17px;color:#f5ede0}
+.hdr-sub{font-size:11px;color:#a68a6f;margin-top:1px}
+.hdr-sync{font-size:11px;color:#8aab5a}
+.hdr-sync.offline{color:#b3492f}
 #nav{display:flex}
-.nav-btn{flex:1;padding:10px 4px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:transparent;color:#6b7280;border-bottom:2px solid transparent}
-.nav-btn.active{color:#fff;border-bottom-color:#4a9eff}
+.nav-btn{flex:1;padding:10px 4px;border:none;cursor:pointer;font-size:11px;font-weight:700;background:transparent;color:#a68a6f;border-bottom:2px solid transparent}
+.nav-btn.active{color:#f5ede0;border-bottom-color:#c17a4a}
 #main{max-width:680px;margin:0 auto;padding:18px 14px 100px}
-.card{background:#1a1f35;border-radius:16px;padding:18px;border:1px solid #2a2f45;margin-bottom:14px}
-.card-title{font-weight:700;font-size:15px;color:#fff;margin-bottom:16px}
+.card{background:#2e2419;border-radius:16px;padding:18px;border:1px solid #4a3c2e;margin-bottom:14px}
+.card-title{font-weight:700;font-size:15px;color:#f5ede0;margin-bottom:16px}
 .field{margin-bottom:11px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.lbl{display:block;font-size:11px;font-weight:600;color:#9ca3af;margin-bottom:5px;letter-spacing:.4px;text-transform:uppercase}
-input[type=text],input[type=date],input[type=number],select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid #2a2f45;background:#0f1117;color:#e8eaf0;font-size:14px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .2s}
-input:focus,select:focus,textarea:focus{border-color:#4a9eff}
-input.ferr,select.ferr{border-color:#ef4444!important}
+.lbl{display:block;font-size:11px;font-weight:600;color:#c2ac93;margin-bottom:5px;letter-spacing:.4px;text-transform:uppercase}
+input[type=text],input[type=date],input[type=number],select,textarea{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid #4a3c2e;background:#211a14;color:#f2e6d8;font-size:14px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:#c17a4a}
+input.ferr,select.ferr{border-color:#b3492f!important}
 textarea{resize:none;height:64px}
 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7280' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
 .search-wrap{position:relative;margin-bottom:12px}
 .search-wrap input{padding-left:36px}
-.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#6b7280;font-size:15px;pointer-events:none}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#a68a6f;font-size:15px;pointer-events:none}
 .tw-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.tw-btn{padding:12px;border-radius:10px;border:1.5px solid #2a2f45;background:#0f1117;color:#9ca3af;font-weight:600;font-size:13px;cursor:pointer;text-align:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-.tw-btn.active{border-color:#4a9eff;color:#4a9eff;background:#1a2a3a}
-.hz-box{background:#0f1117;border-radius:12px;padding:14px;border:1px solid #2a2f45;margin-bottom:10px}
+.tw-btn{padding:12px;border-radius:10px;border:1.5px solid #4a3c2e;background:#211a14;color:#c2ac93;font-weight:600;font-size:13px;cursor:pointer;text-align:center;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.tw-btn.active{border-color:#c17a4a;color:#c17a4a;background:#3a2e20}
+.hz-box{background:#211a14;border-radius:12px;padding:14px;border:1px solid #4a3c2e;margin-bottom:10px}
 .hz-title{font-size:11px;font-weight:700;margin-bottom:10px;letter-spacing:.5px}
-.c-hz1{color:#4a9eff}.c-hz2{color:#4adf7f}
-.live-info{background:#1a2a1a;border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#9ca3af;line-height:1.6}
-.live-info .hi{color:#fff;font-weight:700}.live-info .gt{color:#ef4444;font-weight:700}
-.preview{background:#1a2a3a;border-radius:10px;padding:10px 14px;border:1px solid rgba(74,158,255,.2);margin-bottom:10px}
-.preview-lbl{font-size:11px;color:#6b7280;margin-bottom:2px}
-.preview-score{font-size:20px;font-weight:800;color:#fff}
-.btn-primary{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#4a9eff,#2563eb);color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;touch-action:manipulation}
-.btn-secondary{width:100%;padding:11px;border-radius:12px;border:1px solid #2a2f45;background:transparent;color:#6b7280;font-weight:600;font-size:14px;cursor:pointer;margin-top:6px;touch-action:manipulation}
+.c-hz1{color:#c17a4a}.c-hz2{color:#5f8a7a}
+.live-info{background:#2b2f1e;border:1px solid rgba(34,197,94,.2);border-radius:10px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:#c2ac93;line-height:1.6}
+.live-info .hi{color:#f5ede0;font-weight:700}.live-info .gt{color:#b3492f;font-weight:700}
+.preview{background:#3a2e20;border-radius:10px;padding:10px 14px;border:1px solid rgba(74,158,255,.2);margin-bottom:10px}
+.preview-lbl{font-size:11px;color:#a68a6f;margin-bottom:2px}
+.preview-score{font-size:20px;font-weight:800;color:#f5ede0}
+.btn-primary{width:100%;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#c17a4a,#8a4a2a);color:#f5ede0;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;touch-action:manipulation}
+.btn-secondary{width:100%;padding:11px;border-radius:12px;border:1px solid #4a3c2e;background:transparent;color:#a68a6f;font-weight:600;font-size:14px;cursor:pointer;margin-top:6px;touch-action:manipulation}
 .filter-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-.filter-btn{padding:7px 14px;border-radius:20px;border:1px solid #2a2f45;cursor:pointer;font-size:12px;font-weight:600;background:#1a1f35;color:#6b7280;touch-action:manipulation}
-.filter-btn.active{background:#4a9eff;color:#fff;border-color:#4a9eff}
-.filter-count{margin-left:auto;font-size:12px;color:#6b7280}
-.sort-btn{padding:6px 12px;border-radius:20px;border:1px solid #2a2f45;cursor:pointer;font-size:11px;font-weight:600;background:#1a1f35;color:#6b7280;touch-action:manipulation}
+.filter-btn{padding:7px 14px;border-radius:20px;border:1px solid #4a3c2e;cursor:pointer;font-size:12px;font-weight:600;background:#2e2419;color:#a68a6f;touch-action:manipulation}
+.filter-btn.active{background:#c17a4a;color:#f5ede0;border-color:#c17a4a}
+.filter-count{margin-left:auto;font-size:12px;color:#a68a6f}
+.sort-btn{padding:6px 12px;border-radius:20px;border:1px solid #4a3c2e;cursor:pointer;font-size:11px;font-weight:600;background:#2e2419;color:#a68a6f;touch-action:manipulation}
 .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
 .quick-card{border-radius:12px;padding:14px;text-align:center;border:1px solid transparent}
-.quick-tw{font-weight:800;font-size:13px}.quick-num{font-size:22px;font-weight:800;color:#fff;margin-top:4px}
-.quick-lbl{font-size:10px;color:#9ca3af}.quick-rec{font-size:11px;color:#9ca3af;margin-top:5px}
-.spiel-card{background:#1a1f35;border-radius:14px;padding:13px 15px;margin-bottom:10px;border:1px solid #2a2f45;border-left-width:3px}
+.quick-tw{font-weight:800;font-size:13px}.quick-num{font-size:22px;font-weight:800;color:#f5ede0;margin-top:4px}
+.quick-lbl{font-size:10px;color:#c2ac93}.quick-rec{font-size:11px;color:#c2ac93;margin-top:5px}
+.spiel-card{background:#2e2419;border-radius:14px;padding:13px 15px;margin-bottom:10px;border:1px solid #4a3c2e;border-left-width:3px}
 .spiel-inner{display:flex;justify-content:space-between;align-items:flex-start}
-.spiel-score{font-weight:800;font-size:14px;color:#fff;line-height:1.3}
-.spiel-score .hertha{color:#4a9eff}
+.spiel-score{font-weight:800;font-size:14px;color:#f5ede0;line-height:1.3}
+.spiel-score .hertha{color:#c17a4a}
 .spiel-meta{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;align-items:center}
 .spiel-meta span{font-size:11px}
 .badge{font-size:11px;padding:2px 8px;border-radius:8px;font-weight:700;border:1px solid transparent}
 .hz-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .hz-pill{border-radius:8px;padding:5px 9px;font-size:11px;border:1px solid transparent;line-height:1.3}
-.spiel-notiz{font-size:11px;color:#6b7280;margin-top:6px;font-style:italic}
+.spiel-notiz{font-size:11px;color:#a68a6f;margin-top:6px;font-style:italic}
 .spiel-actions{display:flex;gap:5px;margin-left:10px;flex-shrink:0}
-.btn-icon{border:none;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:13px;background:#2a2f45;touch-action:manipulation}
-.btn-del{background:#3a1f1f}
-.no-spiele{text-align:center;color:#4b5563;padding:50px 0;font-size:13px}
-.stat-card{background:#1a1f35;border-radius:16px;padding:20px;margin-bottom:14px;border:1px solid transparent}
+.btn-icon{border:none;border-radius:8px;padding:7px 10px;cursor:pointer;font-size:13px;background:#4a3c2e;touch-action:manipulation}
+.btn-del{background:#3a201a}
+.no-spiele{text-align:center;color:#7a6552;padding:50px 0;font-size:13px}
+.stat-card{background:#2e2419;border-radius:16px;padding:20px;margin-bottom:14px;border:1px solid transparent}
 .stat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .stat-tw{font-weight:800;font-size:17px}
-.stat-einsaetze{font-size:11px;color:#6b7280;margin-top:1px}
-.stat-rate{font-size:26px;font-weight:900;color:#fff;text-align:right}
-.stat-rate-lbl{font-size:10px;color:#6b7280}
-.bar{display:flex;border-radius:6px;overflow:hidden;height:9px;margin-bottom:14px}
+.stat-einsaetze{font-size:11px;color:#a68a6f;margin-top:1px}
 .stat-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.stat-cell{background:#0f1117;border-radius:10px;padding:11px 8px;text-align:center}
+.stat-cell{background:#211a14;border-radius:10px;padding:11px 8px;text-align:center}
 .stat-num{font-size:22px;font-weight:800}
-.stat-lbl{font-size:10px;color:#6b7280;margin-top:2px}
+.stat-lbl{font-size:10px;color:#a68a6f;margin-top:2px}
 .stat-icon{font-size:11px;margin-bottom:2px}
-.recent-lbl{font-size:11px;color:#6b7280;margin:12px 0 7px;font-weight:600;letter-spacing:.4px}
+.recent-lbl{font-size:11px;color:#a68a6f;margin:12px 0 7px;font-weight:600;letter-spacing:.4px}
 .recent-pills{display:flex;gap:6px;flex-wrap:wrap}
 .recent-pill{border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;border:1px solid transparent}
-.note-box{font-size:11px;color:#f59e0b;margin-top:6px;padding:6px 10px;background:#2a1f0f;border-radius:8px}
-.uebersicht{background:#1a1f35;border-radius:16px;padding:18px;border:1px solid #2a2f45;margin-bottom:14px}
+.note-box{font-size:11px;color:#c99a3c;margin-top:6px;padding:6px 10px;background:#3a2a14;border-radius:8px}
+.uebersicht{background:#2e2419;border-radius:16px;padding:18px;border:1px solid #4a3c2e;margin-bottom:14px}
+.tri-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.tri-cell{border-radius:12px;padding:12px 6px;text-align:center;border:1px solid #4a3c2e;background:#211a14}
+.tri-cell.mid{border-color:#4a3c2e}
+.tri-lbl{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#a68a6f;margin-bottom:6px}
+.tri-rate{font-size:20px;font-weight:900}
+.tri-rate.dim{color:#7a6552}
+.tri-sub{font-size:10px;color:#c2ac93;margin-top:3px}
+.tri-sun{font-size:10px;color:#a68a6f;margin-top:4px}
 .cmp-wrap{overflow-x:auto}
 .cmp-table{width:100%;border-collapse:collapse;font-size:12px;min-width:340px}
-.cmp-table th{padding:8px 6px;text-align:center;font-weight:600;color:#6b7280;border-bottom:1px solid #2a2f45}
-.cmp-table td{padding:9px 6px;text-align:center;border-bottom:1px solid #1a2030}
+.cmp-table th{padding:8px 6px;text-align:center;font-weight:600;color:#a68a6f;border-bottom:1px solid #4a3c2e}
+.cmp-table td{padding:9px 6px;text-align:center;border-bottom:1px solid #3a3024}
 #modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center}
 #modal-bg.show{display:flex}
-#modal{background:#1a1f35;border-radius:20px;padding:24px;max-width:320px;width:90%;border:1px solid #2a2f45}
-#modal h3{font-size:16px;color:#fff;margin-bottom:10px}
-#modal p{font-size:13px;color:#9ca3af;line-height:1.5;margin-bottom:16px}
+#modal{background:#2e2419;border-radius:20px;padding:24px;max-width:320px;width:90%;border:1px solid #4a3c2e}
+#modal h3{font-size:16px;color:#f5ede0;margin-bottom:10px}
+#modal p{font-size:13px;color:#c2ac93;line-height:1.5;margin-bottom:16px}
 .modal-btns{display:flex;gap:8px}
 .modal-btns button{flex:1;padding:11px;border-radius:10px;border:none;font-weight:700;font-size:14px;cursor:pointer;touch-action:manipulation}
-.modal-ok{background:#ef4444;color:#fff}
-.modal-cancel{background:#2a2f45;color:#9ca3af}
+.modal-ok{background:#b3492f;color:#f5ede0}
+.modal-cancel{background:#4a3c2e;color:#c2ac93}
 @supports(padding:env(safe-area-inset-bottom)){
   #main{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
   #header{padding-top:calc(16px + env(safe-area-inset-top))}
@@ -166,11 +171,11 @@ const db = getDatabase(app);
 const spieleRef = ref(db, 'spiele');
 
 const TW = {
-  '1':  {bg:'#1a3a5c', ac:'#4a9eff'},
-  '12': {bg:'#1a4a2e', ac:'#4adf7f'},
-  '22': {bg:'#4a1a1a', ac:'#ff6b4a'},
-  'G':  {bg:'#4a3a10', ac:'#eab308'},
-  'T':  {bg:'#3a1a4a', ac:'#a855f7'}
+  '1':  {bg:'#3a2e1c', ac:'#b5854a'},
+  '12': {bg:'#232f26', ac:'#5f8a7a'},
+  '22': {bg:'#3a2216', ac:'#c1723f'},
+  'G':  {bg:'#332a16', ac:'#8f6a2e'},
+  'T':  {bg:'#2e2129', ac:'#9c6f83'}
 };
 const TW_LIST = ['1', '12', '22', 'G', 'T'];
 function twId(t) {
@@ -185,12 +190,11 @@ function twLabel(t) {
   if (t === '1') return 'TW 32';
   return t ? 'TW ' + t : '';
 }
-const RC = {Sieg:'#22c55e', Niederlage:'#ef4444', Unentschieden:'#f59e0b'};
+const RC = {Sieg:'#8aab5a', Niederlage:'#b3492f', Unentschieden:'#c99a3c'};
 
 let spiele = [];
 let view = 'eingabe';
 let filterTyp = 'Alle';
-let ausTyp = 'Pflichtspiel';
 let sortDesc = true;
 let searchQ = '';
 let editId = null;
@@ -231,7 +235,7 @@ onValue(spieleRef, function(snap) {
   toast('Verbindungsfehler', 'err', 4000);
 });
 
-function gc(tw) { return TW[twId(tw)] || {bg:'#2a2a3a', ac:'#aaa'}; }
+function gc(tw) { return TW[twId(tw)] || {bg:'#3a3226', ac:'#b2987d'}; }
 function fd(d) {
   if (!d) return '';
   var p = d.split('-');
@@ -287,6 +291,15 @@ function getStats(tw, liste) {
   };
 }
 
+function subStats(list) {
+  var ein = list.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
+  var sieg = list.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
+  var unent = list.reduce(function(a,x){return a+(x.ergebnis==='Unentschieden'?(x.geteilt?0.5:1):0);},0);
+  var nied = list.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
+  var wr = ein ? Math.round((sieg/ein)*100) : null;
+  return {ein:ein, sieg:sieg, unent:unent, nied:nied, wr:wr};
+}
+
 function getFiltered() {
   var res = filterTyp === 'Alle' ? spiele : spiele.filter(function(x) { return x.typ === filterTyp; });
   if (searchQ) {
@@ -298,10 +311,6 @@ function getFiltered() {
     });
   }
   return res;
-}
-
-function getFilteredFor(typ) {
-  return typ === 'Alle' ? spiele : spiele.filter(function(x) { return x.typ === typ; });
 }
 
 function groupSpiele(liste) {
@@ -344,7 +353,7 @@ function render() {
     else if (view === 'spiele') el.innerHTML = renderSpiele();
     else el.innerHTML = renderSaison();
   } catch(e) {
-    el.innerHTML = '<div style="color:#ef4444;padding:20px;font-size:13px">Fehler: ' + e.message + '</div>';
+    el.innerHTML = '<div style="color:#b3492f;padding:20px;font-size:13px">Fehler: ' + e.message + '</div>';
   }
 }
 
@@ -389,7 +398,7 @@ function renderEingabe() {
   var quickCards = TW_LIST.map(function(tw) {
     var s = getStats(tw, spiele);
     var c = gc(tw);
-    if (!s) return '<div class="quick-card" style="background:#1a1f35;border-color:#2a2f45"><div class="quick-tw" style="color:#4b5563">' + twLabel(tw) + '</div><div style="font-size:11px;color:#374151;margin-top:6px">Keine Spiele</div></div>';
+    if (!s) return '<div class="quick-card" style="background:#2e2419;border-color:#4a3c2e"><div class="quick-tw" style="color:#7a6552">' + twLabel(tw) + '</div><div style="font-size:11px;color:#6b5847;margin-top:6px">Keine Spiele</div></div>';
     var einStr = s.ein % 1 === 0 ? s.ein : s.ein.toFixed(1);
     return '<div class="quick-card" style="background:' + c.bg + ';border-color:' + c.ac + '30"><div class="quick-tw" style="color:' + c.ac + '">' + twLabel(tw) + '</div><div class="quick-num">' + einStr + '</div><div class="quick-lbl">Eins\u00e4tze</div><div class="quick-rec">' + s.siege + 'S \u00b7 ' + s.unentschieden + 'U \u00b7 ' + s.niederlagen + 'N</div></div>';
   }).join('');
@@ -439,7 +448,7 @@ function renderSpiele() {
 
   var cards = grouped.length === 0 ? '<div class="no-spiele">Noch keine Spiele eingetragen.</div>' :
     grouped.map(function(s) {
-      var farbe = RC[s.ergebnis] || '#aaa';
+      var farbe = RC[s.ergebnis] || '#b2987d';
       var datum = fd(s.datum);
       var st = s.spieltag ? (' \u00b7 ST ' + s.spieltag) : '';
       var h = s.heimwaerts === 'Heim';
@@ -457,7 +466,7 @@ function renderSpiele() {
         return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
           '<div class="spiel-inner"><div style="flex:1">' +
           '<div class="spiel-score">' + sc + '</div>' +
-          '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#4b5563">\u00b7</span><span style="color:#6b7280">' + datum + st + '</span><span style="color:#4b5563">\u00b7</span><span style="color:#6b7280">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
+          '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + datum + st + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
           '<div class="hz-pills">' + pills + '</div>' +
           (s.bemerkung ? '<div class="spiel-notiz">' + s.bemerkung + '</div>' : '') +
           '</div>' +
@@ -471,7 +480,7 @@ function renderSpiele() {
       return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
         '<div class="spiel-inner"><div style="flex:1">' +
         '<div class="spiel-score">' + sc2 + '</div>' +
-        '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#4b5563">\u00b7</span><span style="color:#6b7280">' + datum + st + '</span><span style="color:#4b5563">\u00b7</span><span class="badge" style="background:' + c.bg + ';color:' + c.ac + ';border-color:' + c.ac + '40">' + twLabel(s.torwart) + '</span><span style="color:#6b7280">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
+        '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + datum + st + '</span><span style="color:#7a6552">\u00b7</span><span class="badge" style="background:' + c.bg + ';color:' + c.ac + ';border-color:' + c.ac + '40">' + twLabel(s.torwart) + '</span><span style="color:#a68a6f">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
         (s.bemerkung ? '<div class="spiel-notiz">' + s.bemerkung + '</div>' : '') +
         '</div>' +
         '<div class="spiel-actions"><button class="btn-icon" onclick="editSpiel(\'' + s._id + '\',false)">&#x270F;&#xFE0F;</button><button class="btn-icon btn-del" onclick="delSpiel(\'' + s._id + '\',false)">&#x1F5D1;&#xFE0F;</button></div>' +
@@ -492,16 +501,7 @@ function sRow(label, arr, col) {
   var s2 = arr.filter(function(x){return x.ergebnis==='Sieg';}).length;
   var u = arr.filter(function(x){return x.ergebnis==='Unentschieden';}).length;
   var n = arr.filter(function(x){return x.ergebnis==='Niederlage';}).length;
-  return '<tr><td style="color:'+col+'">'+label+'</td><td>'+arr.length+'</td><td style="color:#22c55e">'+s2+'</td><td style="color:#f59e0b">'+u+'</td><td style="color:#ef4444">'+n+'</td></tr>';
-}
-
-function spieleTabelle(gruppe, label) {
-  if (!gruppe.length) return '';
-  var s = gruppe.filter(function(x){return x.ergebnis==='Sieg';}).length;
-  var u = gruppe.filter(function(x){return x.ergebnis==='Unentschieden';}).length;
-  var n = gruppe.filter(function(x){return x.ergebnis==='Niederlage';}).length;
-  var quote = gruppe.length ? ((s/gruppe.length)*100).toFixed(0) : 0;
-  return '<div style="margin-bottom:6px"><span style="font-size:12px;color:#9ca3af">'+label+':</span> <span style="font-size:13px;color:#fff;font-weight:700">'+gruppe.length+' Spiele</span> &nbsp; <span style="color:#22c55e">'+s+'S</span> &nbsp;<span style="color:#f59e0b">'+u+'U</span> &nbsp;<span style="color:#ef4444">'+n+'N</span> &nbsp;<span style="color:#4a9eff">'+quote+'% Siege</span></div>';
+  return '<tr><td style="color:'+col+'">'+label+'</td><td>'+arr.length+'</td><td style="color:#8aab5a">'+s2+'</td><td style="color:#c99a3c">'+u+'</td><td style="color:#b3492f">'+n+'</td></tr>';
 }
 
 function getErgebnis(x) {
@@ -510,108 +510,71 @@ function getErgebnis(x) {
 }
 
 function renderSaison() {
-  var filtered = getFilteredFor(ausTyp);
-  var allStats = TW_LIST.map(function(tw){return getStats(tw,filtered);}).filter(Boolean);
-  var grouped = groupSpiele(filtered);
-  var gesamtSpiele = grouped.length;
-  var pflichtSpiele = groupSpiele(spiele).filter(function(x){return x.typ==='Pflichtspiel';}).length;
-  var testSpiele = groupSpiele(spiele).filter(function(x){return x.typ==='Testspiel';}).length;
+  var allStats = TW_LIST.map(function(tw){return getStats(tw,spiele);}).filter(Boolean);
+  var grouped = groupSpiele(spiele);
+  var pflichtSpiele = grouped.filter(function(x){return x.typ==='Pflichtspiel';}).length;
+  var testSpiele = grouped.filter(function(x){return x.typ==='Testspiel';}).length;
 
-  var szenarien = [
-    {key:'Pflichtspiel', label:'Pflichtspiele'},
-    {key:'Testspiel', label:'Testspiele'},
-    {key:'Alle', label:'Gesamt'}
-  ];
-  var filterBtns = szenarien.map(function(sz){
-    return '<button class="filter-btn'+(ausTyp===sz.key?' active':'')+('" onclick="setAusTyp(\'' + sz.key + '\')">')+sz.label+'</button>';
-  }).join('');
-
-  if (!allStats.length) return '<div class="filter-row">'+filterBtns+'</div><div class="no-spiele">Noch keine '+(ausTyp==='Alle'?'Spiele':ausTyp+'e')+' eingetragen.</div>';
+  if (!allStats.length) return '<div class="no-spiele">Noch keine Spiele eingetragen.</div>';
 
   // Spieluebersicht
-  var uebersicht = ausTyp === 'Alle' ?
-    '<div class="uebersicht"><div class="card-title">Spieluebersicht</div><div class="g3">'+
-    '<div class="stat-cell"><div class="stat-num" style="color:#fff">'+(pflichtSpiele+testSpiele)+'</div><div class="stat-lbl">Spiele gesamt</div></div>'+
-    '<div class="stat-cell"><div class="stat-num" style="color:#4a9eff">'+pflichtSpiele+'</div><div class="stat-lbl">Pflichtspiele</div></div>'+
-    '<div class="stat-cell"><div class="stat-num" style="color:#4adf7f">'+testSpiele+'</div><div class="stat-lbl">Testspiele</div></div>'+
-    '</div></div>' :
-    '<div class="uebersicht"><div class="card-title">Spieluebersicht</div><div class="g3">'+
-    '<div class="stat-cell"><div class="stat-num" style="color:'+(ausTyp==='Pflichtspiel'?'#4a9eff':'#4adf7f')+'">'+gesamtSpiele+'</div><div class="stat-lbl">'+(ausTyp==='Pflichtspiel'?'Pflichtspiele':'Testspiele')+'</div></div>'+
+  var uebersicht = '<div class="uebersicht"><div class="card-title">Spieluebersicht</div><div class="g3">'+
+    '<div class="stat-cell"><div class="stat-num" style="color:#f5ede0">'+(pflichtSpiele+testSpiele)+'</div><div class="stat-lbl">Spiele gesamt</div></div>'+
+    '<div class="stat-cell"><div class="stat-num" style="color:#b5854a">'+pflichtSpiele+'</div><div class="stat-lbl">Pflichtspiele</div></div>'+
+    '<div class="stat-cell"><div class="stat-num" style="color:#5f8a7a">'+testSpiele+'</div><div class="stat-lbl">Testspiele</div></div>'+
     '</div></div>';
 
-  // TW-Karten
+  // TW-Karten: Pflicht / Test / Gesamt nebeneinander
   var cards = allStats.map(function(s) {
     var c = gc(s.tw);
-    var wr = s.ein ? ((s.siege/s.ein)*100).toFixed(0) : 0;
+    var pflS = subStats(s.liste.filter(function(x){return x.typ==='Pflichtspiel';}));
+    var testS = subStats(s.liste.filter(function(x){return x.typ==='Testspiel';}));
+    var gesS = subStats(s.liste);
     var recent = s.liste.slice().sort(function(a,b){return b.datum.localeCompare(a.datum);}).slice(0,5).map(function(x){
-      var fc = RC[x.ergebnis]||'#aaa';
+      var fc = RC[x.ergebnis]||'#b2987d';
       var k = x.ergebnis==='Sieg'?'S':x.ergebnis==='Niederlage'?'N':'U';
       var hz = x.halbzeit?' '+x.halbzeit+'.HZ':'';
       var gt = x.geteilt?' (1/2)':'';
       return '<div class="recent-pill" style="background:'+fc+'20;color:'+fc+';border-color:'+fc+'40">'+k+hz+gt+' '+x.kassiert+'GT</div>';
     }).join('');
+    function triCell(lbl, sub, accent) {
+      var rate = sub.wr === null ? '&ndash;' : sub.wr + '%';
+      return '<div class="tri-cell"><div class="tri-lbl">'+lbl+'</div>'+
+        '<div class="tri-rate'+(sub.wr===null?' dim':'')+'" style="color:'+(sub.wr===null?'':accent)+'">'+rate+'</div>'+
+        '<div class="tri-sub">'+eStr(sub.ein)+' Eins.</div>'+
+        (sub.ein>0?'<div class="tri-sun">'+eStr(sub.sieg)+'S &middot; '+eStr(sub.unent)+'U &middot; '+eStr(sub.nied)+'N</div>':'')+
+        '</div>';
+    }
     return '<div class="stat-card" style="border-color:'+c.ac+'30">'+
       '<div class="stat-header">'+
         '<div style="display:flex;align-items:center;gap:10px"><span style="font-size:26px">&#x1F9E4;</span>'+
-        '<div><div class="stat-tw" style="color:'+c.ac+'">'+(s.tw==='G'||s.tw==='T'?twLabel(s.tw):'Torwart '+(s.tw==='1'?'32':s.tw))+'</div>'+
-        '<div class="stat-ein">'+eStr(s.ein)+' Einsaetze &middot; '+(ausTyp==='Alle'?'Gesamt':ausTyp+'e')+'</div>'+
-        (ausTyp==='Alle'?'<div style="font-size:10px;color:#4b5563;margin-top:2px">'+eStr(s.pflE)+' Pflicht &middot; '+eStr(s.testE)+' Test</div>':'')+
+        '<div><div class="stat-tw" style="color:'+c.ac+'">'+twLabel(s.tw)+'</div>'+
+        '<div class="stat-ein">'+eStr(s.ein)+' Einsaetze gesamt</div>'+
         '</div></div>'+
-        '<div><div class="stat-rate">'+wr+'%</div><div class="stat-rate-lbl">Siegquote</div></div>'+
       '</div>'+
-      '<div class="bar"><div style="flex:'+(s.siege||0.001)+';background:#22c55e"></div><div style="flex:'+(s.unentschieden||0.001)+';background:#f59e0b"></div><div style="flex:'+(s.niederlagen||0.001)+';background:#ef4444"></div></div>'+
-      '<div class="g3">'+
-        '<div class="stat-cell"><div class="stat-num" style="color:#22c55e">'+eStr(s.siege)+'</div><div class="stat-lbl">Siege</div></div>'+
-        '<div class="stat-cell"><div class="stat-num" style="color:#f59e0b">'+eStr(s.unentschieden)+'</div><div class="stat-lbl">Unentschieden</div></div>'+
-        '<div class="stat-cell"><div class="stat-num" style="color:#ef4444">'+eStr(s.niederlagen)+'</div><div class="stat-lbl">Niederlagen</div></div>'+
+      '<div class="tri-grid">'+
+        triCell('Pflicht', pflS, c.ac)+
+        triCell('Test', testS, c.ac)+
+        triCell('Gesamt', gesS, c.ac)+
       '</div>'+
       '<div class="g3">'+
-        '<div class="stat-cell"><div class="stat-icon">&#x26BD;</div><div class="stat-num" style="color:#fff">'+s.geschossen+'</div><div class="stat-lbl">Geschossen</div></div>'+
-        '<div class="stat-cell"><div class="stat-icon">&#x1F945;</div><div class="stat-num" style="color:#fff">'+s.kassiert+'</div><div class="stat-lbl">Kassiert</div></div>'+
-        '<div class="stat-cell"><div class="stat-icon">&#x1F4CA;</div><div class="stat-num" style="color:#fff">'+s.schnitt+'</div><div class="stat-lbl">Schnitt</div></div>'+
+        '<div class="stat-cell"><div class="stat-icon">&#x26BD;</div><div class="stat-num" style="color:#f5ede0">'+s.geschossen+'</div><div class="stat-lbl">Geschossen</div></div>'+
+        '<div class="stat-cell"><div class="stat-icon">&#x1F945;</div><div class="stat-num" style="color:#f5ede0">'+s.kassiert+'</div><div class="stat-lbl">Kassiert</div></div>'+
+        '<div class="stat-cell"><div class="stat-icon">&#x1F4CA;</div><div class="stat-num" style="color:#f5ede0">'+s.schnitt+'</div><div class="stat-lbl">Schnitt</div></div>'+
       '</div>'+
       '<div class="recent-lbl">LETZTE EINSAETZE</div>'+
-      '<div class="recent-pills">'+(recent||'<span style="color:#4b5563">-</span>')+'</div>'+
+      '<div class="recent-pills">'+(recent||'<span style="color:#7a6552">-</span>')+'</div>'+
       (s.hatWechsel?'<div class="note-box">Geteilte Spiele zaehlen als 1/2 Einsatz</div>':'')+
       '</div>';
   }).join('');
 
-  // Pflicht vs Test (nur im Szenario "Gesamt" relevant)
-  var pflichtTest = '';
-  if (ausTyp === 'Alle') {
-    var pflGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Pflichtspiel';}));
-    var testGesamt = groupSpiele(filtered.filter(function(x){return x.typ==='Testspiel';}));
-
-    pflichtTest = '<div class="card"><div class="card-title">Pflicht- vs. Testspiele</div>'+
-      spieleTabelle(pflGesamt,'Pflichtspiele gesamt')+
-      spieleTabelle(testGesamt,'Testspiele gesamt')+
-      '<div style="height:1px;background:#2a2f45;margin:12px 0"></div>'+
-      allStats.map(function(s){
-        var c = gc(s.tw);
-        var pflS = s.liste.filter(function(x){return x.typ==='Pflichtspiel';});
-        var testS = s.liste.filter(function(x){return x.typ==='Testspiel';});
-        var pflEin = pflS.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
-        var testEin = testS.reduce(function(a,x){return a+(x.geteilt?0.5:1);},0);
-        var pflSieg = pflS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
-        var pflNied = pflS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
-        var testSieg = testS.reduce(function(a,x){return a+(x.ergebnis==='Sieg'?(x.geteilt?0.5:1):0);},0);
-        var testNied = testS.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
-        return '<div style="margin-bottom:10px">'+
-          '<div style="font-weight:700;color:'+c.ac+';margin-bottom:4px">'+twLabel(s.tw)+'</div>'+
-          (pflEin>0?'<div style="font-size:12px;color:#9ca3af">Pflicht: <span style="color:#fff">'+eStr(pflEin)+' Eins.</span> &nbsp; <span style="color:#22c55e">'+eStr(pflSieg)+'S</span> &nbsp; <span style="color:#ef4444">'+eStr(pflNied)+'N</span></div>':'')+
-          (testEin>0?'<div style="font-size:12px;color:#9ca3af">Test: <span style="color:#fff">'+eStr(testEin)+' Eins.</span> &nbsp; <span style="color:#22c55e">'+eStr(testSieg)+'S</span> &nbsp; <span style="color:#ef4444">'+eStr(testNied)+'N</span></div>':'')+
-          '</div>';
-      }).join('')+
-      '</div>';
-  }
-
-  // Verlaufsgrafik
+  // Verlaufsgrafik (ueber alle Spiele)
   var chartCard = '';
-  var colors = {'1':'#4a9eff','12':'#4adf7f','22':'#ff6b4a','G':'#eab308','T':'#a855f7'};
+  var colors = {'1':'#b5854a','12':'#5f8a7a','22':'#c1723f','G':'#8f6a2e','T':'#9c6f83'};
   var chartH = 140, chartW = 320, pad = 30;
   var twData = {};
   TW_LIST.forEach(function(tw){
-    var s = getStats(tw,filtered);
+    var s = getStats(tw,spiele);
     if (!s) return;
     var sorted = s.liste.slice().sort(function(a,b){return a.datum.localeCompare(b.datum);});
     var cumK=0,cumE=0;
@@ -631,7 +594,7 @@ function renderSaison() {
   var lines='', legend='';
   twKeys.forEach(function(tw){
     var arr=twData[tw]; if(!arr.length)return;
-    var col=colors[tw]||'#aaa';
+    var col=colors[tw]||'#b2987d';
     var pts=arr.map(function(v,i){
       var x=pad+(i/(maxPoints-1))*(chartW-pad*2);
       var y=chartH-pad-(v/maxVal)*(chartH-pad*2);
@@ -649,16 +612,16 @@ function renderSaison() {
   for(var i=0;i<=4;i++){
     var val=(maxVal*i/4).toFixed(1);
     var y=chartH-pad-(i/4)*(chartH-pad*2);
-    yLabels+='<text x="'+(pad-4)+'" y="'+(y+4)+'" text-anchor="end" fill="#4b5563" font-size="9">'+val+'</text>';
-    yLabels+='<line x1="'+pad+'" y1="'+y+'" x2="'+(chartW-pad)+'" y2="'+y+'" stroke="#2a2f45" stroke-width="0.5"/>';
+    yLabels+='<text x="'+(pad-4)+'" y="'+(y+4)+'" text-anchor="end" fill="#7a6552" font-size="9">'+val+'</text>';
+    yLabels+='<line x1="'+pad+'" y1="'+y+'" x2="'+(chartW-pad)+'" y2="'+y+'" stroke="#4a3c2e" stroke-width="0.5"/>';
   }
   chartCard='<div class="card"><div class="card-title">Verlauf Gegentorschnitt</div>'+
     '<div style="overflow-x:auto"><svg width="'+chartW+'" height="'+chartH+'" style="display:block;margin:0 auto">'+yLabels+lines+'</svg></div>'+
     '<div style="margin-top:10px;text-align:center">'+legend+'</div></div>';
 
-  // Gegnerstaerke (immer auf Basis aller Pflichtspiele, im Testspiel-Szenario ausgeblendet)
+  // Gegnerstaerke (immer auf Basis aller Pflichtspiele)
   var staerkeCard = '';
-  var pflMitPlatz = ausTyp === 'Testspiel' ? [] : spiele.filter(function(x){return x.typ==='Pflichtspiel'&&x.platzWir&&x.platzGegner&&!x.geteilt;});
+  var pflMitPlatz = spiele.filter(function(x){return x.typ==='Pflichtspiel'&&x.platzWir&&x.platzGegner&&!x.geteilt;});
   if(pflMitPlatz.length>0){
     var staerkeRows = allStats.map(function(s){
       var twS = pflMitPlatz.filter(function(x){return x.torwart===s.tw;});
@@ -670,36 +633,35 @@ function renderSaison() {
       return '<div style="margin-bottom:14px">'+
         '<div style="font-weight:700;color:'+c.ac+';margin-bottom:8px">'+twLabel(s.tw)+'</div>'+
         '<div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>Gegner</th><th>Spiele</th><th>S</th><th>U</th><th>N</th></tr></thead><tbody>'+
-        sRow('Staerker',staerker,'#ef4444')+
-        sRow('Gleichstark',gleich,'#f59e0b')+
-        sRow('Schwaecher',schwaecher,'#22c55e')+
+        sRow('Staerker',staerker,'#b3492f')+
+        sRow('Gleichstark',gleich,'#c99a3c')+
+        sRow('Schwaecher',schwaecher,'#8aab5a')+
         '</tbody></table></div></div>';
     }).join('');
     staerkeCard='<div class="card"><div class="card-title">Gegnerstaerke (Pflichtspiele)</div>'+
-      '<div style="font-size:11px;color:#6b7280;margin-bottom:12px">Staerker = mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>'+
+      '<div style="font-size:11px;color:#a68a6f;margin-bottom:12px">Staerker = mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>'+
       staerkeRows+'</div>';
   }
 
-  // Direktvergleich
+  // Direktvergleich (Gesamtzahlen ueber alle Spiele)
   var compare = '';
   if(allStats.length>1){
     var sortedStats = allStats.slice().sort(function(a,b){return (b.ein?(b.siege/b.ein):0)-(a.ein?(a.siege/a.ein):0);});
     var tableRows = sortedStats.map(function(s){
       var c=gc(s.tw);
       var wr=s.ein?((s.siege/s.ein)*100).toFixed(0):0;
-      return '<tr><td style="color:'+c.ac+';font-weight:800">'+twLabel(s.tw)+'</td><td>'+eStr(s.ein)+'</td><td style="color:#4a9eff">'+eStr(s.pflE)+'</td><td style="color:#4adf7f">'+eStr(s.testE)+'</td><td style="color:#22c55e;font-weight:700">'+eStr(s.siege)+'</td><td style="color:#f59e0b;font-weight:700">'+eStr(s.unentschieden)+'</td><td style="color:#ef4444;font-weight:700">'+eStr(s.niederlagen)+'</td><td style="color:#fff;font-weight:700">'+wr+'%</td><td>'+s.kassiert+'</td><td>'+s.schnitt+'</td></tr>';
+      return '<tr><td style="color:'+c.ac+';font-weight:800">'+twLabel(s.tw)+'</td><td>'+eStr(s.ein)+'</td><td style="color:#b5854a">'+eStr(s.pflE)+'</td><td style="color:#5f8a7a">'+eStr(s.testE)+'</td><td style="color:#8aab5a;font-weight:700">'+eStr(s.siege)+'</td><td style="color:#c99a3c;font-weight:700">'+eStr(s.unentschieden)+'</td><td style="color:#b3492f;font-weight:700">'+eStr(s.niederlagen)+'</td><td style="color:#f5ede0;font-weight:700">'+wr+'%</td><td>'+s.kassiert+'</td><td>'+s.schnitt+'</td></tr>';
     }).join('');
-    compare='<div class="card"><div class="card-title">Direktvergleich</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>Pfl.</th><th>Test</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
+    compare='<div class="card"><div class="card-title">Direktvergleich (Gesamt)</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>Pfl.</th><th>Test</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
   }
 
-  return '<div class="filter-row">'+filterBtns+'</div>'+uebersicht+cards+pflichtTest+chartCard+staerkeCard+compare;
+  return uebersicht+cards+chartCard+staerkeCard+compare;
 }
 
 window.sf = function(k, v) { form[k] = v; };
 window.sfr = function(k, v) { form[k] = v; render(); };
 window.setZweiTW = function(val) { form.zweiTW = val; render(); };
 window.setFilter = function(f) { filterTyp = f; render(); };
-window.setAusTyp = function(f) { ausTyp = f; render(); };
 
 function validate() {
   ferr = {};
