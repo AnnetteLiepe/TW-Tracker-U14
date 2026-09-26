@@ -98,6 +98,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .tri-rate.dim{color:#7a6552}
 .tri-sub{font-size:10px;color:#c2ac93;margin-top:3px}
 .tri-sun{font-size:10px;color:#a68a6f;margin-top:4px}
+.tri-goals{font-size:10px;color:#a68a6f;margin-top:3px;padding-top:5px;border-top:1px solid #4a3c2e}
 .cmp-wrap{overflow-x:auto}
 .cmp-table{width:100%;border-collapse:collapse;font-size:12px;min-width:340px}
 .cmp-table th{padding:8px 6px;text-align:center;font-weight:600;color:#a68a6f;border-bottom:1px solid #4a3c2e}
@@ -193,6 +194,7 @@ let spiele = [];
 let view = 'eingabe';
 let filterTyp = 'Alle';
 let filterTw = 'Alle';
+let compareTyp = 'Pflichtspiel';
 let sortDesc = true;
 let searchQ = '';
 let editId = null;
@@ -295,7 +297,10 @@ function subStats(list) {
   var unent = list.reduce(function(a,x){return a+(x.ergebnis==='Unentschieden'?(x.geteilt?0.5:1):0);},0);
   var nied = list.reduce(function(a,x){return a+(x.ergebnis==='Niederlage'?(x.geteilt?0.5:1):0);},0);
   var wr = ein ? Math.round((sieg/ein)*100) : null;
-  return {ein:ein, sieg:sieg, unent:unent, nied:nied, wr:wr};
+  var geschossen = list.reduce(function(a,x){return a+x.geschossen;},0);
+  var kassiert = list.reduce(function(a,x){return a+x.kassiert;},0);
+  var schnitt = ein ? (kassiert/ein).toFixed(2) : '0.00';
+  return {ein:ein, sieg:sieg, unent:unent, nied:nied, wr:wr, geschossen:geschossen, kassiert:kassiert, schnitt:schnitt};
 }
 
 function getFiltered() {
@@ -530,7 +535,7 @@ function renderSaison() {
     '<div class="stat-cell"><div class="stat-num" style="color:#5f8a7a">'+testSpiele+'</div><div class="stat-lbl">Testspiele</div></div>'+
     '</div></div>';
 
-  // TW-Karten: Pflicht / Test / Gesamt nebeneinander
+  // TW-Karten: Pflicht / Test / Gesamt nebeneinander, inkl. Tore/Schnitt je Spalte
   var cards = allStats.map(function(s) {
     var c = gc(s.tw);
     var pflS = subStats(s.liste.filter(function(x){return x.typ==='Pflichtspiel';}));
@@ -542,6 +547,7 @@ function renderSaison() {
         '<div class="tri-rate'+(sub.wr===null?' dim':'')+'" style="color:'+(sub.wr===null?'':accent)+'">'+rate+'</div>'+
         '<div class="tri-sub">'+eStr(sub.ein)+' Eins.</div>'+
         (sub.ein>0?'<div class="tri-sun">'+eStr(sub.sieg)+'S &middot; '+eStr(sub.unent)+'U &middot; '+eStr(sub.nied)+'N</div>':'')+
+        (sub.ein>0?'<div class="tri-goals">'+sub.geschossen+'&#x26BD; &middot; '+sub.kassiert+'&#x1F945; &middot; &oslash;'+sub.schnitt+'</div>':'')+
         '</div>';
     }
     return '<div class="stat-card" style="border-color:'+c.ac+'30">'+
@@ -555,11 +561,6 @@ function renderSaison() {
         triCell('Pflicht', pflS, c.ac)+
         triCell('Test', testS, c.ac)+
         triCell('Gesamt', gesS, c.ac)+
-      '</div>'+
-      '<div class="g3">'+
-        '<div class="stat-cell"><div class="stat-icon">&#x26BD;</div><div class="stat-num" style="color:#f5ede0">'+s.geschossen+'</div><div class="stat-lbl">Geschossen</div></div>'+
-        '<div class="stat-cell"><div class="stat-icon">&#x1F945;</div><div class="stat-num" style="color:#f5ede0">'+s.kassiert+'</div><div class="stat-lbl">Kassiert</div></div>'+
-        '<div class="stat-cell"><div class="stat-icon">&#x1F4CA;</div><div class="stat-num" style="color:#f5ede0">'+s.schnitt+'</div><div class="stat-lbl">Schnitt</div></div>'+
       '</div>'+
       (s.hatWechsel?'<div class="note-box">Geteilte Spiele zaehlen als 1/2 Einsatz</div>':'')+
       '</div>';
@@ -620,7 +621,7 @@ function renderSaison() {
   // Helper: Direktvergleich-Tabelle fuer eine Teilmenge (nur Pflicht ODER nur Test)
   function buildCompare(list) {
     var stats = TW_LIST.map(function(tw){return getStats(tw,list);}).filter(Boolean);
-    if (stats.length < 2) return '';
+    if (!stats.length) return '';
     var sorted = stats.slice().sort(function(a,b){return (b.ein?(b.siege/b.ein):0)-(a.ein?(a.siege/a.ein):0);});
     var rows = sorted.map(function(s){
       var c=gc(s.tw);
@@ -630,10 +631,7 @@ function renderSaison() {
     return '<div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
   }
 
-  var pflList = spiele.filter(function(x){return x.typ==='Pflichtspiel';});
-  var testList = spiele.filter(function(x){return x.typ==='Testspiel';});
-
-  // Gegnerstaerke (immer auf Basis aller Pflichtspiele)
+  // Gegnerstaerke (immer eigene Karte, Basis: alle Pflichtspiele)
   var staerkeCard = '';
   var pflMitPlatz = spiele.filter(function(x){return x.typ==='Pflichtspiel'&&x.platzWir&&x.platzGegner&&!x.geteilt;});
   if(pflMitPlatz.length>0){
@@ -652,26 +650,31 @@ function renderSaison() {
         sRow('Schwaecher',schwaecher,'#8aab5a')+
         '</tbody></table></div></div>';
     }).join('');
-    staerkeCard='<div style="font-size:11px;color:#a68a6f;margin:14px 0 12px">Staerker = mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>'+
-      staerkeRows;
+    staerkeCard='<div class="card"><div class="card-title">Gegnerstaerke (Pflichtspiele)</div>'+
+      '<div style="font-size:11px;color:#a68a6f;margin-bottom:12px">Staerker = mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>'+
+      staerkeRows+'</div>';
   }
 
-  var pflichtCard = '<div class="card"><div class="card-title">Pflichtspiele</div>'+
-    buildCompare(pflList)+
+  // Direktvergleich + Verlauf: ueber Filter zwischen Pflicht / Test / Gesamt umschaltbar
+  var cmpSzenarien = [
+    {key:'Pflichtspiel', label:'Pflichtspiele'},
+    {key:'Testspiel', label:'Testspiele'},
+    {key:'Alle', label:'Gesamt'}
+  ];
+  var cmpBtns = cmpSzenarien.map(function(sz){
+    return '<button class="filter-btn'+(compareTyp===sz.key?' active':'')+('" onclick="setCompareTyp(\'' + sz.key + '\')">')+sz.label+'</button>';
+  }).join('');
+  var cmpList = compareTyp === 'Alle' ? spiele : spiele.filter(function(x){return x.typ===compareTyp;});
+
+  var compareCard = '<div class="card"><div class="card-title">Direktvergleich &amp; Verlauf</div>'+
+    '<div class="filter-row" style="margin-bottom:16px">'+cmpBtns+'</div>'+
+    (buildCompare(cmpList) || '<div style="font-size:12px;color:#a68a6f">Keine Daten fuer diese Auswahl.</div>')+
     '<div style="height:1px;background:#4a3c2e;margin:16px 0"></div>'+
     '<div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#a68a6f;margin-bottom:8px">Verlauf Gegentorschnitt</div>'+
-    buildChart(pflList)+
-    (staerkeCard?('<div style="height:1px;background:#4a3c2e;margin:16px 0"></div><div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#a68a6f;margin-bottom:2px">Gegnerstaerke</div>'+staerkeCard):'')+
+    (buildChart(cmpList) || '<div style="font-size:12px;color:#a68a6f">Keine Daten fuer diese Auswahl.</div>')+
     '</div>';
 
-  var testCard = '<div class="card"><div class="card-title">Testspiele</div>'+
-    buildCompare(testList)+
-    '<div style="height:1px;background:#4a3c2e;margin:16px 0"></div>'+
-    '<div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#a68a6f;margin-bottom:8px">Verlauf Gegentorschnitt</div>'+
-    buildChart(testList)+
-    '</div>';
-
-  return uebersicht+cards+pflichtCard+testCard;
+  return uebersicht+cards+compareCard+staerkeCard;
 }
 
 window.render = render;
@@ -680,6 +683,7 @@ window.sfr = function(k, v) { form[k] = v; render(); };
 window.setZweiTW = function(val) { form.zweiTW = val; render(); };
 window.setFilter = function(f) { filterTyp = f; render(); };
 window.setFilterTw = function(t) { filterTw = t; render(); };
+window.setCompareTyp = function(t) { compareTyp = t; render(); };
 window.setSearch = function(v) { searchQ = v; render(); };
 window.toggleSort = function() { sortDesc = !sortDesc; render(); };
 
