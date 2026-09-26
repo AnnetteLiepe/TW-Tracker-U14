@@ -64,7 +64,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
 .quick-card{border-radius:12px;padding:14px;text-align:center;border:1px solid transparent}
 .quick-tw{font-weight:800;font-size:13px}.quick-num{font-size:22px;font-weight:800;color:#f5ede0;margin-top:4px}
-.quick-lbl{font-size:10px;color:#c2ac93}.quick-rec{font-size:11px;color:#c2ac93;margin-top:5px}
+.quick-lbl{font-size:10px;color:#c2ac93}.quick-split{font-size:10px;color:#a68a6f;margin-top:3px}.quick-rec{font-size:11px;color:#c2ac93;margin-top:5px}
 .spiel-card{background:#2e2419;border-radius:14px;padding:13px 15px;margin-bottom:10px;border:1px solid #4a3c2e;border-left-width:3px}
 .spiel-inner{display:flex;justify-content:space-between;align-items:flex-start}
 .spiel-score{font-weight:800;font-size:14px;color:#f5ede0;line-height:1.3}
@@ -195,6 +195,7 @@ const RC = {Sieg:'#8aab5a', Niederlage:'#b3492f', Unentschieden:'#c99a3c'};
 let spiele = [];
 let view = 'eingabe';
 let filterTyp = 'Alle';
+let filterTw = 'Alle';
 let sortDesc = true;
 let searchQ = '';
 let editId = null;
@@ -302,6 +303,9 @@ function subStats(list) {
 
 function getFiltered() {
   var res = filterTyp === 'Alle' ? spiele : spiele.filter(function(x) { return x.typ === filterTyp; });
+  if (filterTw !== 'Alle') {
+    res = res.filter(function(x) { return x.torwart === filterTw; });
+  }
   if (searchQ) {
     var q = searchQ.toLowerCase();
     res = res.filter(function(x) {
@@ -400,7 +404,7 @@ function renderEingabe() {
     var c = gc(tw);
     if (!s) return '<div class="quick-card" style="background:#2e2419;border-color:#4a3c2e"><div class="quick-tw" style="color:#7a6552">' + twLabel(tw) + '</div><div style="font-size:11px;color:#6b5847;margin-top:6px">Keine Spiele</div></div>';
     var einStr = s.ein % 1 === 0 ? s.ein : s.ein.toFixed(1);
-    return '<div class="quick-card" style="background:' + c.bg + ';border-color:' + c.ac + '30"><div class="quick-tw" style="color:' + c.ac + '">' + twLabel(tw) + '</div><div class="quick-num">' + einStr + '</div><div class="quick-lbl">Eins\u00e4tze</div><div class="quick-rec">' + s.siege + 'S \u00b7 ' + s.unentschieden + 'U \u00b7 ' + s.niederlagen + 'N</div></div>';
+    return '<div class="quick-card" style="background:' + c.bg + ';border-color:' + c.ac + '30"><div class="quick-tw" style="color:' + c.ac + '">' + twLabel(tw) + '</div><div class="quick-num">' + einStr + '</div><div class="quick-lbl">Eins\u00e4tze</div><div class="quick-split">' + eStr(s.pflE) + ' Pflicht &middot; ' + eStr(s.testE) + ' Test</div><div class="quick-rec">' + s.siege + 'S \u00b7 ' + s.unentschieden + 'U \u00b7 ' + s.niederlagen + 'N</div></div>';
   }).join('');
 
   var twSection = '';
@@ -445,6 +449,10 @@ function renderSpiele() {
   var filterBtns = ['Alle','Pflichtspiel','Testspiel'].map(function(f) {
     return '<button class="filter-btn' + (filterTyp===f?' active':'') + '" onclick="setFilter(\'' + f + '\')">' + f + '</button>';
   }).join('');
+  var twBtns = ['Alle'].concat(TW_LIST).map(function(t) {
+    var lbl = t === 'Alle' ? 'Alle' : twLabel(t);
+    return '<button class="filter-btn' + (filterTw===t?' active':'') + '" onclick="setFilterTw(\'' + t + '\')">' + lbl + '</button>';
+  }).join('');
 
   var cards = grouped.length === 0 ? '<div class="no-spiele">Noch keine Spiele eingetragen.</div>' :
     grouped.map(function(s) {
@@ -487,10 +495,11 @@ function renderSpiele() {
         '</div></div>';
     }).join('');
 
-  return '<div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input type="text" placeholder="Suchen..." value="' + searchQ + '" oninput="searchQ=this.value;render()"/></div>' +
+  return '<div class="search-wrap"><span class="search-icon">&#x1F50D;</span><input type="text" placeholder="Suchen..." value="' + searchQ + '" oninput="setSearch(this.value)"/></div>' +
     '<div class="filter-row">' + filterBtns +
-    '<button class="sort-btn" onclick="sortDesc=!sortDesc;render()">' + (sortDesc ? 'Neueste' : 'Alteste') + '</button>' +
+    '<button class="sort-btn" onclick="toggleSort()">' + (sortDesc ? 'Neueste' : 'Alteste') + '</button>' +
     '<span class="filter-count">' + grouped.length + ' Spiele</span></div>' +
+    '<div class="filter-row">' + twBtns + '</div>' +
     cards;
 }
 
@@ -658,10 +667,14 @@ function renderSaison() {
   return uebersicht+cards+chartCard+staerkeCard+compare;
 }
 
+window.render = render;
 window.sf = function(k, v) { form[k] = v; };
 window.sfr = function(k, v) { form[k] = v; render(); };
 window.setZweiTW = function(val) { form.zweiTW = val; render(); };
 window.setFilter = function(f) { filterTyp = f; render(); };
+window.setFilterTw = function(t) { filterTw = t; render(); };
+window.setSearch = function(v) { searchQ = v; render(); };
+window.toggleSort = function() { sortDesc = !sortDesc; render(); };
 
 function validate() {
   ferr = {};
