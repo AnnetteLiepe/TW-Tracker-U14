@@ -172,7 +172,7 @@ const TW = {
   '1':  {bg:'#3a2e1c', ac:'#b5854a'},
   '12': {bg:'#232f26', ac:'#5f8a7a'},
   '22': {bg:'#3a2216', ac:'#c1723f'},
-  'G':  {bg:'#332a16', ac:'#8f6a2e'},
+  'G':  {bg:'#232a1c', ac:'#4f6b4a'},
   'T':  {bg:'#2e2129', ac:'#9c6f83'}
 };
 const TW_LIST = ['1', '12', '22', 'G', 'T'];
@@ -242,6 +242,12 @@ function fd(d) {
   return p.length === 3 ? (p[2] + '.' + p[1] + '.' + p[0]) : d;
 }
 function erg(h, g) { return h > g ? 'Sieg' : h < g ? 'Niederlage' : 'Unentschieden'; }
+function spielVerlauf(gesch, kass) {
+  var diff = Math.abs(Number(gesch) - Number(kass));
+  if (diff <= 1) return {label:'Knapp', color:'#c99a3c'};
+  if (diff <= 3) return {label:'Deutlich', color:'#c1723f'};
+  return {label:'Klar', color:'#b3492f'};
+}
 
 function toast(msg, type, dur) {
   if (!type) type = 'ok';
@@ -470,13 +476,15 @@ function renderSpiele() {
         var c2 = gc(hz2 ? hz2.torwart : '');
         var sc = h ? ('Hertha <span class="hertha">' + s.toreHeim + ':' + s.toreGast + '</span> ' + s.gegner) :
                      (s.gegner + ' ' + s.toreHeim + ':' + s.toreGast + ' <span class="hertha">Hertha</span>');
+        var vG = h ? s.toreHeim : s.toreGast, vK = h ? s.toreGast : s.toreHeim;
+        var vl = spielVerlauf(vG, vK);
         var pills = '';
         if (hz1) pills += '<div class="hz-pill" style="background:' + c1.bg + ';color:' + c1.ac + ';border-color:' + c1.ac + '40"><b>' + twLabel(hz1.torwart) + '</b> 1.HZ ' + hz1.hzH + ':' + hz1.hzG + ' \u00b7 ' + hz1.kassiert + 'GT</div>';
         if (hz2) pills += '<div class="hz-pill" style="background:' + c2.bg + ';color:' + c2.ac + ';border-color:' + c2.ac + '40"><b>' + twLabel(hz2.torwart) + '</b> 2.HZ ' + hz2.hzH + ':' + hz2.hzG + ' \u00b7 ' + hz2.kassiert + 'GT</div>';
         return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
           '<div class="spiel-inner"><div style="flex:1">' +
           '<div class="spiel-score">' + sc + '</div>' +
-          '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + datum + st + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
+          '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + datum + st + '</span><span style="color:#7a6552">\u00b7</span><span style="color:' + vl.color + '">' + vl.label + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
           '<div class="hz-pills">' + pills + '</div>' +
           (s.bemerkung ? '<div class="spiel-notiz">' + s.bemerkung + '</div>' : '') +
           '</div>' +
@@ -487,10 +495,12 @@ function renderSpiele() {
       var c = gc(s.torwart);
       var sc2 = h ? ('Hertha <span class="hertha">' + s.toreHeim + ':' + s.toreGast + '</span> ' + s.gegner) :
                     (s.gegner + ' ' + s.toreHeim + ':' + s.toreGast + ' <span class="hertha">Hertha</span>');
+      var vG2 = h ? s.toreHeim : s.toreGast, vK2 = h ? s.toreGast : s.toreHeim;
+      var vl2 = spielVerlauf(vG2, vK2);
       return '<div class="spiel-card" style="border-left-color:' + farbe + '">' +
         '<div class="spiel-inner"><div style="flex:1">' +
         '<div class="spiel-score">' + sc2 + '</div>' +
-        '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + datum + st + '</span><span style="color:#7a6552">\u00b7</span><span class="badge" style="background:' + c.bg + ';color:' + c.ac + ';border-color:' + c.ac + '40">' + twLabel(s.torwart) + '</span><span style="color:#a68a6f">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
+        '<div class="spiel-meta"><span style="color:' + farbe + ';font-weight:700">' + s.ergebnis + '</span><span style="color:#7a6552">\u00b7</span><span style="color:#a68a6f">' + datum + st + '</span><span style="color:#7a6552">\u00b7</span><span class="badge" style="background:' + c.bg + ';color:' + c.ac + ';border-color:' + c.ac + '40">' + twLabel(s.torwart) + '</span><span style="color:#7a6552">\u00b7</span><span style="color:' + vl2.color + '">' + vl2.label + '</span><span style="color:#a68a6f">' + s.typ + ' \u00b7 ' + s.heimwaerts + '</span></div>' +
         (s.bemerkung ? '<div class="spiel-notiz">' + s.bemerkung + '</div>' : '') +
         '</div>' +
         '<div class="spiel-actions"><button class="btn-icon" onclick="editSpiel(\'' + s._id + '\',false)">&#x270F;&#xFE0F;</button><button class="btn-icon btn-del" onclick="delSpiel(\'' + s._id + '\',false)">&#x1F5D1;&#xFE0F;</button></div>' +
@@ -568,7 +578,7 @@ function renderSaison() {
 
   // Helper: Verlaufsgrafik fuer eine Teilmenge (nur Pflicht ODER nur Test)
   function buildChart(list) {
-    var colors = {'1':'#b5854a','12':'#5f8a7a','22':'#c1723f','G':'#8f6a2e','T':'#9c6f83'};
+    var colors = {'1':'#b5854a','12':'#5f8a7a','22':'#c1723f','G':'#4f6b4a','T':'#9c6f83'};
     var chartH = 140, chartW = 320, pad = 30;
     var twData = {};
     TW_LIST.forEach(function(tw){
