@@ -88,9 +88,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .stat-num{font-size:22px;font-weight:800}
 .stat-lbl{font-size:10px;color:#a68a6f;margin-top:2px}
 .stat-icon{font-size:11px;margin-bottom:2px}
-.recent-lbl{font-size:11px;color:#a68a6f;margin:12px 0 7px;font-weight:600;letter-spacing:.4px}
-.recent-pills{display:flex;gap:6px;flex-wrap:wrap}
-.recent-pill{border-radius:8px;padding:5px 9px;font-size:11px;font-weight:700;border:1px solid transparent}
 .note-box{font-size:11px;color:#c99a3c;margin-top:6px;padding:6px 10px;background:#3a2a14;border-radius:8px}
 .uebersicht{background:#2e2419;border-radius:16px;padding:18px;border:1px solid #4a3c2e;margin-bottom:14px}
 .tri-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
@@ -539,13 +536,6 @@ function renderSaison() {
     var pflS = subStats(s.liste.filter(function(x){return x.typ==='Pflichtspiel';}));
     var testS = subStats(s.liste.filter(function(x){return x.typ==='Testspiel';}));
     var gesS = subStats(s.liste);
-    var recent = s.liste.slice().sort(function(a,b){return b.datum.localeCompare(a.datum);}).slice(0,5).map(function(x){
-      var fc = RC[x.ergebnis]||'#b2987d';
-      var k = x.ergebnis==='Sieg'?'S':x.ergebnis==='Niederlage'?'N':'U';
-      var hz = x.halbzeit?' '+x.halbzeit+'.HZ':'';
-      var gt = x.geteilt?' (1/2)':'';
-      return '<div class="recent-pill" style="background:'+fc+'20;color:'+fc+';border-color:'+fc+'40">'+k+hz+gt+' '+x.kassiert+'GT</div>';
-    }).join('');
     function triCell(lbl, sub, accent) {
       var rate = sub.wr === null ? '&ndash;' : sub.wr + '%';
       return '<div class="tri-cell"><div class="tri-lbl">'+lbl+'</div>'+
@@ -571,62 +561,77 @@ function renderSaison() {
         '<div class="stat-cell"><div class="stat-icon">&#x1F945;</div><div class="stat-num" style="color:#f5ede0">'+s.kassiert+'</div><div class="stat-lbl">Kassiert</div></div>'+
         '<div class="stat-cell"><div class="stat-icon">&#x1F4CA;</div><div class="stat-num" style="color:#f5ede0">'+s.schnitt+'</div><div class="stat-lbl">Schnitt</div></div>'+
       '</div>'+
-      '<div class="recent-lbl">LETZTE EINSAETZE</div>'+
-      '<div class="recent-pills">'+(recent||'<span style="color:#7a6552">-</span>')+'</div>'+
       (s.hatWechsel?'<div class="note-box">Geteilte Spiele zaehlen als 1/2 Einsatz</div>':'')+
       '</div>';
   }).join('');
 
-  // Verlaufsgrafik (ueber alle Spiele)
-  var chartCard = '';
-  var colors = {'1':'#b5854a','12':'#5f8a7a','22':'#c1723f','G':'#8f6a2e','T':'#9c6f83'};
-  var chartH = 140, chartW = 320, pad = 30;
-  var twData = {};
-  TW_LIST.forEach(function(tw){
-    var s = getStats(tw,spiele);
-    if (!s) return;
-    var sorted = s.liste.slice().sort(function(a,b){return a.datum.localeCompare(b.datum);});
-    var cumK=0,cumE=0;
-    twData[tw] = sorted.map(function(x){
-      cumK+=x.kassiert; cumE+=(x.geteilt?0.5:1);
-      return cumE?cumK/cumE:0;
+  // Helper: Verlaufsgrafik fuer eine Teilmenge (nur Pflicht ODER nur Test)
+  function buildChart(list) {
+    var colors = {'1':'#b5854a','12':'#5f8a7a','22':'#c1723f','G':'#8f6a2e','T':'#9c6f83'};
+    var chartH = 140, chartW = 320, pad = 30;
+    var twData = {};
+    TW_LIST.forEach(function(tw){
+      var s = getStats(tw,list);
+      if (!s) return;
+      var sorted = s.liste.slice().sort(function(a,b){return a.datum.localeCompare(b.datum);});
+      var cumK=0,cumE=0;
+      twData[tw] = sorted.map(function(x){
+        cumK+=x.kassiert; cumE+=(x.geteilt?0.5:1);
+        return cumE?cumK/cumE:0;
+      });
     });
-  });
-  var allVals = [];
-  var twKeys = Object.keys(twData);
-  twKeys.forEach(function(tw){twData[tw].forEach(function(v){allVals.push(v);});});
-  var maxVal = allVals.length?Math.max.apply(null,allVals):4;
-  maxVal = Math.max(maxVal,1);
-  var maxPoints = 0;
-  twKeys.forEach(function(tw){if(twData[tw].length>maxPoints)maxPoints=twData[tw].length;});
-  if(maxPoints<2)maxPoints=2;
-  var lines='', legend='';
-  twKeys.forEach(function(tw){
-    var arr=twData[tw]; if(!arr.length)return;
-    var col=colors[tw]||'#b2987d';
-    var pts=arr.map(function(v,i){
-      var x=pad+(i/(maxPoints-1))*(chartW-pad*2);
-      var y=chartH-pad-(v/maxVal)*(chartH-pad*2);
-      return x.toFixed(1)+','+y.toFixed(1);
-    }).join(' ');
-    lines+='<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
-    arr.forEach(function(v,i){
-      var x=pad+(i/(maxPoints-1))*(chartW-pad*2);
-      var y=chartH-pad-(v/maxVal)*(chartH-pad*2);
-      lines+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="'+col+'"/>';
+    var twKeys = Object.keys(twData);
+    if (!twKeys.length) return '';
+    var allVals = [];
+    twKeys.forEach(function(tw){twData[tw].forEach(function(v){allVals.push(v);});});
+    var maxVal = allVals.length?Math.max.apply(null,allVals):4;
+    maxVal = Math.max(maxVal,1);
+    var maxPoints = 0;
+    twKeys.forEach(function(tw){if(twData[tw].length>maxPoints)maxPoints=twData[tw].length;});
+    if(maxPoints<2)maxPoints=2;
+    var lines='', legend='';
+    twKeys.forEach(function(tw){
+      var arr=twData[tw]; if(!arr.length)return;
+      var col=colors[tw]||'#b2987d';
+      var pts=arr.map(function(v,i){
+        var x=pad+(i/(maxPoints-1))*(chartW-pad*2);
+        var y=chartH-pad-(v/maxVal)*(chartH-pad*2);
+        return x.toFixed(1)+','+y.toFixed(1);
+      }).join(' ');
+      lines+='<polyline points="'+pts+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+      arr.forEach(function(v,i){
+        var x=pad+(i/(maxPoints-1))*(chartW-pad*2);
+        var y=chartH-pad-(v/maxVal)*(chartH-pad*2);
+        lines+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.5" fill="'+col+'"/>';
+      });
+      legend+='<span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;font-size:11px;color:'+col+'"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="'+col+'" stroke-width="2.5"/></svg>'+twLabel(tw)+'</span>';
     });
-    legend+='<span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;font-size:11px;color:'+col+'"><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="'+col+'" stroke-width="2.5"/></svg>'+twLabel(tw)+'</span>';
-  });
-  var yLabels='';
-  for(var i=0;i<=4;i++){
-    var val=(maxVal*i/4).toFixed(1);
-    var y=chartH-pad-(i/4)*(chartH-pad*2);
-    yLabels+='<text x="'+(pad-4)+'" y="'+(y+4)+'" text-anchor="end" fill="#7a6552" font-size="9">'+val+'</text>';
-    yLabels+='<line x1="'+pad+'" y1="'+y+'" x2="'+(chartW-pad)+'" y2="'+y+'" stroke="#4a3c2e" stroke-width="0.5"/>';
+    var yLabels='';
+    for(var i=0;i<=4;i++){
+      var val=(maxVal*i/4).toFixed(1);
+      var y=chartH-pad-(i/4)*(chartH-pad*2);
+      yLabels+='<text x="'+(pad-4)+'" y="'+(y+4)+'" text-anchor="end" fill="#7a6552" font-size="9">'+val+'</text>';
+      yLabels+='<line x1="'+pad+'" y1="'+y+'" x2="'+(chartW-pad)+'" y2="'+y+'" stroke="#4a3c2e" stroke-width="0.5"/>';
+    }
+    return '<div style="overflow-x:auto"><svg width="'+chartW+'" height="'+chartH+'" style="display:block;margin:0 auto">'+yLabels+lines+'</svg></div>'+
+      '<div style="margin-top:10px;text-align:center">'+legend+'</div>';
   }
-  chartCard='<div class="card"><div class="card-title">Verlauf Gegentorschnitt</div>'+
-    '<div style="overflow-x:auto"><svg width="'+chartW+'" height="'+chartH+'" style="display:block;margin:0 auto">'+yLabels+lines+'</svg></div>'+
-    '<div style="margin-top:10px;text-align:center">'+legend+'</div></div>';
+
+  // Helper: Direktvergleich-Tabelle fuer eine Teilmenge (nur Pflicht ODER nur Test)
+  function buildCompare(list) {
+    var stats = TW_LIST.map(function(tw){return getStats(tw,list);}).filter(Boolean);
+    if (stats.length < 2) return '';
+    var sorted = stats.slice().sort(function(a,b){return (b.ein?(b.siege/b.ein):0)-(a.ein?(a.siege/a.ein):0);});
+    var rows = sorted.map(function(s){
+      var c=gc(s.tw);
+      var wr=s.ein?((s.siege/s.ein)*100).toFixed(0):0;
+      return '<tr><td style="color:'+c.ac+';font-weight:800">'+twLabel(s.tw)+'</td><td>'+eStr(s.ein)+'</td><td style="color:#8aab5a;font-weight:700">'+eStr(s.siege)+'</td><td style="color:#c99a3c;font-weight:700">'+eStr(s.unentschieden)+'</td><td style="color:#b3492f;font-weight:700">'+eStr(s.niederlagen)+'</td><td style="color:#f5ede0;font-weight:700">'+wr+'%</td><td>'+s.kassiert+'</td><td>'+s.schnitt+'</td></tr>';
+    }).join('');
+    return '<div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  }
+
+  var pflList = spiele.filter(function(x){return x.typ==='Pflichtspiel';});
+  var testList = spiele.filter(function(x){return x.typ==='Testspiel';});
 
   // Gegnerstaerke (immer auf Basis aller Pflichtspiele)
   var staerkeCard = '';
@@ -647,24 +652,26 @@ function renderSaison() {
         sRow('Schwaecher',schwaecher,'#8aab5a')+
         '</tbody></table></div></div>';
     }).join('');
-    staerkeCard='<div class="card"><div class="card-title">Gegnerstaerke (Pflichtspiele)</div>'+
-      '<div style="font-size:11px;color:#a68a6f;margin-bottom:12px">Staerker = mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>'+
-      staerkeRows+'</div>';
+    staerkeCard='<div style="font-size:11px;color:#a68a6f;margin:14px 0 12px">Staerker = mind. 3 Plaetze besser &middot; Gleichstark = max. 2 Plaetze Unterschied</div>'+
+      staerkeRows;
   }
 
-  // Direktvergleich (Gesamtzahlen ueber alle Spiele)
-  var compare = '';
-  if(allStats.length>1){
-    var sortedStats = allStats.slice().sort(function(a,b){return (b.ein?(b.siege/b.ein):0)-(a.ein?(a.siege/a.ein):0);});
-    var tableRows = sortedStats.map(function(s){
-      var c=gc(s.tw);
-      var wr=s.ein?((s.siege/s.ein)*100).toFixed(0):0;
-      return '<tr><td style="color:'+c.ac+';font-weight:800">'+twLabel(s.tw)+'</td><td>'+eStr(s.ein)+'</td><td style="color:#b5854a">'+eStr(s.pflE)+'</td><td style="color:#5f8a7a">'+eStr(s.testE)+'</td><td style="color:#8aab5a;font-weight:700">'+eStr(s.siege)+'</td><td style="color:#c99a3c;font-weight:700">'+eStr(s.unentschieden)+'</td><td style="color:#b3492f;font-weight:700">'+eStr(s.niederlagen)+'</td><td style="color:#f5ede0;font-weight:700">'+wr+'%</td><td>'+s.kassiert+'</td><td>'+s.schnitt+'</td></tr>';
-    }).join('');
-    compare='<div class="card"><div class="card-title">Direktvergleich (Gesamt)</div><div class="cmp-wrap"><table class="cmp-table"><thead><tr><th>TW</th><th>Eins.</th><th>Pfl.</th><th>Test</th><th>S</th><th>U</th><th>N</th><th>Quote</th><th>Kass.</th><th>Schn.</th></tr></thead><tbody>'+tableRows+'</tbody></table></div></div>';
-  }
+  var pflichtCard = '<div class="card"><div class="card-title">Pflichtspiele</div>'+
+    buildCompare(pflList)+
+    '<div style="height:1px;background:#4a3c2e;margin:16px 0"></div>'+
+    '<div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#a68a6f;margin-bottom:8px">Verlauf Gegentorschnitt</div>'+
+    buildChart(pflList)+
+    (staerkeCard?('<div style="height:1px;background:#4a3c2e;margin:16px 0"></div><div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#a68a6f;margin-bottom:2px">Gegnerstaerke</div>'+staerkeCard):'')+
+    '</div>';
 
-  return uebersicht+cards+chartCard+staerkeCard+compare;
+  var testCard = '<div class="card"><div class="card-title">Testspiele</div>'+
+    buildCompare(testList)+
+    '<div style="height:1px;background:#4a3c2e;margin:16px 0"></div>'+
+    '<div style="font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#a68a6f;margin-bottom:8px">Verlauf Gegentorschnitt</div>'+
+    buildChart(testList)+
+    '</div>';
+
+  return uebersicht+cards+pflichtCard+testCard;
 }
 
 window.render = render;
